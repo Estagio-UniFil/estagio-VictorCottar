@@ -1,12 +1,12 @@
 # <Londricostura>
 
-## <Histórico de Consulta dos Clientes>
+## Histórico de Consulta dos Clientes
 
-**Versão:** `<1.0>`
+**Versão:** `1.0`
 
 # Especificação Complementar
 
-**Data:** `<26/02/2025>`
+**Data:** `26/02/2025`
 
 <identificador do documento>
 
@@ -16,7 +16,7 @@
 
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|--------|
-| `<26/02/2025>` | `<1.0` | `<Preenchimento inicial>` | `<Victor Cottar Marçal Silva>` |
+| `26/02/2025` | `1.0` | `Preenchimento inicial` | `Victor Cottar Marçal Silva` |
 
 ---
 
@@ -29,27 +29,22 @@
    1.4 [Referências](#referências)  
    1.5 [Visão Geral](#visão-geral)  
 2. [Funcionalidade](#funcionalidade)  
-   2.1 [`<Requisito Funcional Um>`](#requisito-funcional-um)  
+   2.1 [`Processar dados`](#Processar dados)
+   2.2 [`Dados`](#Dados)  
 3. [Utilidade](#utilidade)  
    3.1 [`<Requisito de Utilidade Um>`](#requisito-de-utilidade-um)  
 4. [Confiabilidade](#confiabilidade)  
    4.1 [`<Requisito de Confiabilidade Um>`](#requisito-de-confiabilidade-um)  
 5. [Desempenho](#desempenho)  
    5.1 [`<Requisito de Desempenho Um>`](#requisito-de-desempenho-um)  
-6. [Suportabilidade](#suportabilidade)  
-   6.1 [`<Requisito de Suportabilidade Um>`](#requisito-de-suportabilidade-um)  
-7. [Restrições de Design](#restrições-de-design)  
-   7.1 [`<Restrição de Design Um>`](#restrição-de-design-um)  
-8. [Documentação do Usuário On-line e Requisitos do Sistema de Ajuda](#documentação-do-usuário-on-line-e-requisitos-do-sistema-de-ajuda)  
-9. [Componentes Comprados](#componentes-comprados)  
-10. [Interfaces](#interfaces)  
-    10.1 [Interfaces com o Usuário](#interfaces-com-o-usuário)  
-    10.2 [Interfaces de Hardware](#interfaces-de-hardware)  
-    10.3 [Interfaces de Software](#interfaces-de-software)  
-    10.4 [Interfaces de Comunicações](#interfaces-de-comunicações)  
-11. [Requisitos de Licença](#requisitos-de-licença)  
-12. [Observações Legais, sobre Direitos Autorais e Outras Observações](#observações-legais-sobre-direitos-autorais-e-outras-observações)  
-13. [Padrões Aplicáveis](#padrões-aplicáveis)  
+6. [Suportabilidade](#suportabilidade)   
+7. [Documentação do Usuário On-line e Requisitos do Sistema de Ajuda](#documentação-do-usuário-on-line-e-requisitos-do-sistema-de-ajuda)  
+8. [Interfaces](#interfaces)  
+    8.1 [Interfaces com o Usuário](#interfaces-com-o-usuário)  
+    8.2 [Interfaces de Hardware](#interfaces-de-hardware)  
+    8.3 [Interfaces de Software](#interfaces-de-software)    
+9. [Observações Legais, sobre Direitos Autorais e Outras Observações](#observações-legais-sobre-direitos-autorais-e-outras-observações)  
+10. [Padrões Aplicáveis](#padrões-aplicáveis)  
 
 ---
 
@@ -66,7 +61,7 @@ Este documento de Especificação Complementar tem como objetivo detalhar requis
 
 ## Escopo
 
-Este documento especifica os atributos relacionados ao desenvolvimento do projeto  do sistema xxxxxxxx. O sistema em questão será responsável por xxxxxxxxxxxxxxxx.
+Este documento especifica os atributos relacionados ao desenvolvimento do projeto Histórico de Consulta dos Clientes. O sistema em questão será responsável por receber os dados enviados pelo arquivo .xlsm, processesa-los e dar ações para os usuários.
 ---
 
 ## Definições, Acrônimos e Abreviações
@@ -90,20 +85,20 @@ Este documento contém uma introdução sobre a Especificação Suplementar que 
 
 Essa seção apresenta os requisitos não funcionais do projeto em questão.
 
-### `<Processar dados>`
+### `Processar dados`
 
 O sistema deverá processar e padronizar os dados recebidos via arquivo .xlsm, onde esses dados serão inseridos no banco de dados.
 Após inserido no banco, o sistema permitirá a visualização dos dados e a alteração dos mesmos.
 
 ---
 
-### `<Dados>`
+### `Dados`
 
 O sistema deverá permitir visualizar os dados enviados via arquivo .xlsm.
 
 ---
 
-### `<Alertas>`
+### `Alertas`
 
 A aplicação terá alertas de quando uma ação foi concluída com sucesso, melhorando a usabilidade e acessibilidade do sistema.
 
@@ -127,19 +122,19 @@ O desempenho do sistema deve ser avaliado continuamente durante a fase de implem
 
 ---
 
-### `<Otimização do código>`
+### `Otimização do código`
 
 Buscar desenvolver um sistema com algoritmos eficientes e evitar operações desnecessárias.
 
 ---
 
-### `<Banco de dados>`
+### `Banco de dados`
 
 Buscar sempre consultas otimizadas.
 
 ---
 
-### `<Velocidade da internet>`
+### `Velocidade da internet`
 
 Considerar diferentes conexões e otimizar carregamento de recursos, como imagens e scripts.
 
@@ -189,4 +184,4 @@ LGPD (Lei Geral de Proteção de Dados - Brasil): Regula o tratamento de dados p
 
 # Confidencialidade
 
-© `<Londricostura>`, 2025
+© `Londricostura`, 2025

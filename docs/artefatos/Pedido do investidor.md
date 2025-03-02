@@ -1,12 +1,12 @@
-# <Londricostura>
+# Londricostura
 
-## <Histórico de Consulta dos Clientes>
+## Histórico de Consulta dos Clientes
 
-**Versão:** `<1.0>`
+**Versão:** `1.0`
 
 # Pedidos do Investidor
 
-**Data:** `<26/02/2025>`
+**Data:** `26/02/2025`
 
 <identificador do documento>
 
@@ -16,7 +16,7 @@
 
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|--------|
-| `<26/02/2025>` | `<1.0>` | `<Preenchimento inicial>` | `<Victor Cottar Marçal Silva>` |
+| `26/02/2025` | `1.0` | `Preenchimento inicial` | `Victor Cottar Marçal Silva` |
 
 ---
 
@@ -31,8 +31,7 @@
 2. [Estabelecer Perfil do Investidor ou do Usuário](#estabelecer-perfil-do-investidor-ou-do-usuário)  
 3. [Avaliando o Problema](#avaliando-o-problema)  
 4. [Entendendo o Ambiente do Usuário](#entendendo-o-ambiente-do-usuário)  
-5. [Recapitulação para Entendimento](#recapitulação-para-entendimento)  
-6. [Entradas do Analista no Problema do Investidor](#entradas-do-analista-no-problema-do-investidor-validar-ou-invalidar-premissas)  
+5. [Recapitulação para Entendimento](#recapitulação-para-entendimento)
 7. [Avaliando Sua Solução (se aplicável)](#avaliando-sua-solução-se-aplicável)  
 8. [Avaliando a Oportunidade](#avaliando-a-oportunidade)  
 9. [Avaliando a Confiabilidade, o Desempenho e as Necessidades de Suporte](#avaliando-a-confiabilidade-o-desempenho-e-as-necessidades-de-suporte)  
@@ -75,7 +74,6 @@ Não houve referências para criação do documento.
 ## Visão Geral
 
 O documento tem como objetivo explanar as especificações feitas pelo investidor referentes às operações que devem ser realizadas pelos usuários do sistema.
-
 
 ---
 
@@ -224,11 +222,12 @@ Sim.
 
 Os **três ou quatro problemas prioritários** identificados foram:
 
-1. `Dificuldade na leitura e alteração de dados da planilha.`  
-2. `Não geração de relatórios dos dados recebidos da planilha.`  
+1. `Dificuldade na leitura e alteração das planilhas.`  
+2. `Não geração de relatórios com os dados enviados pela planilha.`  
+3. `Não ter uma interface onde seja possível visualizar os dados da planilha.`
 
 ---
 
 # Confidencialidade
 
-© `<Londricostura>`, 2025
+© `Londricostura`, 2025
