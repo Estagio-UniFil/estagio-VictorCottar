@@ -1,12 +1,12 @@
-# <Nome da Empresa>
+# <Londricostura>
 
-## <Nome do Projeto>
+## <Histórico de Consulta dos Clientes>
 
 **Versão:** `<1.0>`
 
 # Especificação Complementar
 
-**Data:** `<dd/mmm/aa>`
+**Data:** `<26/02/2025>`
 
 <identificador do documento>
 
@@ -16,7 +16,7 @@
 
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|--------|
-| `<dd/mmm/aa>` | `<x.x>` | `<detalhes>` | `<nome>` |
+| `<26/02/2025>` | `<1.0` | `<Preenchimento inicial>` | `<Victor Cottar Marçal Silva>` |
 
 ---
 
@@ -55,152 +55,138 @@
 
 # Introdução
 
-*A Especificação Suplementar captura os requisitos do sistema que não são expressos nos casos de uso do modelo. Inclui requisitos legais, regulamentares, atributos de qualidade e restrições de design.*
+Essa seção tem por objetivo introduzir de uma maneira sucinta o escopo do documento.
 
 ---
 
 ## Objetivo
 
-[Especifique o objetivo desta Especificação Suplementar.]
-
+Este documento de Especificação Complementar tem como objetivo detalhar requisitos não funcionais, restrições, regras de negócio e outras informações adicionais que complementam a Especificação de Requisitos do Sistema.
 ---
 
 ## Escopo
 
-[Descreva o escopo desta Especificação Suplementar e os projetos afetados.]
-
+Este documento especifica os atributos relacionados ao desenvolvimento do projeto  do sistema xxxxxxxx. O sistema em questão será responsável por xxxxxxxxxxxxxxxx.
 ---
 
 ## Definições, Acrônimos e Abreviações
 
-[Inclua termos, siglas e definições relevantes. Pode remeter ao Glossário do projeto.]
-
+Pode ser visualizado no documento de Glossário.
 ---
 
 ## Referências
 
-[Inclua documentos relevantes com título, número do relatório, data e organização responsável.]
+Não foram utilizadas referências para a criação deste documento.
 
 ---
 
 ## Visão Geral
 
-[Explique como o documento está organizado.]
+Este documento contém uma introdução sobre a Especificação Suplementar que será apresentada. Após, descreve os requisitos funcionais, desempenho, suportabilidade, usabilidade, confiabilidade, 
 
 ---
 
 # Funcionalidade
 
-[Descreva os requisitos funcionais do sistema.]
+Essa seção apresenta os requisitos não funcionais do projeto em questão.
 
-### `<Requisito Funcional Um>`
+### `<Processar dados>`
 
-[A descrição do requisito.]
+O sistema deverá processar e padronizar os dados recebidos via arquivo .xlsm, onde esses dados serão inseridos no banco de dados.
+Após inserido no banco, o sistema permitirá a visualização dos dados e a alteração dos mesmos.
+
+---
+
+### `<Dados>`
+
+O sistema deverá permitir visualizar os dados enviados via arquivo .xlsm.
+
+---
+
+### `<Alertas>`
+
+A aplicação terá alertas de quando uma ação foi concluída com sucesso, melhorando a usabilidade e acessibilidade do sistema.
 
 ---
 
 # Utilidade
 
-[Inclua requisitos que afetam a experiência do usuário, como tempo de treinamento ou conformidade com padrões de interface.]
-
-### `<Requisito de Utilidade Um>`
-
-[A descrição do requisito.]
+Usuários necessitaram de um treinamento curto, para demonstração das telas e funcionalidades do sistema.
 
 ---
 
 # Confiabilidade
 
-[Defina requisitos como disponibilidade, tempo médio entre falhas (MTBF), tempo médio de reparo (MTTR) e taxa de erros.]
-
-### `<Requisito de Confiabilidade Um>`
-
-[A descrição do requisito.]
+O sistema deve estar disponível 24 horas por dia, 7 dias na semana, se o servidor local tiver acesso a internet e energia elétrica. O tempo máximo aceitável para recuperação após uma falha crítica não deverá ultrapassar 20 minutos. Logs de erros e eventos críticos serão registrados para análise e melhoria contínua da estabilidade do sistema.  
 
 ---
 
 # Desempenho
 
-[Inclua tempos de resposta, rendimento, capacidade, degradação e uso de recursos.]
+O desempenho do sistema deve ser avaliado continuamente durante a fase de implementação, garantindo eficiência no processamento dos dados e tempos de resposta adequados para as operações realizadas pelos usuários.
 
-### `<Requisito de Desempenho Um>`
+---
 
-[A descrição do requisito.]
+### `<Otimização do código>`
+
+Buscar desenvolver um sistema com algoritmos eficientes e evitar operações desnecessárias.
+
+---
+
+### `<Banco de dados>`
+
+Buscar sempre consultas otimizadas.
+
+---
+
+### `<Velocidade da internet>`
+
+Considerar diferentes conexões e otimizar carregamento de recursos, como imagens e scripts.
 
 ---
 
 # Suportabilidade
 
-[Inclua padrões de codificação, nomenclatura, ferramentas de manutenção e acessibilidade para suporte.]
-
-### `<Requisito de Suportabilidade Um>`
-
-[A descrição do requisito.]
-
----
-
-# Restrições de Design
-
-[Liste restrições obrigatórias como linguagens de programação, arquitetura e ferramentas.]
-
-### `<Restrição de Design Um>`
-
-[A descrição do requisito.]
+O usuário deverá ser capaz de acessar o sistema por meio do navegador web. O suporte ao sistema é vitalício e realizado no mesmo dia ou semana.
 
 ---
 
 # Documentação do Usuário On-line e Requisitos do Sistema de Ajuda
 
-[Defina requisitos para documentação online, sistemas de ajuda e suporte ao usuário.]
-
----
-
-# Componentes Comprados
-
-[Descreva componentes de terceiros, restrições de licença e compatibilidade.]
+Será disponibilizado um Manual para o Usuário, onde o mesmo terá explicações visuais sobre as telas e o funcionamento das mesmas.
 
 ---
 
 # Interfaces
 
-[Defina as interfaces exigidas pelo sistema.]
+Essa seção tem por objetivo descrever os três tipos de interface do sistema.
 
 ## Interfaces com o Usuário
 
-[Descreva as interfaces visuais e interações.]
+O sistema deve oferecer uma interface gráfica web intuitiva e responsiva, permitindo a interação eficiente do usuário final. Além disso, deverá proporcionar uma navegação clara, com elementos visuais bem organizados e feedback adequado para as ações realizadas pelo usuário.
 
 ## Interfaces de Hardware
 
-[Liste interfaces de hardware relevantes.]
+O sistema de hardware do cliente deve contar com uma tela para exibição do sistema, além de periféricos para navegação, entrada de texto e acesso à internet. O hardware do servidor deve ser capaz de fornecer o sistema, por meio de comunicação via internet.
 
 ## Interfaces de Software
 
-[Descreva conexões com outros sistemas.]
-
-## Interfaces de Comunicações
-
-[Inclua redes, protocolos e comunicação entre sistemas.]
-
----
-
-# Requisitos de Licença
-
-[Defina requisitos de licença e restrições de uso.]
+O sistema será desenvolvido com os Frameworks e Bibliotecas: NextJS, React, Tailwind e Shadcn, será alimentado pela API que vai ser desenvolvida com o Framework NestJS que é um framework para Node.js que facilita o desenvolvimento de aplicações escaláveis e eficientes do lado do servidor, utilizando o ORM TypeORM, o banco de dados que será utilizado é o PostgreSQL e a API será hospedada em conteineres do Docker.
 
 ---
 
 # Observações Legais, sobre Direitos Autorais e Outras Observações
 
-[Inclua isenções legais, patentes e conformidade.]
+Sistema desenvolvido para empresa Londricostura e o código não será aberto.
 
 ---
 
 # Padrões Aplicáveis
 
-[Liste padrões legais, regulatórios e de mercado.]
+LGPD (Lei Geral de Proteção de Dados - Brasil): Regula o tratamento de dados pessoais de usuários.
 
 ---
 
 # Confidencialidade
 
-© `<Nome da Empresa>`, 2006
+© `<Londricostura>`, 2025
