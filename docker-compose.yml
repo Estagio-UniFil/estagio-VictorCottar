@@ -1,0 +1,31 @@
+services:
+  db_londricostura:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root_londricostura
+      POSTGRES_DB: db_londricostura
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data 
+
+  api:
+    build:
+      context: ./backend-londricostura
+    restart: always
+    ports:
+      - "3003:3001"
+    environment:
+      DATABASE_HOST: db_londricostura
+      DATABASE_PORT: 5432
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root_londricostura
+      DATABASE_NAME: db_londricostura
+      JWT_SECRET: 5de0aee6549d77e281e231e41dc4534e52354ca3527a1b67233e2eacf5783068d8ee0fa13a3e8c9ba494b02f448b55ab7e2b9dbf0051806aa1e0f7e56835d9f5
+    depends_on:
+      - db_londricostura
+
+volumes:
+  postgres_data:
