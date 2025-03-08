@@ -1,8 +1,8 @@
 # Londricostura
 
-## Histórico de Consulta dos Clientes
+## Controle Gerencial Londricostura
 
-**Versão:** `1.0`
+**Versão:** `1.1`
 
 # Pedidos do Investidor
 
@@ -17,6 +17,7 @@
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|--------|
 | `26/02/2025` | `1.0` | `Preenchimento inicial` | `Victor Cottar Marçal Silva` |
+| `08/03/2025` | `1.1` | `Ajustes no documento` | `Victor Cottar Marçal Silva` |
 
 ---
 
@@ -55,7 +56,7 @@ Este documento tem como propósito identificar os requisitos e desafios enfrenta
 
 ## Escopo
 
-A criação de um sistema destinado a o Histórico de consulta de clientes.
+A criação de um sistema que modernize os processos da empresa, que hoje utiliza planilhas Excel, as quais, por vezes, são limitadas em suas funcionalidades.
 
 ---
 
@@ -96,15 +97,15 @@ O documento tem como objetivo explanar as especificações feitas pelo investido
 
 - Para quais problemas faltam boas soluções?
 
-A falta de um sistema com uma boa usabilidade, onde conseguimos visualizar e interagir os dados enviados pela planilha.
+A empresa enfrenta a falta de um sistema eficiente e intuitivo que modernize seus processos, oferecendo melhores funcionalidades para o gerenciamento de dados, relatórios e indicadores, superando as limitações das planilhas.
 
 - Como esses problemas são resolvidos atualmente?
 
-Fazemos a tratativa pela planilha mesmo, mas por não ser tão intuitivo acaba trazendo dificuldade para os colaboradores.
+Atualmente, os problemas são resolvidos por meio de planilhas Excel, mas elas não oferecem a usabilidade necessária, dificultando o trabalho dos colaboradores e aumentando as chances de erros.
 
 - Como você gostaria que fossem resolvidos?  
 
-Uma aplicação onde conseguiríamos visualizar de uma forma melhor, realizar alterações e fosse possível gerar relatórios com os dados enviados pela planilha seria uma boa solução.
+Com o objetivo de modernizar seus processos, a solução ideal seria um sistema que proporcione mais segurança aos dados, melhor visualização dos dados e acesso a indicadores e relatórios detalhados.
 
 ---
 
@@ -134,9 +135,14 @@ Um manual básico referenciando as telas e funcionalidades.
 
 Você mencionou os seguintes problemas:
 
-1. `Dificuldade na leitura e alteração das planilhas.`  
-2. `Não geração de relatórios com os dados enviados pela planilha.`  
-3. `Não ter uma interface onde seja possível visualizar os dados da planilha.`  
+1. `Falta de modernização na empresa.`
+2. `Processos feitos por planilhas, onde tem suas funcionalidades limitadas.`   
+3. `Ausência de um sistema que permite uma visualização aprimorada dos dados.`
+4. `Impossibilidade de imprimir relatórios diretamente no sistema.`
+5. `Falta de indicadores, como de clientes inativos, por exemplo.`
+6. `Não ter um sistema intuitivo, que permita realizar ações que hoje a empresa não possui.`
+7. `Não ter um sistema dependente da planilha, preciso de um sistema que faça as mesmas ações que a planilha faça, porém com a opção de ter ainda a planilha.`
+
 
 Isso representa corretamente suas dificuldades com a solução existente?
  Sim.
@@ -150,10 +156,10 @@ Não.
 
 E se você pudesse ter um sistema que...  
 
-1. `Permitisse uma melhor visualização dos dados enviados na planilha.`  
+1. `Permitisse uma melhor visualização dos dados enviados na planilha, mas sem depender dela para o funcionamento completo do sistema.`  
 2. `Permitisse a alteração dos dados enviados na planilha.`  
-3. `Um sistema fácil e intuitivo.`
-4. `Fosse possível a geração de relatórios, baseado nos dados enviados na planilha.`  
+3. `Fosse um sistema fácil e intuitivo, que funcione de forma independente das planilhas, mas com a opção de integrá-las quando necessário.`
+4. `Fosse possível a geração de relatórios, baseado nos dados do sistema.`  
 
 **Qual seria a importância desses recursos para você?**  
 
@@ -179,7 +185,7 @@ Que atenda e soluciona as dores citadas.
 - **Expectativas de confiabilidade?**
 Que o sistema funcione corretamente desde que o arquivo enviado seja conforme o esperado.  
 - **Expectativas de desempenho?**
-Consideravelmente rápido, ao realizar a leitura dos dados os mesmos sejam exibidos na interface.
+Consideravelmente rápido, ao realizar a leitura ou inserção dos dados os mesmos sejam exibidos na interface.
 
 - **Necessidades de suporte e manutenção?**  
 Sim, caso seja necessário.
@@ -222,9 +228,11 @@ Sim.
 
 Os **três ou quatro problemas prioritários** identificados foram:
 
-1. `Dificuldade na leitura e alteração das planilhas.`  
-2. `Não geração de relatórios com os dados enviados pela planilha.`  
-3. `Não ter uma interface onde seja possível visualizar os dados da planilha.`
+1. `Dificuldade na leitura e alteração das planilhas, e a dependência delas para processos essenciais.` 
+
+2. `Falta de geração de relatórios com os dados enviados pela planilha e a ausência de uma alternativa sem depender das planilhas.` 
+
+3. `Falta de indicadores, como de clientes inativos, por exemplo.`
 
 ---
 

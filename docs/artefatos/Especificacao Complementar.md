@@ -1,8 +1,8 @@
 # <Londricostura>
 
-## Histórico de Consulta dos Clientes
+## Controle Gerencial Londricostura
 
-**Versão:** `1.0`
+**Versão:** `1.1`
 
 # Especificação Complementar
 
@@ -17,6 +17,7 @@
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|--------|
 | `26/02/2025` | `1.0` | `Preenchimento inicial` | `Victor Cottar Marçal Silva` |
+| `08/03/2025` | `1.1` | `Ajustes no documento` | `Victor Cottar Marçal Silva` |
 
 ---
 
@@ -30,7 +31,11 @@
    1.5 [Visão Geral](#visão-geral)  
 2. [Funcionalidade](#funcionalidade)  
    2.1 [`Processar dados`](#Processar dados)
-   2.2 [`Dados`](#Dados)  
+   2.2 [`Dados`](#Dados)
+   2.3 [`Alertas`](#Alertas)
+   2.3 [`Indicadores`](#Indicadores) 
+   2.3 [`Relatórios`](#Relatórios) 
+   2.3 [`Visualização de dados do Marketplace`](#Alertas)  
 3. [Utilidade](#utilidade)  
    3.1 [`<Requisito de Utilidade Um>`](#requisito-de-utilidade-um)  
 4. [Confiabilidade](#confiabilidade)  
@@ -61,7 +66,8 @@ Este documento de Especificação Complementar tem como objetivo detalhar requis
 
 ## Escopo
 
-Este documento especifica os atributos relacionados ao desenvolvimento do projeto Histórico de Consulta dos Clientes. O sistema em questão será responsável por receber os dados enviados pelo arquivo .xlsm, processesa-los e dar ações para os usuários.
+Este documento especifica os atributos relacionados ao desenvolvimento do projeto Controle Gerencial Londricostura. O sistema em questão será responsável por modernizar os processos da empresa, que hoje utiliza planilhas Excel para realizar algumas ações.
+
 ---
 
 ## Definições, Acrônimos e Abreviações
@@ -87,20 +93,37 @@ Essa seção apresenta os requisitos não funcionais do projeto em questão.
 
 ### `Processar dados`
 
-O sistema deverá processar e padronizar os dados recebidos via arquivo .xlsm, onde esses dados serão inseridos no banco de dados.
-Após inserido no banco, o sistema permitirá a visualização dos dados e a alteração dos mesmos.
+O sistema deverá processar e padronizar os dados recebidos via arquivo .xlsm, onde esses dados serão inseridos no banco de dados. Além disso, o sistema permitirá a visualização e alteração dos dados inseridos. Caso o usuário não queira utilizar a planilha, ele também poderá inserir, visualizar e modificar os dados diretamente no sistema, sem a necessidade do arquivo .xlsm.
 
 ---
 
 ### `Dados`
 
-O sistema deverá permitir visualizar os dados enviados via arquivo .xlsm.
+O sistema deverá permitir visualizar os dados enviados via arquivo .xlsm. No entanto, caso o usuário opte por não utilizar a planilha, ele também poderá visualizar os dados diretamente no sistema, mantendo a flexibilidade de uso.
 
 ---
 
 ### `Alertas`
 
 A aplicação terá alertas de quando uma ação foi concluída com sucesso, melhorando a usabilidade e acessibilidade do sistema.
+
+---
+
+### `Indicadores`
+
+A aplicação terá indicadores que facilitará a tomada de decisão, realização de ações para recuperação de clientes etc.
+
+---
+
+### `Relatórios`
+
+A aplicação terá a funcionalidade de impressão de relatórios, permitindo que os usuários gerem e imprimam relatórios personalizados sobre os dados registrados no sistema. 
+
+---
+
+### `Visualização de dados de MarketPlace`
+
+A aplicação terá a funcionalidade de visualização de dados das vendas feitas pelo Marketplace.
 
 ---
 
@@ -124,19 +147,19 @@ O desempenho do sistema deve ser avaliado continuamente durante a fase de implem
 
 ### `Otimização do código`
 
-Buscar desenvolver um sistema com algoritmos eficientes e evitar operações desnecessárias.
+Desenvolver o sistema utilizando algoritmos eficientes, evitando a execução de operações redundantes ou desnecessárias, a fim de garantir uma performance ágil e otimizada.
 
 ---
 
 ### `Banco de dados`
 
-Buscar sempre consultas otimizadas.
+Priorizar consultas otimizadas e a estruturação adequada das tabelas, garantindo que o acesso e manipulação de dados sejam rápidos e eficazes, mesmo em cenários de alta carga.
 
 ---
 
 ### `Velocidade da internet`
 
-Considerar diferentes conexões e otimizar carregamento de recursos, como imagens e scripts.
+Considerar diferentes tipos de conexão à internet e otimizar o carregamento de recursos, como imagens, scripts e outros elementos, para garantir uma navegação fluida e responsiva, mesmo em conexões mais lentas.
 
 ---
 

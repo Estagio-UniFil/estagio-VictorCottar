@@ -1,60 +1,56 @@
-# <Project Name>
+# <Controle Gerencial Londricostura>
 
 ## Vision
 
-**Data:** `<dd/mmm/aa>`
+**Data:** `07/03/2025`
 
-## <Nome do Projeto>
+## <Controle Gerencial Londricostura>
 
 # Visão
-
-> **Nota de Uso:** Há uma orientação no procedimento dentro desse gabarito.
 
 ---
 
 ## Introdução
 
+Este documento tem como propósito reunir, analisar e estabelecer os requisitos e funcionalidades essenciais da aplicação. Ele se concentra nos recursos demandados pelos investidores e pelo público-alvo, além dos motivos para essas necessidades. A forma como o projeto atende a essas exigências é detalhada nas especificações de caso de uso e nos requisitos suplementares.
+
 ### Posicionamento
+
+O objetivo desta seção é esclarecer o posicionamento referente ao problema e posição do futuro, proporcionando um melhor entendimento do escopo do sistema projetado.
 
 #### Instrução do Problema
 
-Forneça uma instrução que resume o problema sendo resolvido por esse projeto. Pode ser utilizado o seguinte formato:
-
 - **O problema de**  
-  `[descreva o problema]`
+  Empresa utiliza planilhas do Excel para controlar o histórico de clientes e produtos. 
 
 - **Afeta**  
-  `[os interessados afetados pelo problema]`
+  Os colaboradores, pois a busca por dados em planilhas consome tempo e pode gerar falhas na comunicação. Além disso, a falta de indicadores e relatórios eficientes dificulta a tomada de decisão.
 
 - **O impacto do qual é**  
-  `[qual é o impacto do problema?]`
+  A produtividade e a competitividade da empresa são diretamente afetadas.
 
 - **Uma solução bem-sucedida seria**  
-  `[liste alguns dos principais benefícios de uma solução bem-sucedida]`
+  Com o objetivo de modernizar seus processos, a empresa adotará um sistema que oferecerá novas possibilidades, maior segurança, melhor visualização dos dados, além de indicadores e relatórios mais eficientes, superando as limitações das planilhas.
 
 #### Instrução sobre a Posição do Produto
 
-Forneça uma instrução geral que resuma, no nível mais alto, a posição exclusiva que o produto pretende ocupar no mercado. Pode ser utilizado o seguinte formato:
-
 - **Para**  
-  `[cliente alvo]`
+  Colaboradores da empresa Londricostura. 
 
 - **Que**  
-  `[instrução da necessidade ou da oportunidade]`
+  Manipulam e visualizam dados da planilha em Excel.
 
-- **O (nome do produto)**  
-  `é uma [categoria do produto]`
+- **O Controle Gerencial Londricostura**  
+  É um sistema web.
 
 - **Que**  
-  `[instrução do principal benefício; ou seja, a razão influente para compra]`
+  Moderniza os processos da empresa, proporcionando mais segurança, melhor visualização dos dados e acesso a indicadores e relatórios detalhados.
 
 - **A menos que**  
-  `[alternativa competitiva principal]`
+Uma empresa de software ofereça uma solução mais adequada às necessidades do negócio.
 
 - **Nosso produto**  
-  `[instrução da diferenciação principal]`
-
-> **Nota:** Uma instrução de posição do produto comunica o propósito do aplicativo e a importância do projeto à toda a equipe interessada.
+  Oferece uma interface intuitiva e moderna, garantindo para o usuário um ambiente para novas possibilidades para a empresa
 
 ---
 
@@ -64,13 +60,7 @@ Forneça uma instrução geral que resuma, no nível mais alto, a posição excl
 
 | Nome  | Descrição | Responsabilidades |
 |-------|-----------|------------------|
-| `[Nomeie o tipo de envolvido]` | `[Descreva resumidamente o envolvido]` | `[Resuma as responsabilidades principais do envolvido em relação ao sistema sendo desenvolvido]` |
-
-> Exemplo de responsabilidades:  
-> - Assegura que o sistema será passível de manutenção  
-> - Assegura que haverá uma demanda de mercado para os recursos do produto  
-> - Monitora o progresso do projeto  
-> - Aprova o financiamento  
+| `Colaborador` | `É responsável pela manuntenção dos dados de clientes e estoque.` | `Monitora o progresso do projeto .` |
 
 ---
 
@@ -78,87 +68,71 @@ Forneça uma instrução geral que resuma, no nível mais alto, a posição excl
 
 Detalhe o ambiente de trabalho do usuário alvo. Algumas sugestões:
 
-- Número de pessoas envolvidas na conclusão da tarefa? Isso está mudando?
-- Quanto tempo dura um ciclo de tarefas? Período de tempo gasto em cada atividade? Isso está mudando?
+- Número de pessoas envolvidas na conclusão da tarefa?
+
+Pelo menos uma pessoa deve garantir que o ambiente tenha acesso à internet e energia elétrica para o uso do sistema.
+
+- Quanto tempo dura um ciclo de tarefas? Período de tempo gasto em cada atividade?
+
+O sistema permitirá o upload dos dados das planilhas, processo que levará de 5 a 10 minutos. Além disso, o gerenciamento de clientes e estoque poderá ser realizado imediatamente após o login.
+
 - Há quaisquer restrições ambientais exclusivas: móveis, externas, inflight e assim por diante?
+
+O ambiente deve ter acesso à internet e energia elétrica.
+
 - Quais plataformas do sistema estão em uso atualmente? Futuras plataformas?
+
+Atualmente, são utilizadas planilhas do Excel.
+
 - Quais outros aplicativos estão em uso? O seu aplicativo precisa se integrar a eles?
 
-> Aqui poderiam ser incluídos extratos do **Modelo de Negócios** para descrever a tarefa e as funções envolvidas.
+O sistema permite a integração dos dados da planilha por meio do upload da mesma. No entanto, caso o usuário não queira realizar o upload, também poderá executar as ações que seriam possíveis com a planilha.
 
 ---
 
 ## Visão Geral do Produto
 
+Esta seção tem como objetivo encontrar uma melhor perspectiva sobre o produto, suas dependências, necessidades e recursos.
+
 ### Perspectiva do Produto
 
-Essa subseção do documento de Visão coloca o produto na perspectiva de outros produtos relacionados e no ambiente do usuário.
-
-Se o produto for independente e totalmente autônomo, indique-o aqui. Se o produto for um **componente de um sistema maior**, relacione como esses sistemas interagem e identifique as interfaces relevantes entre os sistemas.
-
-> Uma maneira fácil de exibir os principais componentes do sistema maior, as interconexões e as interfaces externas é com um **diagrama de bloco**.
+O produto tem como objetivo modernizar e aprimorar os processos da empresa, que atualmente utiliza planilhas do Excel. Com a adoção do novo sistema, a empresa terá acesso a novas possibilidades, incluindo uma visualização mais eficiente dos dados, maior segurança, além de indicadores e relatórios que as planilhas não conseguem oferecer.
 
 ### Premissas e Dependências
 
-Liste cada fator que afeta os recursos indicados no documento de Visão. Liste as premissas que, se modificadas, alterarão o documento.
+Caso seja pedido uma alteração em uma funcionalidade relacionada às análises, o documento de visão será alterado para a especificação desejada.
 
-Exemplo de premissa:  
-- Um sistema operacional específico estará disponível para o hardware designado para o produto de software.  
-- Se o sistema operacional não estiver disponível, o documento de Visão precisará ser alterado.
+Caso seja pedido alterações em regras de negócios, os documentos de visão e pedidos do investidor serão alterados conforme a requisição.
 
+Se o sistema operacional não estiver disponível, o documento de Visão precisará ser alterado.
 ---
 
 ## Necessidades e Recursos
 
-> **Evite o design.** Mantenha as descrições no nível geral. Concentre-se nos recursos necessários e no **porquê** (não em **como**) eles devem ser implementados.
+O desenvolvimento do sistema necessita de uma equipe que tenha conhecimento computacional avançado em lógica de programação com a Stack Nextjs, React, Tailwind, Shadcn, Nestjs, TypeORM. Além de boas práticas de programação e de desenvolvimento ágil para desenvolver o projeto.
+
+A equipe de implantação do sistema necessitará de uma pessoa com conhecimento básico computacional, para conseguir acessar o ambiente do sistema.
+
 
 | Necessidade | Prioridade | Recursos | Liberação Planejada |
 |------------|-----------|---------|-------------------|
-| `[Necessidade]` | `[Alta/Média/Baixa]` | `[Recurso necessário]` | `[Data estimada]` |
+| `Conexão com a internet.` | `Alta.` | `Conexão Wi-Fi ou cabo de rede.` | `Na liberação do sistema.` |
+|------------|-----------|---------|-------------------|
+| `Ambiente com energia elétrica.` | `Alta.` | `Ambiente possua acesso a energia elétrica.` | `Na liberação do sistema.` |
+|------------|-----------|---------|-------------------|
+| `Planilha Excel` | `Média` | `Caso o usuário deseje subir os dados da planilha, será necessário ter a mesma.` | `Na liberação do sistema.` ` |
 
 ---
 
 ## Alternativas e Competição
 
-Identifique as alternativas das percepções do interessado, conforme disponíveis.  
-Elas podem incluir:
-
-- Compra de um produto do concorrente
-- Compra de uma solução desenvolvida internamente
-- Manutenção do **status quo**
-
-Liste todas as opções competitivas conhecidas ou que possam surgir.  
-Inclua as principais **forças** e **fraquezas** de cada concorrente, conforme percebido pelo envolvido ou usuário final.
-
+Atualmente, não há concorrentes diretos identificados.
 ---
 
 ## Outros Requisitos do Produto
 
-> **Em um alto nível**, liste os padrões aplicáveis, requisitos de hardware ou plataforma, requisitos de desempenho e ambientais.
-
-Defina as **faixas de qualidade** para:
-
-- Desempenho
-- Robustez
-- Tolerância a falhas
-- Usabilidade
-- Características não capturadas no Conjunto de Recursos
-
-Anote quaisquer **restrições externas ou dependências**, como:
-
-- Restrições de design
-- Documentação necessária (manuais, ajuda online, instalação, etc.)
-- Embalagem e identificação
-
-Defina **prioridade** desses requisitos e atributos como:
-
-- **Estabilidade**
-- **Benefício**
-- **Esforço**
-- **Risco**
-
----
+Outros requisitos do produto estão presentes na documentação da Especificação Suplementar.
 
 ## Confidencial
 
-© `<Company Name>`, 2006
+© `Londricostura`, 2025

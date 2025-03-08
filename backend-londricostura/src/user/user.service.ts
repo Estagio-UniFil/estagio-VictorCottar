@@ -4,13 +4,39 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
+
+  async onModuleInit() {
+    await this.createAdminUser();
+  }
+
+  private async createAdminUser() {
+    const adminEmail = 'admin';
+    const existingAdmin = await this.findByEmail(adminEmail);
+    
+    if (!existingAdmin) {
+      const adminData = {
+        name: 'admin',
+        email: adminEmail,
+        password: 'admin',
+      };
+
+      const hashedPassword = await bcrypt.hash(adminData.password, 10);
+      const admin = this.userRepository.create({
+        ...adminData,
+        password: hashedPassword,
+      });
+
+      await this.userRepository.save(admin);
+    }
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
