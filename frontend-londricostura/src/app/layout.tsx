@@ -1,17 +1,11 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner"
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
-
-
-export const metadata: Metadata = {
-  title: "Londricostura - Home",
-  description: "Controle de Histórico de Clientes.",
-};
 
 export default function RootLayout({
   children,
@@ -24,6 +18,7 @@ export default function RootLayout({
         className={inter.className}
       >
         {children}
+        <Toaster position="top-right" richColors/>
       </body>
     </html>
   );

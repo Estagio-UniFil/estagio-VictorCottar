@@ -38,6 +38,26 @@ export class UserController {
     };
   }
 
+  @Put('/inactivate/:id')
+  @UseGuards(AuthGuard('jwt'))
+  async inactivatedUser(@Param('id') id: string) {
+    const inactivateUser = await this.userService.inactivatedUser(Number(+id));
+    return {
+      message: 'User successfully inactivated.',
+      data: inactivateUser,
+    };
+  }
+
+  @Put('/activate/:id')
+  @UseGuards(AuthGuard('jwt'))
+  async activedUser(@Param('id') id: string) {
+    const activeUser = await this.userService.activatedUser(Number(+id));
+    return {
+      message: 'User successfully activated.',
+      data: activeUser,
+    };
+  }
+
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

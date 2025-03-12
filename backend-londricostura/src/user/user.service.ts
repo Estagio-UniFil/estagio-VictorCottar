@@ -11,7 +11,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     await this.createAdminUser();
@@ -20,7 +20,7 @@ export class UserService {
   private async createAdminUser() {
     const adminEmail = 'admin';
     const existingAdmin = await this.findByEmail(adminEmail);
-    
+
     if (!existingAdmin) {
       const adminData = {
         name: 'admin',
@@ -39,7 +39,11 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.userRepository.create(createUserDto);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword
+    });
     return this.userRepository.save(user);
   }
 
@@ -55,6 +59,24 @@ export class UserService {
     return user;
   }
 
+  async inactivatedUser(id: number): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found.`);
+    }
+    user.active = false;
+    return this.userRepository.save(user);
+  }
+
+  async activatedUser(id: number): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found.`);
+    }
+    user.active = true;
+    return this.userRepository.save(user);
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { email } });
   }
@@ -64,7 +86,6 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found.`);
     }
-
     Object.assign(user, updateUserDto);
     return this.userRepository.save(user);
   }

@@ -26,6 +26,10 @@ export class AuthService {
       throw new UnauthorizedException('Email not found.');
     }
 
+    if (!user.active) {
+      throw new UnauthorizedException('User account is inactive.');
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Incorrect password.');

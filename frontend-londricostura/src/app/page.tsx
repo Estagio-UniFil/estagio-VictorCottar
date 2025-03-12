@@ -1,7 +1,13 @@
 import { LoginForm } from "@/components/login-form";
+import { Metadata } from "next";
 import Image from "next/image";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "Londricostura - Login",
+  description: "Controle de Histórico de Clientes.",
+};
+
+export default function Login() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <div className="flex items-center w-full max-w-sm flex-col gap-4 ">
@@ -9,8 +15,8 @@ export default function Home() {
           <Image
             src="/images/logo-londricostura.png"
             alt="Logo da Londricostura"
-            width={162}
-            height={162}
+            width={192}
+            height={192}
             priority
           />
         </span>

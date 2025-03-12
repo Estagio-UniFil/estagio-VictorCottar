@@ -14,9 +14,9 @@ export function RegisterForm() {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Crie sua conta!</CardTitle>
+          <CardTitle className="text-xl">Crie um usuário!</CardTitle>
           <CardDescription>
-            Crie sua conta para acessar o dashboard.
+            Crie o acesso para um novo usuário.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -50,12 +50,6 @@ export function RegisterForm() {
                 <Button type="submit" className="w-full">
                   Criar
                 </Button>
-              </div>
-              <div className="text-center text-sm">
-                Já tem uma conta? faça o {" "}
-                <a href="/" className="underline underline-offset-4">
-                  Login
-                </a>
               </div>
             </div>
           </form>
