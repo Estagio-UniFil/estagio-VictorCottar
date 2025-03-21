@@ -23,4 +23,8 @@ export class CreateUserDto {
   @IsBoolean()
   @IsOptional()
   active?: boolean; 
+
+  @IsBoolean()
+  @IsOptional()
+  admin?: boolean;
 }

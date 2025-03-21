@@ -22,8 +22,8 @@ import { User } from './user/entities/user.entity';
         database: configService.get<string>('DATABASE_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true, // remover quando for subir para prod
-        connectTimeoutMS: 10000, // Adicione timeout maior
-        retryDelay: 3000,        // Tempo entre tentativas
+        connectTimeoutMS: 10000,
+        retryDelay: 3000,
         retryAttempts: 5,   
       }),
     }),

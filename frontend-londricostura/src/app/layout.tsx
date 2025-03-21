@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
+import { LayoutWrapper } from "@/components/layout-wrapper";
 import "./globals.css";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -9,16 +11,18 @@ const inter = Inter({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={inter.className}
-      >
-        {children}
-        <Toaster position="top-right" richColors/>
+      <body className={inter.className}>
+        <SidebarProvider>
+          <main className="w-full">
+            <LayoutWrapper>{children}</LayoutWrapper>
+            <Toaster position="top-right" richColors />
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );

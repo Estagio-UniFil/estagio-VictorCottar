@@ -17,6 +17,9 @@ export class UserService {
     await this.createAdminUser();
   }
 
+  /**
+   * Criação do usuário admin caso não exista
+   */
   private async createAdminUser() {
     const adminEmail = 'admin';
     const existingAdmin = await this.findByEmail(adminEmail);
@@ -26,6 +29,7 @@ export class UserService {
         name: 'admin',
         email: adminEmail,
         password: 'admin',
+        admin: true,
       };
 
       const hashedPassword = await bcrypt.hash(adminData.password, 10);
@@ -74,6 +78,24 @@ export class UserService {
       throw new NotFoundException(`User with id ${id} not found.`);
     }
     user.active = true;
+    return this.userRepository.save(user);
+  }
+
+  async promoteAdmin(id: number): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found.`);
+    }
+    user.admin = true;
+    return this.userRepository.save(user);
+  }
+
+  async demoteAdmin(id: number): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found.`);
+    }
+    user.admin = false;
     return this.userRepository.save(user);
   }
 

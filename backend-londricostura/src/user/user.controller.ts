@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, Request } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -55,6 +55,26 @@ export class UserController {
     return {
       message: 'User successfully activated.',
       data: activeUser,
+    };
+  }
+
+  @Put('/promote/:id')
+  @UseGuards(AuthGuard('jwt'))
+  async promoteAdmin(@Param('id') id: string) {
+    const promoteAdmin = await this.userService.promoteAdmin(Number(+id));
+    return {
+      message: 'User successfully promoted to admin.',
+      data: promoteAdmin,
+    };
+  }
+
+  @Put('/demote/:id')
+  @UseGuards(AuthGuard('jwt'))
+  async demoteAdmin(@Param('id') id: string) {
+    const demoteAdmin = await this.userService.demoteAdmin(Number(+id));
+    return {
+      message: 'User successfully removed from admin.',
+      data: demoteAdmin,
     };
   }
 

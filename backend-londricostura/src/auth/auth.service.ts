@@ -16,8 +16,7 @@ export class AuthService {
       throw new UnauthorizedException('Email already in use.');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return this.userService.create({ name, email, password: hashedPassword });
+    return this.userService.create({ name, email, password });
   }
 
   async validateCredentials(email: string, password: string) {
