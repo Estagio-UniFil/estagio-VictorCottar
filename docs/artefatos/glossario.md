@@ -162,21 +162,25 @@ Biblioteca JavaScript para construção de interfaces de usuário interativas e 
 Conjunto de componentes UI modernos e personalizáveis, muitas vezes integrados com Tailwind CSS, para construir interfaces consistentes e acessíveis.
 
 ---
+
 ## `Sistema operacional`
 
 Software que gerencia os recursos do hardware, facilitando a execução de aplicações e a interação com o usuário.
 
 ---
+
 ## `Tailwind`
 
 Framework CSS utilitário que permite a construção rápida de interfaces customizadas através de classes pré-definidas, sem sair do HTML.
 
 ---
+
 ## `TypeORM`
 
 Biblioteca ORM (Object-Relational Mapping) para Node.js, que facilita a interação com bancos de dados utilizando TypeScript ou JavaScript.
 
 ---
+
 ## `Visual Studio Code`
 
 Editor de código-fonte leve e extensível, que oferece suporte para múltiplas linguagens e integrações para facilitar o desenvolvimento.
