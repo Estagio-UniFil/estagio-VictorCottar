@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { LayoutWrapper } from "@/components/layout-wrapper";
-import "./globals.css";
+import "@/app/globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 const inter = Inter({

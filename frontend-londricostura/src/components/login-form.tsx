@@ -89,7 +89,7 @@ export function LoginForm() {
                     </Button>
                   </div>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 cursor-pointer">
                   Entrar
                 </Button>
               </div>
