@@ -108,6 +108,15 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found.`);
     }
+
+    // Se a senha for fornecida e não estiver vazia, faz o hash
+    if (updateUserDto.password && updateUserDto.password !== '') {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    } else if (updateUserDto.password === '') {
+      // Remove o campo password se estiver vazio
+      delete updateUserDto.password;
+    }
+
     Object.assign(user, updateUserDto);
     return this.userRepository.save(user);
   }

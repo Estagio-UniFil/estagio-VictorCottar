@@ -1,30 +1,31 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { User } from "../_interfaces/user"
+import { User } from "@/interfaces/user";
 import { DataTable } from "@/components/datatable"
-import { Pencil, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import DialogRemoveUser from "@/components/dialogs-user/dialog-remove-user"
+import DialogEditUser from "@/components/dialogs-user/dialog-edit-user"
+import DialogPromoteUser from "@/components/dialogs-user/dialog-promote-user";
 
 export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "id",
-    header: () => <div className="text-center">ID</div>, 
+    header: () => <div className="text-center">ID</div>,
     cell: ({ row }) => <div className="text-center">{row.getValue("id")}</div>
   },
   {
     accessorKey: "name",
-    header: () => <div className="text-center">Nome</div>, 
+    header: () => <div className="text-center">Nome</div>,
     cell: ({ row }) => <div className="text-center">{row.getValue("name")}</div>
   },
   {
     accessorKey: "email",
-    header: () => <div className="text-center">Email</div>, 
+    header: () => <div className="text-center">Email</div>,
     cell: ({ row }) => <div className="text-center">{row.getValue("email")}</div>
   },
   {
     accessorKey: "admin",
-    header: () => <div className="text-center">Admin</div>, 
+    header: () => <div className="text-center">Admin</div>,
     cell: ({ row }) => {
       const isAdmin = row.getValue("admin")
       return <div className="text-center">{isAdmin ? "Sim" : "Não"}</div>
@@ -32,42 +33,28 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "active",
-    header: () => <div className="ml-22">Ativo</div>, 
+    header: () => <div className="text-center ">Ativo</div>,
     cell: ({ row }) => {
       const isActive = row.getValue("active")
       return (
-        <div className="flex items-center justify-around gap-2">
-          <div>{isActive ? "Sim" : "Não"}</div>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              className="p-2 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200 cursor-pointer"
-              onClick={() => handleEdit(row.getValue("id"))}
-            >
-              <Pencil />
-            </Button>
-            <Button
-              variant="ghost"
-              className="p-2 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200 cursor-pointer"
-              onClick={() => handleDelete(row.getValue("id"))}
-            >
-              <Trash2  />
-            </Button>
-          </div>
+        <div className="text-center">{isActive ? "Sim" : "Não"}</div>
+      )
+    }
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const user = row.original;
+      return (
+        <div className="flex items-center justify-evenly space-x-[-15px]">
+          <DialogPromoteUser user={user} />
+          <DialogEditUser user={user} />
+          <DialogRemoveUser user={user} />
         </div>
       )
     }
   }
 ]
-
-// Funções placeholder para as ações
-const handleEdit = (id: string | number) => {
-  console.log(`Editando usuário ${id}`)
-}
-
-const handleDelete = (id: string | number) => {
-  console.log(`Excluindo usuário ${id}`)
-}
 
 interface Props {
   users: User[];

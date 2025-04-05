@@ -14,9 +14,9 @@
 
 ## Histórico da Revisão
 
-| Data | Versão | Descrição | Autor |
-|------|--------|-----------|--------|
-| `24/03/2025` | `1.0` | `Preenchimento inicial` | `Victor Cottar Marçal Silva` |
+| Data         | Versão | Descrição               | Autor                        |
+| ------------ | ------ | ----------------------- | ---------------------------- |
+| `24/03/2025` | `1.0`  | `Preenchimento inicial` | `Victor Cottar Marçal Silva` |
 
 ---
 
@@ -26,7 +26,7 @@
    1.1 [Objetivo](#objetivo)  
    1.2 [Escopo](#escopo)  
    1.3 [Referências](#referências)  
-   1.4 [Visão Geral](#visão-geral)  
+   1.4 [Visão Geral](#visão-geral)
 2. [Termos Técnicos](#termos-técnicos)  
    2.1 [`API`](#api)  
    2.2 [`Backend`](#backend)  
@@ -45,7 +45,7 @@
    2.15 [`Sistema operacional`](#sistema-operacional)  
    2.16 [`Tailwind`](#tailwind)  
    2.17 [`TypeORM`](#typeorm)  
-   2.18 [`Visual Studio Code`](#visual-studio-code)  
+   2.18 [`Visual Studio Code`](#visual-studio-code)
 3. [Estereótipos UML](#estereótipos-uml)
 
 ---
@@ -73,14 +73,18 @@ Este glossário está inicialmente associado aos documentos: documento de visão
 BOOCH, Grady; RUMBAUGH, James; JACOBSON, Ivar. UML, guia do usuário. 2. ed. Rio de
 Janeiro: Elsevier, c2006. 474 p.
 
+FLOCCO, Rafael. Desenvolvimento Web com React e Next.js. São Paulo: Novatec Editora, 2021.
+
+RICHARDSON, L.; AMUNDSEN, M. RESTful Web APIs: Services for a Changing World. O'Reilly Media, 2013.
+
 ---
 
 ## Visão Geral
 
-Este glossário contém as definições dos termos, acrônimos e abreviações referenciados e utilizados nos diversos documentos do projeto do software do sistema proposto.
----
+## Este glossário contém as definições dos termos, acrônimos e abreviações referenciados e utilizados nos diversos documentos do projeto do software do sistema proposto.
 
 # Termos Técnicos
+
 ---
 
 ## `API`
@@ -105,19 +109,19 @@ Plataforma que permite criar, implantar e executar aplicativos em contêineres, 
 
 Interface do usuário e camada de apresentação de um sistema, onde ocorrem interações diretas com o usuário, geralmente em navegadores web.
 
-----
+---
 
 ## `Git`
 
 Sistema de controle de versão distribuído que permite rastrear alterações em arquivos e colaborar de forma eficiente no desenvolvimento de software.
 
-----
+---
 
 ## `Github`
 
 Plataforma para hospedagem e gerenciamento de código-fonte, que utiliza o sistema Git para controle de versões e facilita a colaboração entre desenvolvedores.
 
-----
+---
 
 ## `Hardware`
 
@@ -131,11 +135,11 @@ Framework Node.js progressivo e modular para construção de aplicações escal�
 
 ## `NextJS`
 
- Framework React que facilita o desenvolvimento de aplicações com renderização do lado do servidor, geração de páginas estáticas e funcionalidades de SEO.
+Framework React que facilita o desenvolvimento de aplicações com renderização do lado do servidor, geração de páginas estáticas e funcionalidades de SEO.
 
 ## `Nodejs`
 
- Ambiente de execução para JavaScript no lado do servidor, permitindo a criação de aplicações escaláveis e de alta performance.
+Ambiente de execução para JavaScript no lado do servidor, permitindo a criação de aplicações escaláveis e de alta performance.
 
 ---
 

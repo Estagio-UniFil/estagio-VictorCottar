@@ -13,6 +13,7 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 const mainItems = [
   {
@@ -77,10 +78,10 @@ export function AppSidebar() {
                     asChild
                     className="flex items-center px-5 py-5 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
                   >
-                    <a href={item.url} className="flex items-center gap-3">
+                    <Link href={item.url} className="flex items-center gap-3">
                       <item.icon className="!w-6 !h-6" />
                       <span className="text-lg font-medium">{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -102,10 +103,10 @@ export function AppSidebar() {
                       : "hover:bg-blue-100 hover:text-blue-700"
                       }`}
                   >
-                    <a href={item.url} className="flex items-center gap-3">
+                    <Link href={item.url} className="flex items-center gap-3">
                       <item.icon className="!w-6 !h-6" />
                       <span className="text-lg font-medium">{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

@@ -28,7 +28,8 @@ export function LoginForm() {
     try {
       const data = await authService.login(email, password);
       localStorage.setItem("access_token", data.access_token);
-      router.push("/Home");
+      console.log("Login successful:", data);
+      router.push("/Vendas");
     } catch (error: any) {
       if (error.message === 'User account is inactive.') {
         toast.error('Sua conta está inativa. Por favor, ative-a para realizar o login.');

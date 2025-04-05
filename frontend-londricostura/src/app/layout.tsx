@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { LayoutWrapper } from "@/components/layout-wrapper";
 import "@/app/globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import AuthCheck from "@/components/auth-check";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,12 +18,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SidebarProvider>
-          <main className="w-full">
-            <LayoutWrapper>{children}</LayoutWrapper>
-            <Toaster position="top-right" richColors />
-          </main>
-        </SidebarProvider>
+        <AuthCheck>
+          <SidebarProvider>
+            <main className="w-full">
+              <LayoutWrapper>{children}</LayoutWrapper>
+              <Toaster position="top-right" richColors />
+            </main>
+          </SidebarProvider>
+        </AuthCheck>
       </body>
     </html>
   );

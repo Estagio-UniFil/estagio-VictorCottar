@@ -8,10 +8,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <AuthCheck>
-      <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-        <h1>página home</h1>
-      </div>
-    </AuthCheck>
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+      <h1>página home</h1>
+    </div>
+
   );
 }

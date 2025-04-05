@@ -2,10 +2,10 @@ import { LoginForm } from "@/components/login-form";
 import { Metadata } from "next";
 import Image from "next/image";
 
-export const metadata: Metadata = {
+/*export const metadata: Metadata = {
   title: "Londricostura - Login",
   description: "Controle de Histórico de Clientes.",
-};
+};*/
 
 export default function Login() {
   return (

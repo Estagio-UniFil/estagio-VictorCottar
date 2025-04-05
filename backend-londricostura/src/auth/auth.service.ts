@@ -8,7 +8,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(name: string, email: string, password: string) {
     const existingUser = await this.userService.findByEmail(email);
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   async generateToken(user: any) {
-    const payload = { email: user.email };
+    const payload = { email: user.email, admin: user.admin };
     return { access_token: this.jwtService.sign(payload) };
   }
 }
