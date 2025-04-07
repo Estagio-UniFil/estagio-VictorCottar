@@ -27,16 +27,22 @@ import { User } from "@/interfaces/user";
 import { createUser } from "@/services/userService"
 import { DialogClose } from "@radix-ui/react-dialog"
 
-export default function DialogAddUser() {
+interface DialogAddUserProps {
+  onUserAdded: () => void;
+}
+
+export default function DialogAddUser({ onUserAdded }: DialogAddUserProps) {
   const [user, setUser] = useState<User>({
     name: '',
     email: '',
     password: '',
     admin: false,
   });
+
   const handleAddUser = async () => {
     try {
       await createUser(user);
+      onUserAdded();
       toast.success("Usuário criado com sucesso!");
     } catch (error) {
       toast.error("Erro ao criar usuário.");

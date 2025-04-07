@@ -7,7 +7,7 @@ import DialogRemoveUser from "@/components/dialogs-user/dialog-remove-user"
 import DialogEditUser from "@/components/dialogs-user/dialog-edit-user"
 import DialogPromoteUser from "@/components/dialogs-user/dialog-promote-user";
 
-export const columns: ColumnDef<User>[] = [
+export const columns = (onUserChanged: () => void): ColumnDef<User>[] => [
   {
     accessorKey: "id",
     header: () => <div className="text-center">ID</div>,
@@ -47,21 +47,22 @@ export const columns: ColumnDef<User>[] = [
       const user = row.original;
       return (
         <div className="flex items-center justify-evenly space-x-[-15px]">
-          <DialogPromoteUser user={user} />
-          <DialogEditUser user={user} />
-          <DialogRemoveUser user={user} />
+          <DialogPromoteUser user={user} onUserChanged={onUserChanged} />
+          <DialogEditUser user={user} onUserChanged={onUserChanged} />
+          <DialogRemoveUser user={user} onUserChanged={onUserChanged} />
         </div>
       )
     }
   }
-]
+];
 
 interface Props {
   users: User[];
+  onUserChanged: () => void;
 }
 
-export default function UsersDataTable({ users }: Props) {
+export default function UsersDataTable({ users, onUserChanged }: Props) {
   return (
-    <DataTable columns={columns} data={users} />
+    <DataTable columns={columns(onUserChanged)} data={users} />
   )
 }

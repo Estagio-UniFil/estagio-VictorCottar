@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import AuthCheck from '@/components/auth-check';
 
 export const metadata: Metadata = {
   title: "Londricostura - Home",

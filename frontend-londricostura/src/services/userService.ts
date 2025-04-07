@@ -102,3 +102,18 @@ export async function promoteUser(id: number): Promise<void> {
     console.error("Erro ao promover usuário:", error);
   }
 }
+export async function demoteUser(id: number): Promise<void> {
+  try {
+    const response = await fetch(`${API_URL}/users/demote/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      console.error("Erro ao tirar o direito do usuário:", response.statusText);
+    }
+
+  } catch (error) {
+    console.error("Erro ao tirar o direito do usuário:", error);
+  }
+}

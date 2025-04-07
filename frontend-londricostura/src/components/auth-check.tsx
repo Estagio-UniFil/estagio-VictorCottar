@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import Login from '@/app/Login/page';
 
 // ReactNode é o tipo correto para elementos filhos no React
 interface AuthCheckProps {

@@ -28,9 +28,10 @@ import { useState } from "react";
 
 interface DialogEditUserProps {
   user: User;
+  onUserChanged: () => void;
 }
 
-export default function DialogEditUser({ user }: DialogEditUserProps) {
+export default function DialogEditUser({ user, onUserChanged }: DialogEditUserProps) {
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
@@ -47,17 +48,23 @@ export default function DialogEditUser({ user }: DialogEditUserProps) {
 
   const handleEditUser = async () => {
     try {
+      if (user.id === 1) {
+        toast.error("Não é possível editar o usuário padrão.");
+        return;
+      }
       const updatedData = { ...formData };
-  
+
       // Criar um novo objeto sem o campo 'password' caso ele esteja vazio
       const filteredData = updatedData.password
         ? updatedData
         : Object.fromEntries(
-            Object.entries(updatedData).filter(([key]) => key !== "password")
-          );
-  
+          Object.entries(updatedData).filter(([key]) => key !== "password")
+        );
+
       await updateUser({ ...user, ...filteredData });
-  
+      // Chamar o callback para atualizar a lista
+      onUserChanged();
+      
       toast.success("Usuário editado com sucesso!");
     } catch (error) {
       toast.error("Erro ao editar usuário.");

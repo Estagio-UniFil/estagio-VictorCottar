@@ -15,13 +15,15 @@ import { toast } from "sonner";
 
 interface DialogRemoveUserProps {
   user: User;
+  onUserChanged: () => void;
 }
 
-export default function DialogRemoveUser({ user }: DialogRemoveUserProps) {
+export default function DialogRemoveUser({ user, onUserChanged }: DialogRemoveUserProps) {
   const handleRemoveUser = async () => {
     if (user.id != undefined) {
       try {
         await removeUser(user.id);
+        onUserChanged();
         toast.success("Usuário removido com sucesso!");
       } catch (error) {
         toast.error("Erro ao remover usuário.");
@@ -34,6 +36,7 @@ export default function DialogRemoveUser({ user }: DialogRemoveUserProps) {
     if (user.id != undefined) {
       try {
         await inactivateUser(user.id);
+        onUserChanged();
         toast.success("Usuário inativado com sucesso!");
       } catch (error) {
         toast.error("Erro ao inativar usuário.");
