@@ -6,6 +6,7 @@ import UsersDataTable from "@/components/datatable-user/_components/users-datata
 import { fetchUsers } from "@/services/userService";
 import { User } from "@/interfaces/user";
 import DialogAddUser from "@/components/dialogs-user/dialog-add-user";
+import AvatarOperator from "@/components/avatar";
 
 export default function Usuarios() {
   const [users, setUsers] = useState<User[]>([]);

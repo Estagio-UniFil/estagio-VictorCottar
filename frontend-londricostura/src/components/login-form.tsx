@@ -28,13 +28,13 @@ export function LoginForm() {
     try {
       const data = await authService.login(email, password);
       localStorage.setItem("access_token", data.access_token);
-      console.log("Login successful:", data);
+      localStorage.setItem("userName", data.userName);
       router.push("/Vendas");
     } catch (error: any) {
       if (error.message === 'User account is inactive.') {
         toast.error('Sua conta está inativa. Por favor, ative-a para realizar o login.');
       } else {
-        toast.error('Usuário ou senha incorretos. Por favor, tente novamente.');
+        toast.error('Usuário ou senha incorretos. Por favor, tente novamente.' + error.message);
       }
     }
   };

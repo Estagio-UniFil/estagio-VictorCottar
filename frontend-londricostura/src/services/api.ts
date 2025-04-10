@@ -4,7 +4,7 @@ export const authService = {
   async login(email: string, password: string) {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify({ email, password }),
     });
 
@@ -19,7 +19,7 @@ export const authService = {
   async register(name: string, email: string, password: string) {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify({ name, email, password }),
     });
     return response.json();
