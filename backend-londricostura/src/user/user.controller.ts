@@ -13,7 +13,7 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
     return {
-      message: 'User successfully created.',
+      message: 'Usuário criado com sucesso.',
       data: user,
     };
   }
@@ -23,7 +23,7 @@ export class UserController {
   async findAll() {
     const users = await this.userService.findAll();
     return {
-      message: 'Users retrieved successfully.',
+      message: 'Usuários encontrados com sucesso.',
       data: users,
     };
   }
@@ -33,7 +33,7 @@ export class UserController {
   async findOne(@Param('id') id: string) {
     const user = await this.userService.findOne(+id);
     return {
-      message: 'User retrieved successfully.',
+      message: 'Usuário encontrado com sucesso.',
       data: user,
     };
   }
@@ -43,7 +43,7 @@ export class UserController {
   async inactivatedUser(@Param('id') id: string) {
     const inactivateUser = await this.userService.inactivatedUser(Number(+id));
     return {
-      message: 'User successfully inactivated.',
+      message: 'Usuário inativado com sucesso.',
       data: inactivateUser,
     };
   }
@@ -53,7 +53,7 @@ export class UserController {
   async activedUser(@Param('id') id: string) {
     const activeUser = await this.userService.activatedUser(Number(+id));
     return {
-      message: 'User successfully activated.',
+      message: 'Usuário ativado com sucesso.',
       data: activeUser,
     };
   }
@@ -63,7 +63,7 @@ export class UserController {
   async promoteAdmin(@Param('id') id: string) {
     const promoteAdmin = await this.userService.promoteAdmin(Number(+id));
     return {
-      message: 'User successfully promoted to admin.',
+      message: 'Usuário promovido com sucesso para administrador.',
       data: promoteAdmin,
     };
   }
@@ -73,7 +73,7 @@ export class UserController {
   async demoteAdmin(@Param('id') id: string) {
     const demoteAdmin = await this.userService.demoteAdmin(Number(+id));
     return {
-      message: 'User successfully removed from admin.',
+      message: 'Usuário removido com sucesso de administrador.',
       data: demoteAdmin,
     };
   }
@@ -83,7 +83,7 @@ export class UserController {
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const updatedUser = await this.userService.update(+id, updateUserDto);
     return {
-      message: 'User successfully updated.',
+      message: 'Usuário atualizado com sucesso.',
       data: updatedUser,
     };
   }
@@ -93,7 +93,7 @@ export class UserController {
   async remove(@Param('id') id: string) {
     await this.userService.remove(+id);
     return {
-      message: 'User successfully removed.',
+      message: 'Usuário removido com sucesso.',
     };
   }
 }

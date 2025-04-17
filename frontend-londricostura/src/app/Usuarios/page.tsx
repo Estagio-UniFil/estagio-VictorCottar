@@ -6,28 +6,31 @@ import UsersDataTable from "@/components/datatable-user/_components/users-datata
 import { fetchUsers } from "@/services/userService";
 import { User } from "@/interfaces/user";
 import DialogAddUser from "@/components/dialogs-user/dialog-add-user";
-import AvatarOperator from "@/components/avatar";
 
 export default function Usuarios() {
   const [users, setUsers] = useState<User[]>([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Função para forçar atualização da lista
+  const isAdmin = localStorage.getItem('userAdmin') === 'true';
+
   const refreshUsers = () => {
     setRefreshTrigger(prev => prev + 1);
   };
 
-  // Busca usuários sempre que refreshTrigger mudar
   useEffect(() => {
-    console.log('Chamando o serviço para buscar os usuários');
     fetchUsers().then((data) => setUsers(data));
   }, [refreshTrigger]);
 
-  return (
+  return isAdmin ? (
     <>
       <HeaderPage pageName='Usuários' />
       <DialogAddUser onUserAdded={refreshUsers} />
       <UsersDataTable users={users} onUserChanged={refreshUsers} />
     </>
+  ) : (
+    <div className="fixed inset-0 flex flex-col items-center justify-center">
+      <h1 className="text-3xl ml-60 text-neutral-400">Usuário não autorizado!</h1>
+      <h1 className="text-3xl ml-60 text-neutral-400">Necessário estar logado com um usuário administrador.</h1>
+    </div>
   );
 }

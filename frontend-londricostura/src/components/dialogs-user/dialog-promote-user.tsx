@@ -12,6 +12,7 @@ import {
 import { User } from "@/interfaces/user";
 import { toast } from "sonner";
 import { promoteUser, demoteUser } from "@/services/userService";
+import { blockAdminUser } from "@/utils/blockAdminUser";
 
 interface DialogPromoteUserProps {
   user: User;
@@ -25,13 +26,11 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
       return;
     }
 
-    if (user.id === 1) {
-      toast.error("Não é possível alterar o usuário padrão.");
-      return;
-    }
-
     if (user.id != undefined) {
       try {
+        if (blockAdminUser(user.id, "editar")) {
+          return;
+        }
         await promoteUser(user.id);
         onUserChanged();
         toast.success("Usuário alterado para administrador com sucesso!");
@@ -48,13 +47,11 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
       return;
     }
 
-    if (user.id === 1) {
-      toast.error("Não é possível editar o usuário padrão.");
-      return;
-    }
-
     if (user.id != undefined) {
       try {
+        if (blockAdminUser(user.id, "editar")) {
+          return;
+        }
         await demoteUser(user.id);
         onUserChanged();
         toast.success("Usuário removido como administrador com sucesso!");

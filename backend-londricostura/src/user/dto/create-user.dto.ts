@@ -8,16 +8,16 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsNotEmpty({ message: 'Name is required.' })
+  @IsNotEmpty({ message: 'Nome é obrigatório.' })
   @IsString()
   name: string;
 
-  @IsNotEmpty()
-  @IsEmail({}, { message: 'Invalid email.' })
+  @IsNotEmpty({ message: 'Email é obrigatório.' })
+  @IsEmail({}, { message: 'Email inválido.' })
   email: string;
 
   @IsNotEmpty()
-  @MinLength(4, { message: 'Password must be at least 4 characters long.' })
+  @MinLength(4, { message: 'Senha deve ter pelo menos 4 caracteres.' })
   password: string;
 
   @IsBoolean()

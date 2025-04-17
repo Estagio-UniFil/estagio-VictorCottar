@@ -12,6 +12,7 @@ import {
 import { User } from "@/interfaces/user";
 import { removeUser, inactivateUser } from "@/services/userService";
 import { toast } from "sonner";
+import { blockAdminUser } from "@/utils/blockAdminUser";
 
 interface DialogRemoveUserProps {
   user: User;
@@ -21,26 +22,32 @@ interface DialogRemoveUserProps {
 export default function DialogRemoveUser({ user, onUserChanged }: DialogRemoveUserProps) {
   const handleRemoveUser = async () => {
     if (user.id != undefined) {
+      if (blockAdminUser(user.id, "remover")) {
+        return;
+      }
       try {
         await removeUser(user.id);
         onUserChanged();
         toast.success("Usuário removido com sucesso!");
-      } catch (error) {
-        toast.error("Erro ao remover usuário.");
-        console.log(error);
+      } catch (error: any) {
+        toast.error(error.message || "Erro ao remover usuário.");
+        console.error("Erro ao remover usuário:", error);
       }
     }
   }
 
   const handleInactivateUser = async () => {
     if (user.id != undefined) {
+      if (blockAdminUser(user.id, "inativar")) {
+        return;
+      }
       try {
         await inactivateUser(user.id);
         onUserChanged();
         toast.success("Usuário inativado com sucesso!");
-      } catch (error) {
-        toast.error("Erro ao inativar usuário.");
-        console.log(error);
+      } catch (error: any) {
+        toast.error(error.message || "Erro ao inativar usuário.");
+        console.error("Erro ao inativar usuário:", error);
       }
     }
   }

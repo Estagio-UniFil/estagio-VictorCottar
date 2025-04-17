@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input"
 import { updateUser } from "@/services/userService";
 import { toast } from "sonner";
 import { useState } from "react";
+import { blockAdminUser } from "@/utils/blockAdminUser";
 
 interface DialogEditUserProps {
   user: User;
@@ -47,28 +48,32 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
   };
 
   const handleEditUser = async () => {
-    try {
-      if (user.id === 1) {
-        toast.error("Não é possível editar o usuário padrão.");
-        return;
+    if (user.id != undefined) {
+      try {
+        if (blockAdminUser(user.id, "editar")) {
+          return;
+        }
+
+        const updatedData = { ...formData };
+        // Criar um novo objeto sem o campo 'password' caso ele esteja vazio
+        const filteredData = updatedData.password
+          ? updatedData
+          : Object.fromEntries(
+            Object.entries(updatedData).filter(([key]) => key !== "password")
+          );
+
+        await updateUser({ ...user, ...filteredData });
+
+        onUserChanged();
+        toast.success("Usuário editado com sucesso!");
+      } catch (error: any) {
+        if (error.message.includes('server error')) {
+          toast.error("Este e‑mail já está cadastrado no sistema.");
+        } else {
+          toast.error("Erro ao editar usuário: " + error.message);
+        }
+        console.error("Erro ao editar usuário:", error);
       }
-      const updatedData = { ...formData };
-
-      // Criar um novo objeto sem o campo 'password' caso ele esteja vazio
-      const filteredData = updatedData.password
-        ? updatedData
-        : Object.fromEntries(
-          Object.entries(updatedData).filter(([key]) => key !== "password")
-        );
-
-      await updateUser({ ...user, ...filteredData });
-      // Chamar o callback para atualizar a lista
-      onUserChanged();
-      
-      toast.success("Usuário editado com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao editar usuário.");
-      console.log(error);
     }
   };
 

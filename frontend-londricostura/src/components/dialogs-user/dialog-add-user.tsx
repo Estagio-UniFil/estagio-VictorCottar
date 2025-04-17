@@ -40,12 +40,20 @@ export default function DialogAddUser({ onUserAdded }: DialogAddUserProps) {
   });
 
   const handleAddUser = async () => {
+    if (!user.email || !user.name || !user.password) {
+      toast.error("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
     try {
       await createUser(user);
       onUserAdded();
       toast.success("Usuário criado com sucesso!");
-    } catch (error) {
-      toast.error("Erro ao criar usuário.");
+    } catch (error: any) {
+      if (error.message.includes('already registered')) {
+        toast.error("Este e‑mail já está cadastrado no sistema.");
+      } else {
+        toast.error("Erro ao criar usuário: " + error.message);
+      }
       console.error("Erro ao adicionar usuário:", error);
     }
   };

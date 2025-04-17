@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -43,6 +43,14 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const existing = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+    
+    if (existing) {
+      throw new ConflictException('Esse email já está cadastrado.');
+    }
+
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const user = this.userRepository.create({
       ...createUserDto,
@@ -58,7 +66,7 @@ export class UserService {
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found.`);
+      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
     }
     return user;
   }
@@ -66,7 +74,7 @@ export class UserService {
   async inactivatedUser(id: number): Promise<User> {
     const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found.`);
+      throw new NotFoundException(`Usuário com id ${id} não encontrado..`);
     }
     user.active = false;
     return this.userRepository.save(user);
@@ -75,7 +83,7 @@ export class UserService {
   async activatedUser(id: number): Promise<User> {
     const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found.`);
+      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
     }
     user.active = true;
     return this.userRepository.save(user);
@@ -84,7 +92,7 @@ export class UserService {
   async promoteAdmin(id: number): Promise<User> {
     const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found.`);
+      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
     }
     user.admin = true;
     return this.userRepository.save(user);
@@ -93,7 +101,7 @@ export class UserService {
   async demoteAdmin(id: number): Promise<User> {
     const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found.`);
+      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
     }
     user.admin = false;
     return this.userRepository.save(user);
@@ -106,7 +114,7 @@ export class UserService {
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found.`);
+      throw new NotFoundException(`Usuário com id ${id} não encontrado..`);
     }
 
     // Se a senha for fornecida e não estiver vazia, faz o hash
@@ -124,7 +132,7 @@ export class UserService {
   async remove(id: number): Promise<void> {
     const user = await this.findOne(id);
     if (!user) {
-      throw new NotFoundException(`User with id ${id} not found.`);
+      throw new NotFoundException(`Usuário com id ${id} não encontrado..`);
     }
     await this.userRepository.remove(user);
   }
