@@ -11,5 +11,6 @@ import { JwtStrategy } from 'src/auth/jwt/jwt.strategy';
   imports: [TypeOrmModule.forFeature([User]), JwtModule.register({})],
   controllers: [UserController],
   providers: [UserService, AuthService, JwtStrategy],
+  exports: [UserService],
 })
 export class UserModule {}

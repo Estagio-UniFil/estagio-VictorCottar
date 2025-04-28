@@ -46,7 +46,7 @@ export class UserService {
     const existing = await this.userRepository.findOne({
       where: { email: createUserDto.email },
     });
-    
+
     if (existing) {
       throw new ConflictException('Esse email já está cadastrado.');
     }
@@ -73,36 +73,24 @@ export class UserService {
 
   async inactivatedUser(id: number): Promise<User> {
     const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`Usuário com id ${id} não encontrado..`);
-    }
     user.active = false;
     return this.userRepository.save(user);
   }
 
   async activatedUser(id: number): Promise<User> {
     const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
-    }
     user.active = true;
     return this.userRepository.save(user);
   }
 
   async promoteAdmin(id: number): Promise<User> {
     const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
-    }
     user.admin = true;
     return this.userRepository.save(user);
   }
 
   async demoteAdmin(id: number): Promise<User> {
     const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`Usuário com id ${id} não encontrado.`);
-    }
     user.admin = false;
     return this.userRepository.save(user);
   }
@@ -113,9 +101,6 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`Usuário com id ${id} não encontrado..`);
-    }
 
     // Se a senha for fornecida e não estiver vazia, faz o hash
     if (updateUserDto.password && updateUserDto.password !== '') {
@@ -131,9 +116,6 @@ export class UserService {
 
   async remove(id: number): Promise<void> {
     const user = await this.findOne(id);
-    if (!user) {
-      throw new NotFoundException(`Usuário com id ${id} não encontrado..`);
-    }
     await this.userRepository.remove(user);
   }
 }
