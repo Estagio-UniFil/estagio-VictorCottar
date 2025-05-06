@@ -13,6 +13,7 @@ import { User } from "@/interfaces/user";
 import { removeUser, inactivateUser } from "@/services/userService";
 import { toast } from "sonner";
 import { blockAdminUser } from "@/utils/blockAdminUser";
+import { DeleteIcon } from "../ui/delete";
 
 interface DialogRemoveUserProps {
   user: User;
@@ -59,7 +60,7 @@ export default function DialogRemoveUser({ user, onUserChanged }: DialogRemoveUs
           variant="ghost"
           className="hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200 cursor-pointer"
         >
-          <Trash2 />
+          <DeleteIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

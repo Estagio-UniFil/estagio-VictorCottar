@@ -13,6 +13,7 @@ import { User } from "@/interfaces/user";
 import { toast } from "sonner";
 import { promoteUser, demoteUser } from "@/services/userService";
 import { blockAdminUser } from "@/utils/blockAdminUser";
+import { ShieldCheckIcon } from "../ui/shield-check";
 
 interface DialogPromoteUserProps {
   user: User;
@@ -21,11 +22,6 @@ interface DialogPromoteUserProps {
 
 export default function DialogPromoteUser({ user, onUserChanged }: DialogPromoteUserProps) {
   const handlePromoteUser = async () => {
-    if (user.admin) {
-      toast.error("Usuário já é administrador.");
-      return;
-    }
-
     if (user.id != undefined) {
       try {
         if (blockAdminUser(user.id, "editar")) {
@@ -34,19 +30,14 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
         await promoteUser(user.id);
         onUserChanged();
         toast.success("Usuário alterado para administrador com sucesso!");
-      } catch (error) {
-        toast.error("Erro ao alterar o usuário para administrador.");
+      } catch (error: any) {
+        toast.error(error.message || "Erro ao alterar o usuário para administrador.");
         console.log(error);
       }
     }
   }
 
   const handleDemoteUser = async () => {
-    if (!user.admin) {
-      toast.error("Usuário já não é administrador.");
-      return;
-    }
-
     if (user.id != undefined) {
       try {
         if (blockAdminUser(user.id, "editar")) {
@@ -55,8 +46,8 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
         await demoteUser(user.id);
         onUserChanged();
         toast.success("Usuário removido como administrador com sucesso!");
-      } catch (error) {
-        toast.error("Erro ao remover o usuário de administrador.");
+      } catch (error: any) {
+        toast.error(error.message || "Erro ao remover o usuário de administrador.");
         console.log(error);
       }
     }
@@ -69,7 +60,7 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
           variant="ghost"
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
         >
-          <ShieldUser size={48} />
+          <ShieldCheckIcon />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
@@ -90,7 +81,7 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
               Remover administrador
             </Button>
           </DialogClose>
-        
+
           <DialogClose asChild>
             <Button
               className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"

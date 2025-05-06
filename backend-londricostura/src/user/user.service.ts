@@ -73,6 +73,9 @@ export class UserService {
 
   async inactivatedUser(id: number): Promise<User> {
     const user = await this.findOne(id);
+    if (user.active === false) {
+      throw new ConflictException('Usuário já está inativo.');
+    }
     user.active = false;
     return this.userRepository.save(user);
   }
@@ -85,12 +88,20 @@ export class UserService {
 
   async promoteAdmin(id: number): Promise<User> {
     const user = await this.findOne(id);
+
+    if (user.admin === true) {
+      throw new ConflictException('Usuário já é administrador.');
+    }
+
     user.admin = true;
     return this.userRepository.save(user);
   }
 
   async demoteAdmin(id: number): Promise<User> {
     const user = await this.findOne(id);
+    if (user.admin === false) {
+      throw new ConflictException('Usuário já não é administrador.');
+    }
     user.admin = false;
     return this.userRepository.save(user);
   }

@@ -1,4 +1,5 @@
 'use client'
+import ProductsDataTable from "@/components/datatable-products/_components/products-datatable";
 import DialogAddProduct from "@/components/dialogs-products/dialog-add-product";
 import HeaderPage from "@/components/header-pages";
 import { Product } from "@/interfaces/product";
@@ -21,7 +22,13 @@ export default function Estoque() {
   return (
     <>
       <HeaderPage pageName='Estoque' />
-      <DialogAddProduct onProductAdded={refreshProducts} />
+      <div className="flex justify-end mb-18">
+        <div className="flex items-center space-x-4 mr-15">
+        <DialogAddProduct onProductAdded={refreshProducts} />
+        <DialogAddProduct onProductAdded={refreshProducts} />
+        </div>  
+      </div>
+      <ProductsDataTable products={products} onProductsChanged={refreshProducts} />
     </>
   )
 }

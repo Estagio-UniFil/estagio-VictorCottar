@@ -26,6 +26,7 @@ import { updateUser } from "@/services/userService";
 import { toast } from "sonner";
 import { useState } from "react";
 import { blockAdminUser } from "@/utils/blockAdminUser";
+import { SquarePenIcon } from "../ui/square-pen";
 
 interface DialogEditUserProps {
   user: User;
@@ -84,7 +85,7 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
         >
-          <Pencil size={16} />
+          <SquarePenIcon size={16} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] h-[410px]">

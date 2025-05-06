@@ -46,7 +46,7 @@ export const columns = (onUserChanged: () => void): ColumnDef<User>[] => [
     cell: ({ row }) => {
       const user = row.original;
       return (
-        <div className="flex items-center justify-evenly space-x-[-15px]">
+        <div className="flex items-center justify-evenly space-x-[-50px]">
           <DialogPromoteUser user={user} onUserChanged={onUserChanged} />
           <DialogEditUser user={user} onUserChanged={onUserChanged} />
           <DialogRemoveUser user={user} onUserChanged={onUserChanged} />
