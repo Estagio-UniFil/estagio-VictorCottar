@@ -13,7 +13,7 @@ export class Product {
   name: string;
 
   @Column({ unique: true })
-  product_code: string;
+  code: string;
 
   @Column()
   quantity: number;

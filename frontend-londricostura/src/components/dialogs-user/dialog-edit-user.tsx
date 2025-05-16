@@ -49,6 +49,11 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
   };
 
   const handleEditUser = async () => {
+    if (!formData.password) {
+      toast.error("Por favor, insira uma nova senha.");
+      return;
+    }
+    
     if (user.id != undefined) {
       try {
         if (blockAdminUser(user.id, "editar")) {

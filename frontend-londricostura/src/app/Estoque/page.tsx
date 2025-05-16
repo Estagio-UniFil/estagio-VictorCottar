@@ -22,7 +22,7 @@ export default function Estoque() {
   return (
     <>
       <HeaderPage pageName='Estoque' />
-      <div className="flex justify-end mb-18">
+      <div className="flex justify-end mb-12">
         <div className="flex items-center space-x-4 mr-15">
         <DialogAddProduct onProductAdded={refreshProducts} />
         <DialogAddProduct onProductAdded={refreshProducts} />

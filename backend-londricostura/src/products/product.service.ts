@@ -15,13 +15,13 @@ export class ProductService {
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const existingProduct = await this.productRepository.findOne({
       where: [
-        { product_code: createProductDto.product_code },
+        { code: createProductDto.code },
         { name: createProductDto.name }
       ]
     });
 
     if (existingProduct) {
-      if (existingProduct.product_code === createProductDto.product_code) {
+      if (existingProduct.code === createProductDto.code) {
         throw new ConflictException('Já existe um produto cadastrado com este código.');
       } else {
         throw new ConflictException('Já existe um produto cadastrado com este nome.');
@@ -68,9 +68,9 @@ export class ProductService {
   async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const product = await this.findOne(id);
 
-    if (updateProductDto.product_code && updateProductDto.product_code !== product.product_code) {
+    if (updateProductDto.code && updateProductDto.code !== product.code) {
       const productWithSameCode = await this.productRepository.findOne({
-        where: { product_code: updateProductDto.product_code }
+        where: { code: updateProductDto.code }
       });
 
       if (productWithSameCode) {

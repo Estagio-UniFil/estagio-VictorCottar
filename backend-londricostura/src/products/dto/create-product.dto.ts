@@ -12,7 +12,7 @@ export class CreateProductDto {
 
   @IsNotEmpty({ message: 'Código do produto é obrigatório.' })
   @IsString()
-  product_code: string;
+  code: string;
 
   @IsNotEmpty({ message: 'Quantidade é obrigatória.' })
   @IsNumber()

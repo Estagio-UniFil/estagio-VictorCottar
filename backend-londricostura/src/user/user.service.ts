@@ -88,11 +88,9 @@ export class UserService {
 
   async promoteAdmin(id: number): Promise<User> {
     const user = await this.findOne(id);
-
     if (user.admin === true) {
       throw new ConflictException('Usuário já é administrador.');
     }
-
     user.admin = true;
     return this.userRepository.save(user);
   }

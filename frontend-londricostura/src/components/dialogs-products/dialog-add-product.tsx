@@ -25,13 +25,13 @@ interface DialogAddProductProps {
 export default function DialogAddProduct({ onProductAdded }: DialogAddProductProps) {
   const [product, setProduct] = useState<Product>({
     name: '',
-    product_code: '',
+    code: '',
     quantity: 1,
     price: 0,
   });
 
   const handleAddProduct = async () => {
-    if (!product.name || !product.product_code || !product.quantity || !product.price) {
+    if (!product.name || !product.code || !product.quantity || !product.price) {
       toast.error("Por favor, preencha todos os campos obrigatórios para criar o produto.");
       return;
     }
@@ -39,14 +39,12 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
       await createProduct(product);
       onProductAdded();
       toast.success("Produto criado com sucesso!");
-
       setProduct({
         name: '',
-        product_code: '',
+        code: '',
         quantity: 1,
         price: 0,
       });
-
     } catch (error: any) {
       toast.error("Erro ao criar produto: " + error.message);
       console.error("Erro ao criar produto:", error);
@@ -90,9 +88,9 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
                   Cód. do produto
                 </Label>
                 <Input
-                  id="product_code"
-                  value={product.product_code}
-                  onChange={(e) => setProduct({ ...product, product_code: e.target.value })}
+                  id="code"
+                  value={product.code}
+                  onChange={(e) => setProduct({ ...product, code: e.target.value })}
                   className="w-3/4"
                   required
                 />
@@ -123,7 +121,6 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
                     price: e.target.value === '' ? 0 : Number(e.target.value)
                   })}
                   type="number"
-                  min={1}
                   step="0.01"
                   className="w-3/4"
                   required

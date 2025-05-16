@@ -14,7 +14,7 @@ export class AuthService {
   async register(name: string, email: string, password: string) {
     const existingUser = await this.userService.findByEmail(email);
     if (existingUser) {
-      throw new UnauthorizedException('Email already in use.');
+      throw new UnauthorizedException('Email já cadastrado em outro usuário.');
     }
 
     return this.userService.create({ name, email, password });
@@ -23,16 +23,16 @@ export class AuthService {
   async validateCredentials(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('Email not found.');
+      throw new UnauthorizedException('Email não encontrado.');
     }
 
     if (!user.active) {
-      throw new UnauthorizedException('User account is inactive.');
+      throw new UnauthorizedException('Usuário está inativo.');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Incorrect password.');
+      throw new UnauthorizedException('Senha incorreta.');
     }
 
     return user;

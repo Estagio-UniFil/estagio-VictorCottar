@@ -25,7 +25,7 @@ interface DialogEditProductsProps {
 export default function DialogEditProduct({ product, onProductsChanged }: DialogEditProductsProps) {
   const [formData, setFormData] = useState({
     name: product.name,
-    product_code: product.product_code,
+    code: product.code,
     quantity: product.quantity,
     price: product.price,
   });
@@ -77,10 +77,10 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
               Cód. do produto
             </Label>
             <Input
-              id="product_code"
+              id="code"
               className="w-3/4"
-              value={formData.product_code}
-              onChange={(e) => setFormData({ ...formData, product_code: e.target.value })}
+              value={formData.code}
+              onChange={(e) => setFormData({ ...formData, code: e.target.value })}
             />
           </div>
           <div className="flex items-center gap-2">

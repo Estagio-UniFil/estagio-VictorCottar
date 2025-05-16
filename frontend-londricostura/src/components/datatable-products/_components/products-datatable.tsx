@@ -16,44 +16,44 @@ import { Input } from "@/components/ui/input"
 export const columns = (
   onProductsChanged: () => void
 ): ColumnDef<Product>[] => [
-  {
-    accessorKey: "id",
-    header: () => <div className="text-center">ID</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("id")}</div>,
-  },
-  {
-    accessorKey: "name",
-    header: () => <div className="text-center">Nome</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "product_code",
-    header: () => <div className="text-center">Cód. do produto</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("product_code")}</div>,
-  },
-  {
-    accessorKey: "quantity",
-    header: () => <div className="text-center">Quantidade</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("quantity")}</div>,
-  },
-  {
-    accessorKey: "price",
-    header: () => <div className="text-center">Preço</div>,
-    cell: ({ row }) => <div className="text-center">R$ {row.getValue("price")}</div>,
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const product = row.original
-      return (
-        <div className="flex items-center justify-evenly space-x-[-50px]">
-          <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
-          <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
-        </div>
-      )
+    {
+      accessorKey: "id",
+      header: () => <div className="text-center">ID</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("id")}</div>,
     },
-  },
-]
+    {
+      accessorKey: "name",
+      header: () => <div className="text-center">Nome</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("name")}</div>,
+    },
+    {
+      accessorKey: "code",
+      header: () => <div className="text-center">Cód. do produto</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("code")}</div>,
+    },
+    {
+      accessorKey: "quantity",
+      header: () => <div className="text-center">Quantidade</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("quantity")}</div>,
+    },
+    {
+      accessorKey: "price",
+      header: () => <div className="text-center">Preço</div>,
+      cell: ({ row }) => <div className="text-center">R$ {row.getValue("price")}</div>,
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const product = row.original
+        return (
+          <div className="flex items-center justify-evenly space-x-[-50px]">
+            <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
+            <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
+          </div>
+        )
+      },
+    },
+  ]
 
 interface Props {
   products: Product[]
@@ -65,6 +65,14 @@ export default function ProductsDataTable({ products, onProductsChanged }: Props
   const [filterField, setFilterField] = useState<keyof Product>("name")
   const [filterValue, setFilterValue] = useState<string>("")
 
+  const fieldLabels: Record<keyof Product, string> = {
+    id: "ID",
+    name: "nome",
+    code: "cód. do produto",
+    quantity: "Quantidade",
+    price: "preço",
+  }
+
   // Dados filtrados dinamicamente
   const filteredProducts = useMemo(() => {
     if (!filterValue) return products
@@ -75,10 +83,10 @@ export default function ProductsDataTable({ products, onProductsChanged }: Props
   }, [products, filterField, filterValue])
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-2">
+    <div>
+      <div className="flex items-center space-x-2 ml-21">
         <Input
-          placeholder={`Buscar por ${filterField}`}
+          placeholder={`Buscar por ${fieldLabels[filterField]}`}
           value={filterValue}
           onChange={(e) => setFilterValue(e.target.value)}
           className="w-2xl"
@@ -93,12 +101,14 @@ export default function ProductsDataTable({ products, onProductsChanged }: Props
           <SelectContent>
             <SelectItem value="id">ID</SelectItem>
             <SelectItem value="name">Nome</SelectItem>
-            <SelectItem value="product_code">Cód. do produto</SelectItem>
+            <SelectItem value="code">Cód. do produto</SelectItem>
+            <SelectItem value="price">Preço</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <DataTable columns={columns(onProductsChanged)} data={filteredProducts} />
+
     </div>
   )
 }
