@@ -1,5 +1,5 @@
 import { User } from "@/interfaces/user";
-import { API_URL, getHeaders } from "./api";
+import { API_URL, getHeaders } from "./loginService";
 
 export async function fetchUsers(): Promise<User[]> {
   try {
@@ -32,7 +32,7 @@ export async function removeUser(id: number): Promise<void> {
     try {
       const errJson = await response.json();
       if (errJson.message) msg = errJson.message;
-    } catch {}
+    } catch { }
     throw new Error(msg);
   }
 }
@@ -48,7 +48,7 @@ export async function inactivateUser(id: number): Promise<void> {
     try {
       const errJson = await response.json();
       if (errJson.message) msg = errJson.message;
-    } catch {}
+    } catch { }
     throw new Error(msg);
   }
 }

@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { NumericFormat } from 'react-number-format';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -17,6 +18,7 @@ import { useState } from "react"
 import { Product } from "@/interfaces/product"
 import { toast } from "sonner"
 import { createProduct } from "@/services/productService"
+import { NumericInput } from "../numeric-input";
 
 interface DialogAddProductProps {
   onProductAdded: () => void;
@@ -27,11 +29,11 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
     name: '',
     code: '',
     quantity: 1,
-    price: 0,
+    price: 1,
   });
 
   const handleAddProduct = async () => {
-    if (!product.name || !product.code || !product.quantity || !product.price) {
+    if (!product.name || !product.code || !product.price) {
       toast.error("Por favor, preencha todos os campos obrigatórios para criar o produto.");
       return;
     }
@@ -43,7 +45,7 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
         name: '',
         code: '',
         quantity: 1,
-        price: 0,
+        price: 1,
       });
     } catch (error: any) {
       toast.error("Erro ao criar produto: " + error.message);
@@ -104,7 +106,6 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
                   value={product.quantity}
                   onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
                   type="number"
-                  min={1}
                   className="w-3/4"
                   required
                 />
@@ -113,17 +114,18 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
                 <Label htmlFor="password" className="w-1/4 text-right">
                   Preço
                 </Label>
-                <Input
-                  id="price"
-                  value={product.price === 0 ? '' : product.price}
-                  onChange={(e) => setProduct({
-                    ...product,
-                    price: e.target.value === '' ? 0 : Number(e.target.value)
-                  })}
-                  type="number"
-                  step="0.01"
+                <NumericInput
+                  value={product.price}
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  decimalScale={2}
+                  fixedDecimalScale
+                  placeholder="Digite o preço"
+                  onValueChange={(values) => {
+                    const { floatValue } = values;
+                    setProduct({ ...product, price: floatValue || 0 });
+                  }}
                   className="w-3/4"
-                  required
                 />
               </div>
             </div>

@@ -48,14 +48,12 @@ export default function DialogAddUser({ onUserAdded }: DialogAddUserProps) {
       await createUser(user);
       onUserAdded();
       toast.success("Usuário criado com sucesso!");
-
       setUser({
         name: '',
         email: '',
         password: '',
         admin: false,
       });
-
     } catch (error: any) {
       if (error.message.includes('already registered')) {
         toast.error("Este e‑mail já está cadastrado no sistema.");

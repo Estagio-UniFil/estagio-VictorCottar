@@ -18,7 +18,6 @@ export default function Estoque() {
     fetchProducts().then((data) => setProducts(data));
   }, [refreshTrigger]);
 
-
   return (
     <>
       <HeaderPage pageName='Estoque' />

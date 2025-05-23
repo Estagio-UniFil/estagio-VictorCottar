@@ -1,5 +1,5 @@
 import { Product } from "@/interfaces/product";
-import { API_URL, getHeaders } from "./api";
+import { API_URL, getHeaders } from "./loginService";
 
 export async function fetchProducts(): Promise<Product[]> {
   try {

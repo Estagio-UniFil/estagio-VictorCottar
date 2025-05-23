@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export const columns = (
   onProductsChanged: () => void
@@ -39,7 +40,10 @@ export const columns = (
     {
       accessorKey: "price",
       header: () => <div className="text-center">Preço</div>,
-      cell: ({ row }) => <div className="text-center">R$ {row.getValue("price")}</div>,
+      cell: ({ row }) => {
+        const price = row.getValue("price") as number;
+        return <div className="text-center">{formatCurrency(price)}</div>;
+      },
     },
     {
       id: "actions",

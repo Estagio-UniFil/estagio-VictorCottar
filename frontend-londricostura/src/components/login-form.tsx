@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authService } from "@/services/api";
+import { authService } from "@/services/loginService";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner"
 import {
