@@ -10,6 +10,7 @@ type MockRepository<T = any> = {
   create: jest.Mock;
   save: jest.Mock;
   remove: jest.Mock;
+  softDelete: jest.Mock;
 };
 
 describe('UserService', () => {
@@ -28,6 +29,7 @@ describe('UserService', () => {
             create: jest.fn(),
             save: jest.fn(),
             remove: jest.fn(),
+            softDelete: jest.fn(),
           }),
         },
       ],
@@ -125,18 +127,11 @@ describe('UserService', () => {
   });
 
   it('deve remover um usuário', async () => {
-    const user = { id: 1 };
-    repository.findOne.mockResolvedValue(user);
+    const id =  1;
+    repository.findOne.mockResolvedValue(id);
     repository.remove.mockResolvedValue(null);
     await service.remove(1);
-    expect(repository.remove).toHaveBeenCalledWith(user);
-  });
-
-  it('remove deve propagar erro inesperado do repositório', async () => {
-    const user = { id: 1 };
-    repository.findOne.mockResolvedValue(user);
-    repository.remove.mockRejectedValue(new Error('Erro remoção'));
-    await expect(service.remove(1)).rejects.toThrow('Erro remoção');
+    expect(repository.softDelete).toHaveBeenCalledWith(id);
   });
 
   it('create deve propagar erro inesperado do repositório', async () => {

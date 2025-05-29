@@ -28,6 +28,16 @@ export class UserController {
     };
   }
 
+  @Get('findWithDeleted')
+  @UseGuards(AuthGuard('jwt'))
+  async findAllWithDeleted() {
+    const users = await this.userService.findAllWithDeleteds();
+    return {
+      message: 'Usuários encontrados com sucesso.',
+      data: users,
+    };
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id') id: string) {

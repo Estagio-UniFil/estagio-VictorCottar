@@ -88,7 +88,7 @@ export default function DialogRemoveUser({ user, onUserChanged }: DialogRemoveUs
               type="submit"
               onClick={handleRemoveUser}
             >
-              Excluir permanentemente
+              Excluir usuário
             </Button>
           </DialogClose>
         </div>

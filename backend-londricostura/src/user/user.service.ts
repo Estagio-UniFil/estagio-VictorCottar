@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -60,7 +60,13 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({
+      where: { deletedAt: IsNull() },
+    });
+  }
+
+  async findAllWithDeleteds(): Promise<User[]> {
+    return this.userRepository.find({ withDeleted: true });
   }
 
   async findOne(id: number): Promise<User> {
@@ -124,7 +130,7 @@ export class UserService {
   }
 
   async remove(id: number): Promise<void> {
-    const user = await this.findOne(id);
-    await this.userRepository.remove(user);
+    await this.findOne(id);
+    await this.userRepository.softDelete(id);
   }
 }
