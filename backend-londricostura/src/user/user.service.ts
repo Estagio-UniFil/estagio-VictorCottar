@@ -60,9 +60,7 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.find({
-      where: { deletedAt: IsNull() },
-    });
+    return this.userRepository.find(); // por padrão ele já busca sem os deletados.
   }
 
   async findAllWithDeleteds(): Promise<User[]> {

@@ -32,9 +32,7 @@ export class ProductService {
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productRepository.find({
-      where: { deletedAt: IsNull() }
-    });
+    return this.productRepository.find(); // por padrão ele já busca sem os deletados.
   }
 
   async findAllWithDeleteds(): Promise<Product[]> {
