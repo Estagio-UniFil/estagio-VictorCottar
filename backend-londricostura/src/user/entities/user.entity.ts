@@ -30,6 +30,4 @@ export class User {
   @Column({ default: false })
   admin: boolean;
 
-  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
-  deletedAt?: Date;
 }

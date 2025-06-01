@@ -34,6 +34,16 @@ export class ProductController {
     };
   }
 
+  @Get('findWithDeleted')
+  @UseGuards(AuthGuard('jwt'))
+  async findAllWithDeleted() {
+    const products = await this.productService.findAllWithDeleteds();
+    return {
+      message: 'Produtos encontrados com sucesso.',
+      data: products,
+    };
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id') id: string) {

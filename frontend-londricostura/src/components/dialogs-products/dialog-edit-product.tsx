@@ -26,7 +26,6 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
   const [formData, setFormData] = useState({
     name: product.name,
     code: product.code,
-    quantity: product.quantity,
     price: product.price,
   });
 
@@ -53,14 +52,14 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
           <SquarePenIcon size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] h-[410px]">
+      <DialogContent className="sm:max-w-[500px] h-[390px]">
         <DialogHeader>
           <DialogTitle>Editar produto</DialogTitle>
           <DialogDescription>
             Insira os dados que deseja alterar do produto.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-6 py-4">
+        <div className="flex flex-col gap-7 py-2">
           <div className="flex items-center gap-2">
             <Label htmlFor="name" className="w-1/4 text-right">
               Nome
@@ -81,17 +80,6 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
               className="w-3/4"
               value={formData.code}
               onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <Label htmlFor="password" className="w-1/4 text-right">
-              Quantidade
-            </Label>
-            <Input
-              id="quantity"
-              className="w-3/4"
-              value={formData.quantity}
-              onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
             />
           </div>
           <div className="flex items-center gap-2">

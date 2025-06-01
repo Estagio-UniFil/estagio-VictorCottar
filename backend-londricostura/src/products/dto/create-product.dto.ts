@@ -15,11 +15,6 @@ export class CreateProductDto {
   @IsString()
   code: string;
 
-  @IsNotEmpty({ message: 'Quantidade é obrigatória.' })
-  @Min(1, { message: 'Quantidade deve ser maior que 0.' })
-  @IsNumber()
-  quantity: number; 
-
   @IsNotEmpty({ message: 'Preço é obrigatório.' })
   @Min(0.01, { message: 'Preço deve ser maior ou igual a 0.01.' })
   @Transform(({ value }) => parseFloat(String(value).replace(',', '.')))

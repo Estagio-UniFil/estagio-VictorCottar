@@ -93,14 +93,14 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
           <SquarePenIcon size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] h-[410px]">
+      <DialogContent className="sm:max-w-[500px] h-[390px]">
         <DialogHeader>
           <DialogTitle>Editar usuário</DialogTitle>
           <DialogDescription>
-            Insira os dados que deseja alterar do usuário {user.name}.
+            Insira os dados que deseja alterar do usuário {user.name}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-6 py-4">
+        <div className="flex flex-col gap-7 py-4">
           <div className="flex items-center gap-2">
             <Label htmlFor="name" className="w-1/4 text-right">
               Nome

@@ -28,7 +28,6 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
   const [product, setProduct] = useState<Product>({
     name: '',
     code: '',
-    quantity: 1,
     price: 1,
   });
 
@@ -44,7 +43,6 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
       setProduct({
         name: '',
         code: '',
-        quantity: 1,
         price: 1,
       });
     } catch (error: any) {
@@ -65,14 +63,14 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
               <Plus size={16} /> Adicionar produto
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] h-[430px]">
+          <DialogContent className="sm:max-w-[500px] h-[390px]">
             <DialogHeader>
               <DialogTitle>Adicionar produto</DialogTitle>
               <DialogDescription>
                 Insira os dados necessários para criação do produto.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex flex-col gap-6 py-4">
+            <div className="flex flex-col gap-7 py-2">
               <div className="flex items-center gap-2">
                 <Label htmlFor="name" className="w-1/4 text-right">
                   Nome
@@ -93,19 +91,6 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
                   id="code"
                   value={product.code}
                   onChange={(e) => setProduct({ ...product, code: e.target.value })}
-                  className="w-3/4"
-                  required
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Label htmlFor="password" className="w-1/4 text-right">
-                  Quantidade
-                </Label>
-                <Input
-                  id="quantity"
-                  value={product.quantity}
-                  onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
-                  type="number"
                   className="w-3/4"
                   required
                 />

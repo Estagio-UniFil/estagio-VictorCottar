@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -32,7 +32,13 @@ export class ProductService {
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productRepository.find();
+    return this.productRepository.find({
+      where: { deletedAt: IsNull() }
+    });
+  }
+
+  async findAllWithDeleteds(): Promise<Product[]> {
+    return this.productRepository.find({ withDeleted: true });
   }
 
   async findAllPaginated(
@@ -93,7 +99,7 @@ export class ProductService {
   }
 
   async remove(id: number): Promise<void> {
-    const product = await this.findOne(id);
-    await this.productRepository.remove(product);
+    await this.findOne(id);
+    await this.productRepository.softDelete(id);
   }
 }
