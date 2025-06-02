@@ -32,7 +32,12 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
   const handleEditProduct = async () => {
     if (product.id != undefined) {
       try {
-        await updateProduct(product);
+        await updateProduct({
+          id: product.id,
+          name: formData.name,
+          code: formData.code,
+          price: formData.price,
+        });
         onProductsChanged();
         toast.success("Produto editado com sucesso!");
       } catch (error: any) {

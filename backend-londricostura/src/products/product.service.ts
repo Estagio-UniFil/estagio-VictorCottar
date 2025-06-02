@@ -1,7 +1,8 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { User } from 'src/user/entities/user.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -12,12 +13,12 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
   ) { }
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(createProductDto: CreateProductDto, userId: number): Promise<Product> {
     const existingProduct = await this.productRepository.findOne({
       where: [
         { code: createProductDto.code },
-        { name: createProductDto.name }
-      ]
+        { name: createProductDto.name },
+      ],
     });
 
     if (existingProduct) {
@@ -28,15 +29,21 @@ export class ProductService {
       }
     }
 
-    return this.productRepository.save(createProductDto);
+    // associa ao usuário recebido via token
+    const product = this.productRepository.create({
+      ...createProductDto,
+      user: { id: userId } as User,
+    });
+
+    return this.productRepository.save(product);
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productRepository.find(); // por padrão ele já busca sem os deletados.
+    return this.productRepository.find({ relations: ['user'] }); // por padrão ele já busca sem os deletados.
   }
 
   async findAllWithDeleteds(): Promise<Product[]> {
-    return this.productRepository.find({ withDeleted: true });
+    return this.productRepository.find({ relations: ['user'], withDeleted: true });
   }
 
   async findAllPaginated(
@@ -53,6 +60,7 @@ export class ProductService {
     page = Math.max(page, 1);
 
     const [data, total] = await this.productRepository.findAndCount({
+      relations: ['user'],
       skip: (page - 1) * limit,
       take: limit,
       order: { id: 'ASC' },
@@ -62,7 +70,10 @@ export class ProductService {
   }
 
   async findOne(id: number): Promise<Product> {
-    const product = await this.productRepository.findOneBy({ id });
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: ['user']
+    });
     if (!product) {
       throw new NotFoundException(`Produto com id ${id} não encontrado.`);
     }

@@ -3,18 +3,25 @@ import { AuthGuard } from '@nestjs/passport';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { plainToInstance } from 'class-transformer';
+import { ProductResponseDto } from './dto/product-response.dto';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  async create(@Body() createProductDto: CreateProductDto) {
-    const product = await this.productService.create(createProductDto);
+  async create(
+    @Body() createProductDto: CreateProductDto,
+    @GetUser('id') userId: number,
+  ) {
+    const product = await this.productService.create(createProductDto, userId);
+    const productResponse = plainToInstance(ProductResponseDto, product, { excludeExtraneousValues: true });
     return {
       message: 'Produto criado com sucesso.',
-      data: product,
+      data: productResponse,
     };
   }
 
@@ -25,9 +32,13 @@ export class ProductController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
   ) {
     const result = await this.productService.findAllPaginated(page, limit);
+    const data = result.data.map(prod =>
+      plainToInstance(ProductResponseDto, prod, { excludeExtraneousValues: true }),
+    );
+
     return {
       message: 'Produtos encontrados com sucesso.',
-      data: result.data,
+      data,
       total: result.total,
       page: result.page,
       limit: result.limit,
@@ -38,19 +49,26 @@ export class ProductController {
   @UseGuards(AuthGuard('jwt'))
   async findAllWithDeleted() {
     const products = await this.productService.findAllWithDeleteds();
+    const data = products.map((prod) =>
+      plainToInstance(ProductResponseDto, prod, { excludeExtraneousValues: true }),
+    );
+
     return {
       message: 'Produtos encontrados com sucesso.',
-      data: products,
+      data,
     };
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  async findOne(@Param('id') id: string) {
-    const product = await this.productService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const product = await this.productService.findOne(id);
+    const productResponse = plainToInstance(ProductResponseDto, product, {
+      excludeExtraneousValues: true,
+    });
     return {
       message: 'Produto encontrado com sucesso.',
-      data: product,
+      data: productResponse,
     };
   }
 
