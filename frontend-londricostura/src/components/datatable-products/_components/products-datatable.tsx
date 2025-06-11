@@ -4,6 +4,7 @@ import { Product } from "@/interfaces/product"
 import { DataTable } from "@/components/datatable"
 import DialogEditProduct from "@/components/dialogs-products/dialog-edit-product"
 import DialogRemoveProduct from "@/components/dialogs-products/dialog-remove-product"
+import DialogDetailsProduct from "@/components/dialogs-products/dialog-details-product"
 import {
   Select,
   SelectContent,
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { formatCurrency } from "@/utils/formatCurrency";
+
 
 export const columns = (
   onProductsChanged: () => void
@@ -48,15 +50,44 @@ export const columns = (
     {
       id: "actions",
       cell: ({ row }) => {
-        const product = row.original
+        const product = row.original;
         return (
-          <div className="flex items-center justify-evenly space-x-[-50px]">
+          <div className="flex items-center justify-center space-x-[50px]">
+            <DialogDetailsProduct product={product} />
             <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
             <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
           </div>
         )
-      },
-    },
+      }
+    }
+    // {
+    //   id: "actions",
+    //   cell: ({ row }) => {
+    //     const product = row.original
+    //     return <div className="text-center"><DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} /></div>;
+    //   },
+    // },
+    // {
+    //   id: "actions",
+    //   cell: ({ row }) => {
+    //     const product = row.original
+    //     return <div className="text-center"> <DialogDetailsProduct product={product} /></div>;
+    //   },
+    // },
+    // {
+    //   id: "actions",
+    //   cell: ({ row }) => {
+    //     const product = row.original
+    //     return <div className="text-center"> <DialogDetailsProduct product={product} /></div>;
+    //   },
+    // },
+    // {
+    //   id: "actions",
+    //   cell: ({ row }) => {
+    //     const product = row.original
+    //     return <div className="text-center"> <DialogDetailsProduct product={product} /></div>;
+    //   },
+    // },
   ]
 
 interface Props {

@@ -3,4 +3,7 @@ export interface Product {
   name: string;
   code: string;
   price: number;
+  user?: {
+    name?: string;
+  };
 }

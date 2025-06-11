@@ -34,7 +34,6 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
   const handleAddProduct = async () => {
     if (!product.name || !product.code || !product.price) {
       toast.error("Por favor, preencha todos os campos obrigatórios para criar o produto.");
-      return;
     }
     try {
       await createProduct(product);
@@ -116,7 +115,7 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
             </div>
             <div className="flex justify-center items-center w-full">
               <DialogFooter>
-                <DialogClose asChild>
+                
                   <Button
                     className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
                     variant="ghost"
@@ -125,7 +124,6 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
                   >
                     Criar produto
                   </Button>
-                </DialogClose>
               </DialogFooter>
             </div>
           </DialogContent>
