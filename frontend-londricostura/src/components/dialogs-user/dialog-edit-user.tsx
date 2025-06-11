@@ -1,9 +1,7 @@
-import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -34,6 +32,7 @@ interface DialogEditUserProps {
 }
 
 export default function DialogEditUser({ user, onUserChanged }: DialogEditUserProps) {
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: user.name,
     email: user.email,
@@ -53,7 +52,7 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
       toast.error("Por favor, insira uma nova senha.");
       return;
     }
-    
+
     if (user.id != undefined) {
       try {
         if (blockAdminUser(user.id, "editar")) {
@@ -71,22 +70,18 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
         await updateUser({ ...user, ...filteredData });
 
         onUserChanged();
+        setOpen(false);
         toast.success("Usuário editado com sucesso!");
       } catch (error: any) {
-        if (error.message.includes('server error')) {
-          toast.error("Este e‑mail já está cadastrado no sistema.");
-        } else {
-          toast.error("Erro ao editar usuário: " + error.message);
-        }
-        console.error("Erro ao editar usuário:", error);
+        toast.error("Erro ao editar usuário: " + error.message);
       }
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
+        <Button onClick={() => setOpen(true)}
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
         >
@@ -159,16 +154,14 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
         </div>
         <div className="flex justify-center items-center w-full">
           <DialogFooter>
-            <DialogClose asChild>
-              <Button
-                className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
-                variant="ghost"
-                type="submit"
-                onClick={handleEditUser}
-              >
-                Editar usuário
-              </Button>
-            </DialogClose>
+            <Button
+              className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+              variant="ghost"
+              type="submit"
+              onClick={handleEditUser}
+            >
+              Editar usuário
+            </Button>
           </DialogFooter>
         </div>
       </DialogContent>

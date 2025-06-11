@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -23,6 +22,7 @@ interface DialogEditProductsProps {
 }
 
 export default function DialogEditProduct({ product, onProductsChanged }: DialogEditProductsProps) {
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: product.name,
     code: product.code,
@@ -40,6 +40,7 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
         });
         onProductsChanged();
         toast.success("Produto editado com sucesso!");
+        setOpen(false);
       } catch (error: any) {
         toast.error("Erro ao editar produto: " + error.message);
         console.error("Erro ao editar produto:", error);
@@ -48,9 +49,10 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
+          onClick={() => setOpen(true)}
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
         >
@@ -100,16 +102,14 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
           </div>
           <div className="flex justify-center items-center w-full">
             <DialogFooter>
-              <DialogClose asChild>
-                <Button
-                  className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
-                  variant="ghost"
-                  type="submit"
-                  onClick={handleEditProduct}
-                >
-                  Editar produto
-                </Button>
-              </DialogClose>
+              <Button
+                className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+                variant="ghost"
+                type="submit"
+                onClick={handleEditProduct}
+              >
+                Editar produto
+              </Button>
             </DialogFooter>
           </div>
         </div>

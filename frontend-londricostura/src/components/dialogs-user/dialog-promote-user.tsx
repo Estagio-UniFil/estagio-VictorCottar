@@ -1,4 +1,3 @@
-import { ShieldUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,7 +30,7 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
         onUserChanged();
         toast.success("Usuário alterado para administrador com sucesso!");
       } catch (error: any) {
-        toast.error(error.message || "Erro ao alterar o usuário para administrador.");
+        toast.error(error.message);
         console.log(error);
       }
     }
@@ -47,7 +46,7 @@ export default function DialogPromoteUser({ user, onUserChanged }: DialogPromote
         onUserChanged();
         toast.success("Usuário removido como administrador com sucesso!");
       } catch (error: any) {
-        toast.error(error.message || "Erro ao remover o usuário de administrador.");
+        toast.error(error.message);
         console.log(error);
       }
     }

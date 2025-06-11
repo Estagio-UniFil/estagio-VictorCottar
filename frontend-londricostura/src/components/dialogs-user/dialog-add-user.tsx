@@ -25,13 +25,13 @@ import { Plus } from "lucide-react";
 import { useState } from "react"
 import { User } from "@/interfaces/user";
 import { createUser } from "@/services/userService"
-import { DialogClose } from "@radix-ui/react-dialog"
 
 interface DialogAddUserProps {
   onUserAdded: () => void;
 }
 
 export default function DialogAddUser({ onUserAdded }: DialogAddUserProps) {
+  const [open, setOpen] = useState(false);
   const [user, setUser] = useState<User>({
     name: '',
     email: '',
@@ -54,22 +54,18 @@ export default function DialogAddUser({ onUserAdded }: DialogAddUserProps) {
         password: '',
         admin: false,
       });
+      setOpen(false);
     } catch (error: any) {
-      if (error.message.includes('already registered')) {
-        toast.error("Este e‑mail já está cadastrado no sistema.");
-      } else {
-        toast.error("Erro ao criar usuário: " + error.message);
-      }
-      console.error("Erro ao adicionar usuário:", error);
+      toast.error("Erro ao criar usuário: " + error.message);
     }
   };
 
   return (
     <div className="flex w-full">
       <div className="flex justify-end w-[95%] mt-3">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button
+            <Button onClick={() => setOpen(true)}
               className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
               variant="ghost"
             >
@@ -147,16 +143,14 @@ export default function DialogAddUser({ onUserAdded }: DialogAddUserProps) {
             </div>
             <div className="flex justify-center items-center w-full">
               <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
-                    variant="ghost"
-                    type="submit"
-                    onClick={handleAddUser}
-                  >
-                    Criar usuário
-                  </Button>
-                </DialogClose>
+                <Button
+                  className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+                  variant="ghost"
+                  type="submit"
+                  onClick={handleAddUser}
+                >
+                  Criar usuário
+                </Button>
               </DialogFooter>
             </div>
           </DialogContent>

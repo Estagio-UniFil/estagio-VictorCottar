@@ -8,12 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { NumericFormat } from 'react-number-format';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react";
-import { DialogClose } from "@radix-ui/react-dialog"
 import { useState } from "react"
 import { Product } from "@/interfaces/product"
 import { toast } from "sonner"
@@ -25,6 +23,7 @@ interface DialogAddProductProps {
 }
 
 export default function DialogAddProduct({ onProductAdded }: DialogAddProductProps) {
+  const [open, setOpen] = useState(false);
   const [product, setProduct] = useState<Product>({
     name: '',
     code: '',
@@ -39,11 +38,8 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
       await createProduct(product);
       onProductAdded();
       toast.success("Produto criado com sucesso!");
-      setProduct({
-        name: '',
-        code: '',
-        price: 1,
-      });
+      setProduct({ name: '', code: '', price: 1 });
+      setOpen(false);
     } catch (error: any) {
       toast.error("Erro ao criar produto: " + error.message);
       console.error("Erro ao criar produto:", error);
@@ -53,9 +49,10 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
   return (
     <div className="flex w-full">
       <div className="flex justify-end w-[95%] mt-3">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button
+              onClick={() => setOpen(true)}
               className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
               variant="ghost"
             >
@@ -115,15 +112,14 @@ export default function DialogAddProduct({ onProductAdded }: DialogAddProductPro
             </div>
             <div className="flex justify-center items-center w-full">
               <DialogFooter>
-                
-                  <Button
-                    className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
-                    variant="ghost"
-                    type="submit"
-                    onClick={handleAddProduct}
-                  >
-                    Criar produto
-                  </Button>
+                <Button
+                  className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+                  variant="ghost"
+                  type="submit"
+                  onClick={handleAddProduct}
+                >
+                  Criar produto
+                </Button>
               </DialogFooter>
             </div>
           </DialogContent>
