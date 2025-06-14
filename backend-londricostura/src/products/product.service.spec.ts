@@ -255,6 +255,16 @@ describe('ProductService', () => {
       expect(result).toEqual(merged);
     });
 
+    it('deve lançar ConflictException ao tentar atualizar para um código já existente', async () => {
+      repository.findOne
+        .mockResolvedValueOnce(existing)  // Primeiro findOne busca o produto a ser atualizado
+        .mockResolvedValueOnce({ id: 99 }); // Segundo findOne encontra outro produto com o mesmo código
+
+      const dto: UpdateProductDto = { code: 'C001_DUPLICADO' };
+
+      await expect(service.update(existing.id, dto)).rejects.toThrow(ConflictException);
+    });
+
   });
 
   describe('remove()', () => {

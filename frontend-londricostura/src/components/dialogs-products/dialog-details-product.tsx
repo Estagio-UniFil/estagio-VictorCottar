@@ -36,7 +36,7 @@ export default function DialogDetailsProduct({ product }: DialogDetailsProductPr
             <DialogHeader>
               <DialogTitle>Dados do produto</DialogTitle>
               <DialogDescription>
-                Visualize os dados do produto.
+                Visualize os dados do produto {product.name}.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-10 py-2">

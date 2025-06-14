@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { formatCurrency } from "@/utils/formatCurrency";
+import { Button } from "@/components/ui/button"
 
 
 export const columns = (
@@ -60,45 +61,38 @@ export const columns = (
         )
       }
     }
-    // {
-    //   id: "actions",
-    //   cell: ({ row }) => {
-    //     const product = row.original
-    //     return <div className="text-center"><DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} /></div>;
-    //   },
-    // },
-    // {
-    //   id: "actions",
-    //   cell: ({ row }) => {
-    //     const product = row.original
-    //     return <div className="text-center"> <DialogDetailsProduct product={product} /></div>;
-    //   },
-    // },
-    // {
-    //   id: "actions",
-    //   cell: ({ row }) => {
-    //     const product = row.original
-    //     return <div className="text-center"> <DialogDetailsProduct product={product} /></div>;
-    //   },
-    // },
-    // {
-    //   id: "actions",
-    //   cell: ({ row }) => {
-    //     const product = row.original
-    //     return <div className="text-center"> <DialogDetailsProduct product={product} /></div>;
-    //   },
-    // },
   ]
 
 interface Props {
   products: Product[]
   onProductsChanged: () => void
+  total: number;
+  page: number;
+  limit: number;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+  filterField: keyof Product;
+  setFilterField: (field: keyof Product) => void;
+  filterValue: string;
+  setFilterValue: (value: string) => void;
 }
 
-export default function ProductsDataTable({ products, onProductsChanged }: Props) {
-  // Estado para filtro
-  const [filterField, setFilterField] = useState<keyof Product>("name")
-  const [filterValue, setFilterValue] = useState<string>("")
+export default function ProductsDataTable({
+  products,
+  onProductsChanged,
+  total,
+  page,
+  limit,
+  setPage,
+  filterField,
+  setFilterField,
+  filterValue,
+  setFilterValue,
+}: Props) {
+  const totalPages = Math.ceil(total / limit);
+
+  const handleSearch = () => {
+    setPage(1);  // quando o usuário buscar, volta para a primeira página
+  };
 
   const fieldLabels: Record<keyof Product, string> = {
     id: "ID",
@@ -106,7 +100,7 @@ export default function ProductsDataTable({ products, onProductsChanged }: Props
     code: "cód. do produto",
     quantity: "Quantidade",
     price: "preço",
-  }
+  };
 
   // Dados filtrados dinamicamente
   const filteredProducts = useMemo(() => {
@@ -143,6 +137,30 @@ export default function ProductsDataTable({ products, onProductsChanged }: Props
       </div>
 
       <DataTable columns={columns(onProductsChanged)} data={filteredProducts} />
+      
+      <div className="flex justify-center items-center gap-4 mb-4 h-[80px]">
+        <Button
+          variant="outline"
+          className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+        >
+          Anterior
+        </Button>
+
+        <span className="text-sm">
+          Página {page} de {totalPages}
+        </span>
+
+        <Button
+          variant="outline"
+          className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages || totalPages === 0}
+        >
+          Próxima
+        </Button>
+      </div>
 
     </div>
   )

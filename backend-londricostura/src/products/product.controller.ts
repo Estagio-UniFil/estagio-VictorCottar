@@ -6,6 +6,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { plainToInstance } from 'class-transformer';
 import { ProductResponseDto } from './dto/product-response.dto';
+import { Product } from './entities/product.entity';
 
 @Controller('products')
 export class ProductController {
@@ -43,6 +44,22 @@ export class ProductController {
       page: result.page,
       limit: result.limit,
     };
+  }
+
+  @Get('paginated')
+  @UseGuards(AuthGuard('jwt'))
+  async findAllPaginated(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('filterField') filterField?: keyof Product,
+    @Query('filterValue') filterValue?: string,
+  ) {
+    return this.productService.findAllPaginated(
+      Number(page),
+      Number(limit),
+      filterField,
+      filterValue,
+    );
   }
 
   @Get('findWithDeleted')

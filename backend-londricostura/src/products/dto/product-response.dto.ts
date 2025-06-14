@@ -21,7 +21,6 @@ export class ProductResponseDto {
   @Expose()
   price: number;
 
-  // Solução 1: Usando Type() para transformar automaticamente
   @Expose()
   @Type(() => UserMinimal)
   user: UserMinimal;

@@ -49,25 +49,24 @@ export class ProductService {
   async findAllPaginated(
     page: number,
     limit: number,
-  ): Promise<{
-    data: Product[];
-    total: number;
-    page: number;
-    limit: number;
-  }> {
-    // ajusta limites
-    limit = Math.min(limit, 100);
-    page = Math.max(page, 1);
+    filterField?: keyof Product,
+    filterValue?: string,
+  ): Promise<{ data: Product[]; total: number; page: number; limit: number }> {
+    const query = this.productRepository.createQueryBuilder('product')
+      .leftJoinAndSelect('product.user', 'user')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('product.id', 'ASC');
 
-    const [data, total] = await this.productRepository.findAndCount({
-      relations: ['user'],
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { id: 'ASC' },
-    });
+    if (filterField && filterValue) {
+      query.andWhere(`product.${filterField} ILIKE :value`, { value: `%${filterValue}%` });
+    }
+
+    const [data, total] = await query.getManyAndCount();
 
     return { data, total, page, limit };
   }
+
 
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({

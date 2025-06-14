@@ -21,6 +21,33 @@ export async function fetchProducts(): Promise<Product[]> {
   }
 }
 
+export async function fetchProductsPaginated(
+  page: number,
+  limit: number,
+  filterField?: keyof Product,
+  filterValue?: string
+): Promise<{ data: Product[]; total: number; page: number; limit: number }> {
+  const url = new URL(`${API_URL}/products/paginated`);
+  url.searchParams.append('page', String(page));
+  url.searchParams.append('limit', String(limit));
+  if (filterField && filterValue) {
+    url.searchParams.append('filterField', filterField);
+    url.searchParams.append('filterValue', filterValue);
+  }
+
+  const response = await fetch(url.toString(), {
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    console.error("Erro ao buscar produtos paginados:", response.statusText);
+    return { data: [], total: 0, page, limit };
+  }
+
+  return response.json();
+}
+
+
 export async function removeProduct(id: number): Promise<void> {
   const response = await fetch(`${API_URL}/products/${id}`, {
     method: "DELETE",
