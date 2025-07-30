@@ -19,9 +19,10 @@ import { SquarePenIcon } from "../ui/square-pen";
 interface DialogEditProductsProps {
   product: Product;
   onProductsChanged: () => void;
+  children?: React.ReactNode;
 }
 
-export default function DialogEditProduct({ product, onProductsChanged }: DialogEditProductsProps) {
+export default function DialogEditProduct({ product, onProductsChanged, children }: DialogEditProductsProps) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: product.name,
@@ -55,7 +56,7 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
           onClick={() => setOpen(true)}
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
-        >
+        > Editar
           <SquarePenIcon size={16} />
         </Button>
       </DialogTrigger>

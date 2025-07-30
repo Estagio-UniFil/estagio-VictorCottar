@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from "react"
+import React, { useMemo } from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Product } from "@/interfaces/product"
 import { DataTable } from "@/components/datatable"
 import DialogEditProduct from "@/components/dialogs-products/dialog-edit-product"
-import DialogRemoveProduct from "@/components/dialogs-products/dialog-remove-product"
-import DialogDetailsProduct from "@/components/dialogs-products/dialog-details-product"
+import DialogOptionsProducts from "@/components/dialogs-products/dialog-options-product"
 import {
   Select,
   SelectContent,
@@ -53,10 +52,9 @@ export const columns = (
       cell: ({ row }) => {
         const product = row.original;
         return (
-          <div className="flex items-center justify-center space-x-[50px]">
-            <DialogDetailsProduct product={product} />
-            <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
-            <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
+          <div className="flex items-center justify-evenly space-x-[-20px]">
+            {/** <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />*/}
+            <DialogOptionsProducts product={product} onProductsChanged={onProductsChanged} />
           </div>
         )
       }
@@ -90,16 +88,13 @@ export default function ProductsDataTable({
 }: Props) {
   const totalPages = Math.ceil(total / limit);
 
-  const handleSearch = () => {
-    setPage(1);  // quando o usuário buscar, volta para a primeira página
-  };
-
   const fieldLabels: Record<keyof Product, string> = {
     id: "ID",
     name: "nome",
     code: "cód. do produto",
-    quantity: "Quantidade",
+    //quantity: "Quantidade",
     price: "preço",
+    user: "Usuário",
   };
 
   // Dados filtrados dinamicamente
@@ -137,7 +132,7 @@ export default function ProductsDataTable({
       </div>
 
       <DataTable columns={columns(onProductsChanged)} data={filteredProducts} />
-      
+
       <div className="flex justify-center items-center gap-4 mb-4 h-[80px]">
         <Button
           variant="outline"
