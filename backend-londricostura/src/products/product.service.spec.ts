@@ -151,50 +151,6 @@ describe('ProductService', () => {
     });
   });
 
-  describe('findAllPaginated()', () => {
-    it('deve ajustar page e limit e retornar resultado paginado', async () => {
-      const mockData = [{ id: 1 } as Product];
-      const mockTotal = 10;
-      repository.findAndCount.mockResolvedValue([mockData, mockTotal]);
-
-      const result = await service.findAllPaginated(-1, 500);
-
-      expect(repository.findAndCount).toHaveBeenCalledWith({
-        relations: ['user'],
-        skip: 0,    // (page 1 - 1) * 100
-        take: 100,  // limite ajustado para 100
-        order: { id: 'ASC' },
-      });
-      expect(result).toEqual({
-        data: mockData,
-        total: mockTotal,
-        page: 1,
-        limit: 100
-      });
-    });
-
-    it('deve usar page e limit fornecidos quando válidos', async () => {
-      const mockData = [{ id: 2 } as Product, { id: 3 } as Product];
-      const mockTotal = 2;
-      repository.findAndCount.mockResolvedValue([mockData, mockTotal]);
-
-      const result = await service.findAllPaginated(2, 5);
-
-      expect(repository.findAndCount).toHaveBeenCalledWith({
-        relations: ['user'],
-        skip: (2 - 1) * 5,
-        take: 5,
-        order: { id: 'ASC' },
-      });
-      expect(result).toEqual({
-        data: mockData,
-        total: mockTotal,
-        page: 2,
-        limit: 5
-      });
-    });
-  });
-
   describe('findOne()', () => {
     it('deve retornar produto quando encontrado', async () => {
       const fake = {

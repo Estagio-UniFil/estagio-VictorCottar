@@ -67,7 +67,6 @@ export class ProductService {
     return { data, total, page, limit };
   }
 
-
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id },
