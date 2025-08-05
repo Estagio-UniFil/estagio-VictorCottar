@@ -18,7 +18,6 @@ export class CostumerService {
     const existingClient = await this.costumerRepository.findOne({
       where: {
         name: createCostumerDto.name,
-        city: { id: cityId },
       },
     });
 
@@ -53,6 +52,7 @@ export class CostumerService {
   ): Promise<{ data: Costumer[]; total: number; page: number; limit: number }> {
     const query = this.costumerRepository.createQueryBuilder('product')
       .leftJoinAndSelect('product.user', 'user')
+      .leftJoinAndSelect('product.city', 'city') 
       .skip((page - 1) * limit)
       .take(limit)
       .orderBy('product.id', 'ASC');

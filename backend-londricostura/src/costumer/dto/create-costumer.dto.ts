@@ -1,8 +1,7 @@
 import {
   IsNotEmpty,
   IsString,
-  Max,
-  Min
+  Matches,
 } from 'class-validator';
 
 export class CreateCostumerDto {
@@ -11,8 +10,11 @@ export class CreateCostumerDto {
   name: string;
 
   @IsNotEmpty({ message: 'Telefone é obrigatório.' })
-  @Min(11, { message: 'O telefone deve ter 11 dígitos.' })
-  @Max(11, { message: 'O telefone deve ter 11 dígitos.' })
+  @IsString()
+  @Matches(/^[0-9]{11}$/, {
+    message:
+      'Telefone deve conter exatamente 11 dígitos numéricos (DDD + número, sem espaços).',
+  })
   phone: string;
 
   @IsNotEmpty({ message: 'Cidade é obrigatória.' })

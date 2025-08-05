@@ -30,8 +30,7 @@ export class CostumerResponseDto {
   @Type(() => CityMinimal)
   city: CityMinimal;
 
-  @Expose()
-  city_id: number;
+ 
 
   @Expose()
   @Type(() => UserMinimal)

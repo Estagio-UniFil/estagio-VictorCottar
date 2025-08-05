@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Index('IDX_COSTUMER_NAME_CITY_UNIQUE', ['name'], {
+@Index('IDX_COSTUMER_NAME_UNIQUE', ['name'], {
   unique: true,
   where: `"deleted_at" IS NULL`,
 })
