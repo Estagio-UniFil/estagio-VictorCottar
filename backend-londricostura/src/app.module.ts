@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { CostumerModule } from './costumer/costumer.module';
 import { ProductModule } from './products/product.module';
 import { CityModule } from './city/city.module';
 
@@ -31,6 +32,7 @@ import { CityModule } from './city/city.module';
     UserModule,
     ProductModule,
     CityModule,
+    CostumerModule,
     AuthModule,
   ],
   controllers: [],
