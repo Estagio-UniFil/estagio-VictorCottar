@@ -1,7 +1,7 @@
-import { Client } from "@/interfaces/client";
+import { Costumer } from "@/interfaces/costumer";
 import { API_URL, getHeaders } from "./loginService";
 
-export async function fetchClients(): Promise<Client[]> {
+export async function fetchCostumer(): Promise<Costumer[]> {
   try {
     const response = await fetch(`${API_URL}/costumer`, {
       method: "GET",
@@ -37,11 +37,11 @@ export async function removeClient(id: number): Promise<void> {
   }
 }
 
-export async function createClient(client: Client): Promise<void> {
+export async function createCostumer(costumer: Costumer): Promise<void> {
   const response = await fetch(`${API_URL}/costumer`, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify(client),
+    body: JSON.stringify(costumer),
   });
 
   if (!response.ok) {
@@ -51,11 +51,11 @@ export async function createClient(client: Client): Promise<void> {
   }
 }
 
-export async function updateClient(client: Client): Promise<void> {
-  const response = await fetch(`${API_URL}/costumer/${client.id}`, {
+export async function updateClient(costumer: Costumer): Promise<void> {
+  const response = await fetch(`${API_URL}/costumer/${costumer.id}`, {
     method: "PUT",
     headers: getHeaders(),
-    body: JSON.stringify(client),
+    body: JSON.stringify(costumer),
   });
 
   if (!response.ok) {

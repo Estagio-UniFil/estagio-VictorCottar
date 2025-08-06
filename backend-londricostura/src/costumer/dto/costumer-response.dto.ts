@@ -14,6 +14,9 @@ class CityMinimal {
 
   @Expose()
   name: string;
+
+  @Expose()
+  state: string;
 }
 
 export class CostumerResponseDto {

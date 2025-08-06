@@ -13,30 +13,24 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
-import { Client } from "@/interfaces/client"
+import { Costumer } from "@/interfaces/costumer"
 import { City } from "@/interfaces/city"
 import { fetchCities } from "@/services/cityService"
-import { createClient } from "@/services/clientService"
+import { createCostumer } from "@/services/costumerService"
 
-interface DialogAddClientProps {
-  onClientAdded: () => void;
+interface DialogAddCostumerProps {
+  onCostumerAdded: () => void;
 }
 
-export default function DialogAddClient({ onClientAdded }: DialogAddClientProps) {
+export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumerProps) {
   const [open, setOpen] = useState(false);
-  const [client, setClient] = useState<Client>({
+  const [selectedCityId, setSelectedCityId] = useState<string>('');
+  const [cities, setCities] = useState<City[]>([]);
+  const [costumer, setCostumer] = useState<Costumer>({
     name: '',
     phone: '',
     city: undefined,
   });
-  const [selectedCityId, setSelectedCityId] = useState<string>('');
-  
-  // Função para obter o nome da cidade selecionada para exibição
-  const getSelectedCityName = () => {
-    const selectedCity = cities.find(city => city.id?.toString() === selectedCityId);
-    return selectedCity ? `${selectedCity.name} - ${selectedCity.state}` : '';
-  };
-  const [cities, setCities] = useState<City[]>([]);
 
   useEffect(() => {
     if (open) {
@@ -46,41 +40,29 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
     }
   }, [open]);
 
-  const handleAddClient = async () => {
-    if (!client.name || !client.phone || !selectedCityId) {
+  const handleAddCostumer = async () => {
+    if (!costumer.name || !costumer.phone || !selectedCityId) {
       toast.error("Por favor, preencha todos os campos obrigatórios para adicionar o cliente.");
       return;
     }
-    
-    // Encontrar a cidade selecionada
+
     const selectedCity = cities.find(city => city.id?.toString() === selectedCityId);
     if (!selectedCity || !selectedCity.id) {
       toast.error("Cidade selecionada não encontrada.");
       return;
     }
-    
-    // Payload para a API (com city_id)
-    const clientPayload = {
-      name: client.name,
-      phone: client.phone,
+
+    const costumerPayload = {
+      name: costumer.name,
+      phone: costumer.phone,
       city_id: selectedCity.id
     };
-    
-    // Atualizar o estado local do cliente com o objeto cidade completo (para exibição)
-    const updatedClient: Client = {
-      ...client,
-      city: {
-        name: selectedCity.name
-      }
-    };
-    
+
     try {
-      await createClient(clientPayload); // Envia city_id para a API
-      onClientAdded();
+      await createCostumer(costumerPayload);
+      onCostumerAdded();
       toast.success("Cliente criado com sucesso!");
-      
-      // Reset do formulário
-      setClient({ name: '', phone: '', city: undefined });
+      setCostumer({ name: '', phone: '', city: undefined });
       setSelectedCityId('');
       setOpen(false);
     } catch (error: any) {
@@ -116,8 +98,8 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
                 </Label>
                 <Input
                   id="name"
-                  value={client.name}
-                  onChange={(e) => setClient({ ...client, name: e.target.value })}
+                  value={costumer.name}
+                  onChange={(e) => setCostumer({ ...costumer, name: e.target.value })}
                   className="w-3/4"
                   required
                 />
@@ -128,8 +110,8 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
                 </Label>
                 <Input
                   id="phone"
-                  value={client.phone}
-                  onChange={(e) => setClient({ ...client, phone: e.target.value })}
+                  value={costumer.phone}
+                  onChange={(e) => setCostumer({ ...costumer, phone: e.target.value })}
                   className="w-3/4"
                   required
                 />
@@ -147,13 +129,19 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Cidades</SelectLabel>
-                      {cities.map((city) =>
-                        city.id !== undefined ? (
-                          <SelectItem key={city.id} value={city.id.toString()}>
-                            {city.name} - {city.state}
-                          </SelectItem>
-                        ) : null
+                      {cities.length > 0 ? (
+                        <>
+                          <SelectLabel>Cidades</SelectLabel>
+                          {cities.map((city) =>
+                            city.id !== undefined ? (
+                              <SelectItem key={city.id} value={city.id.toString()}>
+                                {city.name} - {city.state}
+                              </SelectItem>
+                            ) : null
+                          )}
+                        </>
+                      ) : (
+                        <SelectLabel>Adicione as cidades</SelectLabel>
                       )}
                     </SelectGroup>
                   </SelectContent>
@@ -166,7 +154,7 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
                   className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
                   variant="ghost"
                   type="submit"
-                  onClick={handleAddClient}
+                  onClick={handleAddCostumer}
                 >
                   Criar cliente
                 </Button>
