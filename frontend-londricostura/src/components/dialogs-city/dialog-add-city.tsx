@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { Earth } from "lucide-react";
 import { useState } from "react"
 import { City } from "@/interfaces/city";
 import { createCity } from "@/services/cityService"
@@ -51,7 +51,7 @@ export default function DialogAddCity() {
               className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
               variant="ghost"
             >
-              <Plus size={16} /> Adicionar cidade
+              <Earth size={16} /> Adicionar cidade
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px] h-[330px]">

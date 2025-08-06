@@ -3,7 +3,7 @@ import { API_URL, getHeaders } from "./loginService";
 
 export async function fetchClients(): Promise<Client[]> {
   try {
-    const response = await fetch(`${API_URL}/clients`, {
+    const response = await fetch(`${API_URL}/costumer`, {
       method: "GET",
       headers: getHeaders(),
     });
@@ -22,7 +22,7 @@ export async function fetchClients(): Promise<Client[]> {
 }
 
 export async function removeClient(id: number): Promise<void> {
-  const response = await fetch(`${API_URL}/clients/${id}`, {
+  const response = await fetch(`${API_URL}/costumer/${id}`, {
     method: "DELETE",
     headers: getHeaders(),
   });
@@ -38,7 +38,7 @@ export async function removeClient(id: number): Promise<void> {
 }
 
 export async function createClient(client: Client): Promise<void> {
-  const response = await fetch(`${API_URL}/clients`, {
+  const response = await fetch(`${API_URL}/costumer`, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify(client),
@@ -52,7 +52,7 @@ export async function createClient(client: Client): Promise<void> {
 }
 
 export async function updateClient(client: Client): Promise<void> {
-  const response = await fetch(`${API_URL}/clients/${client.id}`, {
+  const response = await fetch(`${API_URL}/costumer/${client.id}`, {
     method: "PUT",
     headers: getHeaders(),
     body: JSON.stringify(client),

@@ -1,20 +1,22 @@
 'use client'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Select, SelectTrigger, SelectValue, SelectContent,
+  SelectGroup, SelectLabel, SelectItem,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Client } from "@/interfaces/client"
+import { City } from "@/interfaces/city"
+import { fetchCities } from "@/services/cityService"
+import { createClient } from "@/services/clientService"
 
 interface DialogAddClientProps {
   onClientAdded: () => void;
@@ -25,18 +27,61 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
   const [client, setClient] = useState<Client>({
     name: '',
     phone: '',
-    city: '',
+    city: undefined,
   });
+  const [selectedCityId, setSelectedCityId] = useState<string>('');
+  
+  // Função para obter o nome da cidade selecionada para exibição
+  const getSelectedCityName = () => {
+    const selectedCity = cities.find(city => city.id?.toString() === selectedCityId);
+    return selectedCity ? `${selectedCity.name} - ${selectedCity.state}` : '';
+  };
+  const [cities, setCities] = useState<City[]>([]);
+
+  useEffect(() => {
+    if (open) {
+      fetchCities()
+        .then(data => setCities(data))
+        .catch(() => toast.error("Erro ao carregar cidades."));
+    }
+  }, [open]);
 
   const handleAddClient = async () => {
-    if (!client.name || !client.phone || !client.city) {
+    if (!client.name || !client.phone || !selectedCityId) {
       toast.error("Por favor, preencha todos os campos obrigatórios para adicionar o cliente.");
+      return;
     }
+    
+    // Encontrar a cidade selecionada
+    const selectedCity = cities.find(city => city.id?.toString() === selectedCityId);
+    if (!selectedCity || !selectedCity.id) {
+      toast.error("Cidade selecionada não encontrada.");
+      return;
+    }
+    
+    // Payload para a API (com city_id)
+    const clientPayload = {
+      name: client.name,
+      phone: client.phone,
+      city_id: selectedCity.id
+    };
+    
+    // Atualizar o estado local do cliente com o objeto cidade completo (para exibição)
+    const updatedClient: Client = {
+      ...client,
+      city: {
+        name: selectedCity.name
+      }
+    };
+    
     try {
-      await createClient(client);
-      onProductAdded();
+      await createClient(clientPayload); // Envia city_id para a API
+      onClientAdded();
       toast.success("Cliente criado com sucesso!");
-      setClient({ name: '', phone: '', city: '' });
+      
+      // Reset do formulário
+      setClient({ name: '', phone: '', city: undefined });
+      setSelectedCityId('');
       setOpen(false);
     } catch (error: any) {
       toast.error("Erro ao criar cliente: " + error.message);
@@ -78,11 +123,11 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Label htmlFor="email" className="w-1/4 text-right">
+                <Label htmlFor="phone" className="w-1/4 text-right">
                   Telefone
                 </Label>
                 <Input
-                  id="code"
+                  id="phone"
                   value={client.phone}
                   onChange={(e) => setClient({ ...client, phone: e.target.value })}
                   className="w-3/4"
@@ -90,10 +135,29 @@ export default function DialogAddClient({ onClientAdded }: DialogAddClientProps)
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Label htmlFor="password" className="w-1/4 text-right">
+                <Label htmlFor="city" className="w-1/4 text-right">
                   Cidade
                 </Label>
-
+                <Select
+                  value={selectedCityId}
+                  onValueChange={(value: string) => setSelectedCityId(value)}
+                >
+                  <SelectTrigger className="w-[343px]">
+                    <SelectValue placeholder="Escolha a cidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Cidades</SelectLabel>
+                      {cities.map((city) =>
+                        city.id !== undefined ? (
+                          <SelectItem key={city.id} value={city.id.toString()}>
+                            {city.name} - {city.state}
+                          </SelectItem>
+                        ) : null
+                      )}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="flex justify-center items-center w-full">
