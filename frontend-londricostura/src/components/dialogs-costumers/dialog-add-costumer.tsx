@@ -111,6 +111,7 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
                 <Input
                   id="phone"
                   value={costumer.phone}
+                  placeholder="99999999999"
                   onChange={(e) => setCostumer({ ...costumer, phone: e.target.value })}
                   className="w-3/4"
                   required

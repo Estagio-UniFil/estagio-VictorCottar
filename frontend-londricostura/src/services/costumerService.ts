@@ -1,6 +1,13 @@
 import { Costumer } from "@/interfaces/costumer";
 import { API_URL, getHeaders } from "./loginService";
 
+interface UpdateCostumerPayload {
+  id: number;
+  name?: string;
+  phone?: string;
+  city_id?: number;
+}
+
 export async function fetchCostumer(): Promise<Costumer[]> {
   try {
     const response = await fetch(`${API_URL}/costumer`, {
@@ -21,7 +28,7 @@ export async function fetchCostumer(): Promise<Costumer[]> {
   }
 }
 
-export async function removeClient(id: number): Promise<void> {
+export async function removeCostumer(id: number): Promise<void> {
   const response = await fetch(`${API_URL}/costumer/${id}`, {
     method: "DELETE",
     headers: getHeaders(),
@@ -51,11 +58,13 @@ export async function createCostumer(costumer: Costumer): Promise<void> {
   }
 }
 
-export async function updateClient(costumer: Costumer): Promise<void> {
-  const response = await fetch(`${API_URL}/costumer/${costumer.id}`, {
+export async function updateCostumer(data: UpdateCostumerPayload): Promise<void> {
+  const { id, ...updateData } = data;
+  
+  const response = await fetch(`${API_URL}/costumer/${id}`, {
     method: "PUT",
     headers: getHeaders(),
-    body: JSON.stringify(costumer),
+    body: JSON.stringify(updateData),
   });
 
   if (!response.ok) {

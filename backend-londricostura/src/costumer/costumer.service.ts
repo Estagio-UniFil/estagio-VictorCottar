@@ -52,7 +52,7 @@ export class CostumerService {
   ): Promise<{ data: Costumer[]; total: number; page: number; limit: number }> {
     const query = this.costumerRepository.createQueryBuilder('product')
       .leftJoinAndSelect('product.user', 'user')
-      .leftJoinAndSelect('product.city', 'city') 
+      .leftJoinAndSelect('product.city', 'city')
       .skip((page - 1) * limit)
       .take(limit)
       .orderBy('product.id', 'ASC');
@@ -78,7 +78,14 @@ export class CostumerService {
   }
 
   async update(id: number, updateCostumerDto: UpdateCostumerDto): Promise<Costumer> {
-    const costumer = await this.findOne(id);
+    const costumer = await this.costumerRepository.findOne({
+      where: { id },
+      relations: ['city', 'user'],
+    });
+
+    if (!costumer) {
+      throw new NotFoundException(`Cliente com id ${id} não encontrado.`);
+    }
 
     if (updateCostumerDto.name && updateCostumerDto.name !== costumer.name) {
       const clientWithSameName = await this.costumerRepository.findOne({
@@ -90,8 +97,30 @@ export class CostumerService {
       }
     }
 
-    Object.assign(costumer, updateCostumerDto);
-    return this.costumerRepository.save(costumer);
+    if (updateCostumerDto.name) {
+      costumer.name = updateCostumerDto.name;
+    }
+
+    if (updateCostumerDto.phone) {
+      costumer.phone = updateCostumerDto.phone;
+    }
+
+    if (updateCostumerDto.city_id) {
+      costumer.city = { id: updateCostumerDto.city_id } as City;
+    }
+
+    await this.costumerRepository.save(costumer);
+
+    const updatedCostumer = await this.costumerRepository.findOne({
+      where: { id },
+      relations: ['city', 'user'],
+    });
+
+    if (!updatedCostumer) {
+      throw new NotFoundException(`Cliente com id ${id} não encontrado após atualização.`);
+    }
+
+    return updatedCostumer;
   }
 
   async remove(id: number): Promise<void> {

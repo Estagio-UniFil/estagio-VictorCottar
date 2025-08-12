@@ -5,6 +5,7 @@ import { Costumer } from "@/interfaces/costumer"
 import { DataTable } from "@/components/datatable"
 import { formatPhone } from "@/utils/formatPhone"
 import DialogAddCostumer from "@/components/dialogs-costumers/dialog-add-costumer"
+import DialogEditCostumer from "@/components/dialogs-costumers/dialog-edit-costumer"
 
 interface Props {
   costumers: Costumer[];
@@ -46,14 +47,23 @@ const columns = (
           </div>
         )
       }
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const costumer = row.original;
+        return (
+          <div className="flex items-center justify-evenly space-x-[-20px]">
+            <DialogEditCostumer costumer={costumer} onCostumerChanged={onCostumerChanged} />
+          </div>
+        )
+      }
     }
-    
-    // {/* coluna de actions */}
   ];
 
 export default function CostumersDataTable({ costumers, onCostumerChanged }: Props) {
   return (
-    
+
     <DataTable columns={columns(onCostumerChanged)} data={costumers} />
   )
 }

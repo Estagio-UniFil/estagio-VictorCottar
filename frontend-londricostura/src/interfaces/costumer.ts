@@ -3,6 +3,7 @@ export interface Costumer {
   name: string;
   phone: string;
   city?: {
+    id?: number;
     name?: string;
     state?: string;
   };

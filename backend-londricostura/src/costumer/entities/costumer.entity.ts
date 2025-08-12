@@ -26,11 +26,11 @@ export class Costumer {
   @Column()
   phone: string;
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => City, { eager: true })
+  @ManyToOne(() => City)
   @JoinColumn({ name: 'city_id' })
   city: City;
 
