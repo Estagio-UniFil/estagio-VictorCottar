@@ -1,12 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogClose, DialogContent, DialogDescription,
+  DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog"
 import { toast } from "sonner";
 import { removeCostumer } from "@/services/costumerService";

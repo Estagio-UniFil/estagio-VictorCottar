@@ -7,6 +7,7 @@ import { formatPhone } from "@/utils/formatPhone"
 import DialogAddCostumer from "@/components/dialogs-costumers/dialog-add-costumer"
 import DialogEditCostumer from "@/components/dialogs-costumers/dialog-edit-costumer"
 import DialogRemoveCostumer from "@/components/dialogs-costumers/dialog-remove-costumer"
+import DialogDetailsCostumer from "@/components/dialogs-costumers/dialog-details-costumer"
 
 interface Props {
   costumers: Costumer[];
@@ -57,6 +58,7 @@ const columns = (
           <div className="flex items-center justify-evenly space-x-[-20px]">
             <DialogEditCostumer costumer={costumer} onCostumerChanged={onCostumerChanged} />
             <DialogRemoveCostumer costumer={costumer} onCostumerChanged={onCostumerChanged} />
+            <DialogDetailsCostumer costumer={costumer} />
           </div>
         )
       }
