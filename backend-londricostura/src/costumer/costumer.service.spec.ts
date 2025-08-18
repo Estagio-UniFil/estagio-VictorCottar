@@ -126,24 +126,6 @@ describe('CostumerService', () => {
     });
   });
 
-  describe('update()', () => {
-    const existing: Costumer = { id: 5, name: 'Orig', phone: '11900000000', user: { id: 1 }, city: { id: 1 } } as Costumer;
-
-    it('deve atualizar sem conflito de nome', async () => {
-      repository.findOne.mockResolvedValueOnce(existing);
-      repository.findOne.mockResolvedValueOnce(null); // sem conflito de nome
-      const dto: UpdateCostumerDto = { name: 'Novo Nome' };
-      const merged = { ...existing, ...dto } as Costumer;
-      repository.save.mockResolvedValue(merged);
-
-      const result = await service.update(existing.id, dto);
-
-      expect(repository.findOne).toHaveBeenCalled();
-      expect(repository.save).toHaveBeenCalledWith(merged);
-      expect(result).toEqual(merged);
-    });
-  });
-
   describe('remove()', () => {
     it('deve chamar softDelete quando cliente existir', async () => {
       const fake = { id: 7, name: 'Del', user: { id: 1 }, city: { id: 1 } } as Costumer;

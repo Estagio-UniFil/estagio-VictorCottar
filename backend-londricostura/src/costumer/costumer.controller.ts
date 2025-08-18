@@ -1,4 +1,7 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards } from '@nestjs/common';
+import {
+  Controller, Get, Post, Put, Delete,
+  Body, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CostumerService } from './costumer.service';
 import { CreateCostumerDto } from './dto/create-costumer.dto';
@@ -8,9 +11,12 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { plainToInstance } from 'class-transformer';
 import { Costumer } from './entities/costumer.entity';
 
+type FilterField = 'id' | 'name' | 'phone' ;
+const ALLOWED_FIELDS: FilterField[] = ['id', 'name', 'phone'];
+
 @Controller('costumer')
 export class CostumerController {
-  constructor(private readonly costumerService: CostumerService) { }
+  constructor(private readonly costumerService: CostumerService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
@@ -32,9 +38,16 @@ export class CostumerController {
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('filterField') filterField?: string,
+    @Query('filterValue') filterValue?: string,
   ) {
-    const result = await this.costumerService.findAllPaginated(page, limit);
-    const data = result.data.map(prod =>
+    const ff = ALLOWED_FIELDS.includes(filterField as FilterField)
+      ? (filterField as FilterField)
+      : undefined;
+
+    const result = await this.costumerService.findAllPaginated(page, limit, ff as keyof Costumer, filterValue);
+
+    const data = result.data.map((prod) =>
       plainToInstance(CostumerResponseDto, prod, { excludeExtraneousValues: true }),
     );
 
@@ -50,17 +63,28 @@ export class CostumerController {
   @Get('paginated')
   @UseGuards(AuthGuard('jwt'))
   async findAllPaginated(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-    @Query('filterField') filterField?: keyof Costumer,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('filterField') filterField?: string,
     @Query('filterValue') filterValue?: string,
   ) {
-    return this.costumerService.findAllPaginated(
-      Number(page),
-      Number(limit),
-      filterField,
-      filterValue,
+    const ff = ALLOWED_FIELDS.includes(filterField as FilterField)
+      ? (filterField as FilterField)
+      : undefined;
+
+    const result = await this.costumerService.findAllPaginated(page, limit, ff as keyof Costumer, filterValue);
+
+    const data = result.data.map((prod) =>
+      plainToInstance(CostumerResponseDto, prod, { excludeExtraneousValues: true }),
     );
+
+    return {
+      message: 'Clientes encontrados com sucesso.',
+      data,
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+    };
   }
 
   @Get('findWithDeleted')

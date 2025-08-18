@@ -8,23 +8,33 @@ interface UpdateCostumerPayload {
   city_id?: number;
 }
 
-export async function fetchCostumer(): Promise<Costumer[]> {
+export async function fetchCostumer(page: number, limit: number, filterField?: string, filterValue?: string): Promise<{ data: Costumer[]; total: number }> {
   try {
-    const response = await fetch(`${API_URL}/costumer`, {
+    let url = `${API_URL}/costumer?page=${page}&limit=${limit}`;
+
+    if (filterField && filterValue) {
+      url += `&filterField=${filterField}&filterValue=${filterValue}`;
+    }
+
+    const response = await fetch(url, {
       method: "GET",
       headers: getHeaders(),
     });
 
     if (!response.ok) {
       console.error("Erro ao buscar clientes:", response.statusText);
-      return [];
+      return { data: [], total: 0 };
     }
 
     const data = await response.json();
-    return data.data || [];
+
+    return {
+      data: data.data || [],
+      total: data.total || 0,
+    };
   } catch (error) {
     console.error("Erro na requisição de clientes:", error);
-    return [];
+    return { data: [], total: 0 };
   }
 }
 

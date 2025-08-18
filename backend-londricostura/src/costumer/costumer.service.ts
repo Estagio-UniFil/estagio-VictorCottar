@@ -45,26 +45,55 @@ export class CostumerService {
   }
 
   async findAllPaginated(
-    page: number,
-    limit: number,
-    filterField?: keyof Costumer,
+    page = 1,
+    limit = 10,
+    filterField?: keyof Costumer,   // 'id' | 'name' | 'phone'
     filterValue?: string,
-  ): Promise<{ data: Costumer[]; total: number; page: number; limit: number }> {
-    const query = this.costumerRepository.createQueryBuilder('product')
-      .leftJoinAndSelect('product.user', 'user')
-      .leftJoinAndSelect('product.city', 'city')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy('product.id', 'ASC');
+  ): Promise<{ data: Costumer[]; total: number; page: number; limit: number; totalPages: number }> {
+    const safePage = Number.isFinite(+page) && +page > 0 ? Math.floor(+page) : 1;
+    const safeLimit = Number.isFinite(+limit) && +limit > 0 ? Math.min(Math.floor(+limit), 100) : 10;
 
-    if (filterField && filterValue) {
-      query.andWhere(`product.${filterField} ILIKE :value`, { value: `%${filterValue}%` });
-    }
+    const makeBaseQb = () =>
+      this.costumerRepository
+        .createQueryBuilder('costumer')
+        .leftJoinAndSelect('costumer.user', 'user')
+        .leftJoinAndSelect('costumer.city', 'city');
 
-    const [data, total] = await query.getManyAndCount();
+    const applyFilter = (qb: ReturnType<typeof makeBaseQb>) => {
+      if (filterField && typeof filterValue === 'string' && filterValue.trim() !== '') {
+        const v = filterValue.trim();
 
-    return { data, total, page, limit };
+        if (filterField === 'id') {
+          const idNum = Number(v);
+          if (!Number.isNaN(idNum)) {
+            qb.andWhere('costumer.id = :id', { id: idNum });
+          } else {
+            qb.andWhere('CAST(costumer.id AS TEXT) ILIKE :value', { value: `%${v}%` });
+          }
+        } else if (filterField === 'name') {
+          qb.andWhere('costumer.name ILIKE :value', { value: `%${v}%` });
+        } else if (filterField === 'phone') {
+          qb.andWhere('costumer.phone ILIKE :value', { value: `%${v}%` });
+        }
+      }
+      return qb;
+    };
+
+    const totalQb = applyFilter(makeBaseQb());
+    const total = await totalQb.getCount();
+
+    const dataQb = applyFilter(makeBaseQb())
+      .orderBy('costumer.id', 'ASC')
+      .skip((safePage - 1) * safeLimit)
+      .take(safeLimit);
+
+    const data = await dataQb.getMany();
+
+    const totalPages = Math.max(1, Math.ceil(total / safeLimit));
+    return { data, total, page: safePage, limit: safeLimit, totalPages };
   }
+
+
 
   async findOne(id: number): Promise<Costumer> {
     const costumer = await this.costumerRepository.findOne({

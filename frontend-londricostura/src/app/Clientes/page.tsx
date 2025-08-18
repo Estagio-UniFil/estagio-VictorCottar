@@ -9,16 +9,29 @@ import { fetchCostumer } from "@/services/costumerService";
 
 export default function Clientes() {
   const [costumers, setCostumers] = useState<Costumer[]>([]);
+  const [total, setTotal] = useState(0);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [filterField, setFilterField] = useState<keyof Costumer>('name');
+  const [filterValue, setFilterValue] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const refreshCostumers = () => setRefreshTrigger((t) => t + 1);
 
   useEffect(() => {
-    fetchCostumer()
-      .then((data) => setCostumers(data))
-      .catch(() => {
+    setPage(1);
+  }, [filterField, filterValue]);
+
+  useEffect(() => {
+    fetchCostumer(page, limit, filterField, filterValue)
+      .then((data) => {
+        setCostumers(data.data);
+        setTotal(data.total);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar clientes:", err);
       });
-  }, [refreshTrigger]);
+  }, [page, filterField, filterValue, limit, refreshTrigger]);
 
   return (
     <>
@@ -29,7 +42,18 @@ export default function Clientes() {
           <DialogAddCostumer onCostumerAdded={refreshCostumers} />
         </div>
       </div>
-      <CostumersDataTable costumers={costumers} onCostumerChanged={refreshCostumers} />
+      <CostumersDataTable
+        costumers={costumers}
+        onCostumerChanged={refreshCostumers}
+        total={total}
+        page={page}
+        limit={limit}
+        setPage={setPage}
+        filterField={filterField}
+        setFilterField={setFilterField}
+        filterValue={filterValue}
+        setFilterValue={setFilterValue}
+      />
     </>
   );
 }
