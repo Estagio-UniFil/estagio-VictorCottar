@@ -17,17 +17,17 @@ import { formatCurrency } from "@/utils/formatCurrency";
 
 interface DialogDetailsProductProps {
   product: Product;
-  children?: React.ReactNode;
+  onProductsChanged?: () => void;
 }
 
-export default function DialogDetailsProduct({ product }: DialogDetailsProductProps) {
+export default function ({ product }: DialogDetailsProductProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
-        > Detalhes
+        >
           <BadgeAlertIcon size={16} />
         </Button>
       </DialogTrigger>

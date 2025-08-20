@@ -16,7 +16,6 @@ import { DeleteIcon } from "../ui/delete";
 interface DialogRemoveProductProps {
   product: Product;
   onProductsChanged: () => void;
-  children?: React.ReactNode;
 }
 
 export default function DialogRemoveProduct({ product, onProductsChanged }: DialogRemoveProductProps) {
@@ -39,7 +38,7 @@ export default function DialogRemoveProduct({ product, onProductsChanged }: Dial
         <Button
           variant="ghost"
           className="hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200 cursor-pointer"
-        > Remover
+        >
           <DeleteIcon />
         </Button>
       </DialogTrigger>

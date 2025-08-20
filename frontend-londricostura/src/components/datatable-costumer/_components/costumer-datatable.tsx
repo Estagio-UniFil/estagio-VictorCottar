@@ -74,7 +74,7 @@ interface Props {
 
 const fieldLabels: Record<keyof Costumer, string> = {
   id: "ID",
-  name: "nome",
+  name: "Nome",
   phone: "Telefone",
   city: "Cidade",
   user: "Usuário",
@@ -118,7 +118,6 @@ export default function CostumersDataTable({
             <SelectItem value="id">ID</SelectItem>
             <SelectItem value="name">Nome</SelectItem>
             <SelectItem value="phone">Telefone</SelectItem>
-            <SelectItem value="city">Cidade</SelectItem>
           </SelectContent>
         </Select>
       </div>
