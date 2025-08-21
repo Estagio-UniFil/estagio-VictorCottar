@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CostumerModule } from './costumer/costumer.module';
 import { ProductModule } from './products/product.module';
+import { InventoryModule } from './inventory/inventory.module';
 import { CityModule } from './city/city.module';
 
 @Module({
@@ -32,6 +33,7 @@ import { CityModule } from './city/city.module';
     UserModule,
     ProductModule,
     CityModule,
+    InventoryModule,
     CostumerModule,
     AuthModule,
   ],

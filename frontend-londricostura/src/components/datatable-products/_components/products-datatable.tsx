@@ -4,7 +4,7 @@ import { Product } from "@/interfaces/product";
 import { DataTable } from "@/components/datatable";
 import DialogEditProduct from "@/components/dialogs-products/dialog-edit-product";
 import DialogRemoveProduct from "@/components/dialogs-products/dialog-remove-product";
-import DialogDetailsProduct from "@/components/dialogs-products/dialog-remove-product";
+import DialogDetailsProduct from "@/components/dialogs-products/dialog-details-product";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -13,48 +13,48 @@ import { Button } from "@/components/ui/button";
 export const columns = (
   onProductsChanged: () => void
 ): ColumnDef<Product>[] => [
-  {
-    accessorKey: "id",
-    header: () => <div className="text-center">ID</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("id")}</div>,
-  },
-  {
-    accessorKey: "name",
-    header: () => <div className="text-center">Nome</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "code",
-    header: () => <div className="text-center">Cód. do produto</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("code")}</div>,
-  },
-  {
-    accessorKey: "quantity",
-    header: () => <div className="text-center">Quantidade</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("quantity")}</div>,
-  },
-  {
-    accessorKey: "price",
-    header: () => <div className="text-center">Preço</div>,
-    cell: ({ row }) => {
-      const price = row.getValue("price") as number;
-      return <div className="text-center">{formatCurrency(price)}</div>;
+    {
+      accessorKey: "id",
+      header: () => <div className="text-center">ID</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("id")}</div>,
     },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const product = row.original;
-      return (
-        <div className="flex items-center justify-evenly space-x-[-20px]">
-          <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
-          <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
-          <DialogDetailsProduct product={product} />
-        </div>
-      );
+    {
+      accessorKey: "name",
+      header: () => <div className="text-center">Nome</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("name")}</div>,
     },
-  },
-];
+    {
+      accessorKey: "code",
+      header: () => <div className="text-center">Cód. do produto</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("code")}</div>,
+    },
+    {
+      accessorKey: "quantity",
+      header: () => <div className="text-center">Quantidade</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("quantity")}</div>,
+    },
+    {
+      accessorKey: "price",
+      header: () => <div className="text-center">Preço Un.</div>,
+      cell: ({ row }) => {
+        const price = row.getValue("price") as number;
+        return <div className="text-center">{formatCurrency(price)}</div>;
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const product = row.original;
+        return (
+          <div className="flex items-center justify-evenly space-x-[-20px]">
+            <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
+            <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
+            <DialogDetailsProduct product={product} />
+          </div>
+        );
+      },
+    },
+  ];
 
 // Definição de Props para o componente ProductsDataTable
 interface Props {
