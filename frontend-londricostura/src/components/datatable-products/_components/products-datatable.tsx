@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/interfaces/product";
 import { DataTable } from "@/components/datatable";
@@ -11,10 +11,11 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import { Button } from "@/components/ui/button";
 import DialogInInventory from "@/components/dialogs-products/dialogs-inventory/dialog-in-inventory";
 import DialogOutInventory from "@/components/dialogs-products/dialogs-inventory/dialog-out-inventory";
-import { getAvailableBulk } from "@/services/inventoryService";
+import { getAvailable, getAvailableBulk } from "@/services/inventoryService";
 
 export const columns = (
-  onProductsChanged: () => void
+  onProductsChanged: () => void,
+  onRowRefresh: (id: number) => void
 ): ColumnDef<Product>[] => [
     {
       accessorKey: "id",
@@ -48,10 +49,12 @@ export const columns = (
       id: "actions",
       cell: ({ row }) => {
         const product = row.original;
+        const id = product.id!;
+
         return (
           <div className="flex items-center justify-evenly space-x-[-20px]">
-            <DialogInInventory product={product} onProductAdded={onProductsChanged} />
-            <DialogOutInventory product={product} onProductAdded={onProductsChanged} />
+            <DialogInInventory product={product} onProductAdded={() => onRowRefresh(id)} />
+            <DialogOutInventory product={product} onProductAdded={() => onRowRefresh(id)} />
             <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
             <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
             <DialogDetailsProduct product={product} />
@@ -94,14 +97,24 @@ export default function ProductsDataTable({
     const ids = products.map(p => p.id!).filter(Boolean);
     if (!ids.length) return;
 
-    getAvailableBulk(ids)
-      .then(rows => {
-        const byId = new Map(rows.map(r => [r.product_id, r.available]));
-        setLocalProducts(prev =>
-          prev.map(p => ({ ...p, available: byId.get(p.id!) ?? 0 }))
-        );
-      });
+    getAvailableBulk(ids).then(rows => {
+      const byId = new Map(rows.map(r => [r.product_id, r.available]));
+      setLocalProducts(prev =>
+        prev.map(p => ({ ...p, available: byId.get(p.id!) ?? 0 }))
+      );
+    });
   }, [products]);
+
+  const refreshAvailable = useCallback(async (id: number) => {
+    try {
+      const { available } = await getAvailable(id);
+      setLocalProducts(prev =>
+        prev.map(p => (p.id === id ? { ...p, available } : p))
+      );
+    } catch (err) {
+      console.error("Erro ao atualizar disponibilidade:", err);
+    }
+  }, []);
 
   const fieldLabels: Record<keyof Product, string> = {
     id: "ID",
@@ -113,14 +126,14 @@ export default function ProductsDataTable({
   };
 
   const filteredProducts = useMemo(() => {
-  const base = localProducts;
-  if (!filterValue) return base;
+    const base = localProducts;
+    if (!filterValue) return base;
 
-  return base.filter((prod) => {
-    const val = prod[filterField] as any;
-    return String(val ?? "").toLowerCase().includes(filterValue.toLowerCase());
-  });
-}, [localProducts, filterField, filterValue]); // <— dependa de localProducts
+    return base.filter((prod) => {
+      const val = prod[filterField] as any;
+      return String(val ?? "").toLowerCase().includes(filterValue.toLowerCase());
+    });
+  }, [localProducts, filterField, filterValue]);
 
 
   return (
@@ -151,7 +164,8 @@ export default function ProductsDataTable({
         </Select>
       </div>
 
-      <DataTable columns={columns(onProductsChanged)} data={filteredProducts} />
+      <DataTable columns={columns(onProductsChanged, refreshAvailable)} data={filteredProducts} />
+
 
       <div className="flex justify-center items-center gap-4 mb-4 h-[80px]">
         <Button
