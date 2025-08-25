@@ -21,7 +21,7 @@ export class InventoryService {
 
     if (dto.movement_type === 'OUT') {
       const availableResponse = await this.getAvailable(dto.product_id);
-      if (dto.quantity > availableResponse.quantity) {
+      if (dto.quantity > availableResponse.available) {
         throw new ConflictException('Quantidade indisponível em estoque para esta saída.');
       }
     }
@@ -61,7 +61,27 @@ export class InventoryService {
         code: product.code,
         price: product.price,
       },
-      quantity: available,
+      available: available,
     };
+  }
+
+  async getAvailableBulk(productIds: number[]) {
+    if (!productIds?.length) return [];
+    const rows = await this.inventoryRepository
+      .createQueryBuilder('i')
+      .select('i.product_id', 'product_id')
+      .addSelect(
+        "COALESCE(SUM(CASE WHEN i.movement_type = 'IN' THEN i.quantity ELSE -i.quantity END), 0)",
+        'available',
+      )
+      .where('i.product_id IN (:...ids)', { ids: productIds })
+      .groupBy('i.product_id')
+      .getRawMany<{ product_id: number; available: string }>();
+
+    const map = new Map<number, number>();
+    for (const id of productIds) map.set(id, 0);
+    for (const r of rows) map.set(Number(r.product_id), Number(r.available));
+
+    return Array.from(map.entries()).map(([product_id, available]) => ({ product_id, available }));
   }
 }

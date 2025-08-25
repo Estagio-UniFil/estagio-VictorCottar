@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Product } from "@/interfaces/product";
 import { DataTable } from "@/components/datatable";
@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Button } from "@/components/ui/button";
+import DialogInInventory from "@/components/dialogs-products/dialogs-inventory/dialog-in-inventory";
+import DialogOutInventory from "@/components/dialogs-products/dialogs-inventory/dialog-out-inventory";
+import { getAvailableBulk } from "@/services/inventoryService";
 
 export const columns = (
   onProductsChanged: () => void
@@ -29,9 +32,9 @@ export const columns = (
       cell: ({ row }) => <div className="text-center">{row.getValue("code")}</div>,
     },
     {
-      accessorKey: "quantity",
-      header: () => <div className="text-center">Quantidade</div>,
-      cell: ({ row }) => <div className="text-center">{row.getValue("quantity")}</div>,
+      accessorKey: "available",
+      header: () => <div className="text-center">Estoque</div>,
+      cell: ({ row }) => <div className="text-center">{row.getValue("available") ?? 0}</div>,
     },
     {
       accessorKey: "price",
@@ -47,6 +50,8 @@ export const columns = (
         const product = row.original;
         return (
           <div className="flex items-center justify-evenly space-x-[-20px]">
+            <DialogInInventory product={product} onProductAdded={onProductsChanged} />
+            <DialogOutInventory product={product} onProductAdded={onProductsChanged} />
             <DialogEditProduct product={product} onProductsChanged={onProductsChanged} />
             <DialogRemoveProduct product={product} onProductsChanged={onProductsChanged} />
             <DialogDetailsProduct product={product} />
@@ -56,7 +61,6 @@ export const columns = (
     },
   ];
 
-// Definição de Props para o componente ProductsDataTable
 interface Props {
   products: Product[];
   onProductsChanged: () => void;
@@ -83,6 +87,21 @@ export default function ProductsDataTable({
   setFilterValue,
 }: Props) {
   const totalPages = Math.ceil(total / limit);
+  const [localProducts, setLocalProducts] = useState<Product[]>(products);
+
+  useEffect(() => {
+    setLocalProducts(products);
+    const ids = products.map(p => p.id!).filter(Boolean);
+    if (!ids.length) return;
+
+    getAvailableBulk(ids)
+      .then(rows => {
+        const byId = new Map(rows.map(r => [r.product_id, r.available]));
+        setLocalProducts(prev =>
+          prev.map(p => ({ ...p, available: byId.get(p.id!) ?? 0 }))
+        );
+      });
+  }, [products]);
 
   const fieldLabels: Record<keyof Product, string> = {
     id: "ID",
@@ -90,15 +109,19 @@ export default function ProductsDataTable({
     code: "Cód. do produto",
     price: "Preço",
     user: "Usuário",
+    available: "Estoque",
   };
 
   const filteredProducts = useMemo(() => {
-    if (!filterValue) return products;
-    return products.filter((prod) => {
-      const val = prod[filterField];
-      return String(val).toLowerCase().includes(filterValue.toLowerCase());
-    });
-  }, [products, filterField, filterValue]);
+  const base = localProducts;
+  if (!filterValue) return base;
+
+  return base.filter((prod) => {
+    const val = prod[filterField] as any;
+    return String(val ?? "").toLowerCase().includes(filterValue.toLowerCase());
+  });
+}, [localProducts, filterField, filterValue]); // <— dependa de localProducts
+
 
   return (
     <div>

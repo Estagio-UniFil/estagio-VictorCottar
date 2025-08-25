@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InventoryService } from './inventory.service';
 import { CreateMovementDto } from './dto/create-movement.dto';
@@ -31,12 +31,26 @@ export class InventoryController {
     };
   }
 
+  @Get('available')
+  async availableBulk(@Query('ids') ids: string) {
+    const arr = (ids || '')
+      .split(',')
+      .map(s => Number(s.trim()))
+      .filter(n => Number.isInteger(n) && n > 0);
+
+    const data = await this.inventoryService.getAvailableBulk(arr);
+    return { message: 'Disponibilidade obtida com sucesso.', data };
+  }
+
   @Get('available/:id')
   async available(@Param('id', ParseIntPipe) id: number) {
-    const available = await this.inventoryService.getAvailable(id);
+
+    const dto = await this.inventoryService.getAvailable(id);
     return {
       message: 'Quantidade disponível obtida com sucesso.',
-      data: { product_id: id, available },
+      data: { product_id: id, ...dto },
     };
+
   }
 }
+

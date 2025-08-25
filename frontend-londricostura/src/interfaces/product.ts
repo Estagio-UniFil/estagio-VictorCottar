@@ -6,4 +6,5 @@ export interface Product {
   user?: {
     name?: string;
   };
+  available?: number;
 }

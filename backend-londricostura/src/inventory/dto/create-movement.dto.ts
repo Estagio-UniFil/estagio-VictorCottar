@@ -1,4 +1,5 @@
-import { IsEnum, IsInt, IsNotEmpty, Min } from 'class-validator';
+// inventory/dto/create-movement.dto.ts
+import { IsIn, IsInt, IsNotEmpty, Min } from 'class-validator';
 import { MovementType } from '../entities/inventory.entity';
 
 export class CreateMovementDto {
@@ -7,7 +8,7 @@ export class CreateMovementDto {
   product_id: number;
 
   @IsNotEmpty({ message: 'Movimentação é obrigatória.' })
-  @IsEnum(['IN', 'OUT'], { message: "Movimentação deve ser 'IN' ou 'OUT'." })
+  @IsIn(['IN', 'OUT'], { message: "Movimentação deve ser 'IN' ou 'OUT'." })
   movement_type: MovementType;
 
   @IsNotEmpty({ message: 'Quantidade é obrigatória.' })
