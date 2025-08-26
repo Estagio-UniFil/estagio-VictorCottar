@@ -15,8 +15,8 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Costumer } from "@/interfaces/costumer"
 import { City } from "@/interfaces/city"
-import { fetchCities } from "@/services/cityService"
 import { createCostumer } from "@/services/costumerService"
+import { resolveCityByCep } from "@/services/cityService"
 
 interface DialogAddCostumerProps {
   onCostumerAdded: () => void;
@@ -24,6 +24,9 @@ interface DialogAddCostumerProps {
 
 export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumerProps) {
   const [open, setOpen] = useState(false);
+  const [cep, setCep] = useState('');
+  const [resolving, setResolving] = useState(false);
+
   const [selectedCityId, setSelectedCityId] = useState<string>('');
   const [cities, setCities] = useState<City[]>([]);
   const [costumer, setCostumer] = useState<Costumer>({
@@ -33,22 +36,45 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
   });
 
   useEffect(() => {
-    if (open) {
-      fetchCities()
-        .then(data => setCities(data))
-        .catch(() => toast.error("Erro ao carregar cidades."));
+    if (!open) {
+      setCep('');
+      setCities([]);
+      setSelectedCityId('');
+      setCostumer({ name: '', phone: '', city: undefined });
     }
   }, [open]);
 
+  const handleResolveCep = async () => {
+    const clean = cep.replace(/\D/g, '');
+    if (clean.length !== 8) {
+      toast.error('Informe um CEP com 8 dígitos.');
+      return;
+    }
+    try {
+      setResolving(true);
+      const resolved = await resolveCityByCep(clean);
+      const c: City = { id: resolved.id, name: resolved.name, state: resolved.state };
+      setCities([c]);
+      setSelectedCityId(String(resolved.id));
+      toast.success(`${resolved.name} - ${resolved.state} selecionada pelo CEP.`);
+    } catch (e: any) {
+      toast.error(e.message || 'Erro ao resolver CEP');
+      setCities([]);
+      setSelectedCityId('');
+    } finally {
+      setResolving(false);
+    }
+  };
+
   const handleAddCostumer = async () => {
     if (!costumer.name || !costumer.phone || !selectedCityId) {
-      toast.error("Por favor, preencha todos os campos obrigatórios para adicionar o cliente.");
+      toast.error("Preencha nome, telefone e um CEP válido para resolver a cidade.");
       return;
     }
 
     const selectedCity = cities.find(city => city.id?.toString() === selectedCityId);
     if (!selectedCity || !selectedCity.id) {
-      toast.error("Cidade selecionada não encontrada.");
+      toast.error("Cidade não resolvida. Verifique o CEP.");
       return;
     }
 
@@ -59,11 +85,9 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
     };
 
     try {
-      await createCostumer(costumerPayload);
+      await createCostumer(costumerPayload as any);
       onCostumerAdded();
       toast.success("Cliente criado com sucesso!");
-      setCostumer({ name: '', phone: '', city: undefined });
-      setSelectedCityId('');
       setOpen(false);
     } catch (error: any) {
       toast.error("Erro ao criar cliente: " + error.message);
@@ -73,7 +97,7 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
 
   return (
     <div className="flex w-full">
-      <div className="flex justify-end w-[95%] mt-3">
+      <div className="flex justify-end w-[95%] mt-3"> 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button
@@ -84,18 +108,15 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
               <Plus size={16} /> Adicionar cliente
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] h-[390px]">
+          <DialogContent className="sm:max-w-[520px]">
             <DialogHeader>
               <DialogTitle>Adicionar cliente</DialogTitle>
-              <DialogDescription>
-                Insira os dados necessários para criação do cliente.
-              </DialogDescription>
+              <DialogDescription>Insira os dados. A cidade será resolvida pelo CEP.</DialogDescription>
             </DialogHeader>
-            <div className="flex flex-col gap-7 py-2">
+
+            <div className="flex flex-col gap-6 py-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="name" className="w-1/4 text-right">
-                  Nome
-                </Label>
+                <Label htmlFor="name" className="w-1/4 text-right">Nome</Label>
                 <Input
                   id="name"
                   value={costumer.name}
@@ -104,10 +125,9 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
                   required
                 />
               </div>
+
               <div className="flex items-center gap-2">
-                <Label htmlFor="phone" className="w-1/4 text-right">
-                  Telefone
-                </Label>
+                <Label htmlFor="phone" className="w-1/4 text-right">Telefone</Label>
                 <Input
                   id="phone"
                   value={costumer.phone}
@@ -117,22 +137,42 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
                   required
                 />
               </div>
+
               <div className="flex items-center gap-2">
-                <Label htmlFor="city" className="w-1/4 text-right">
-                  Cidade
-                </Label>
+                <Label htmlFor="cep" className="w-1/4 text-right">CEP</Label>
+                <div className="w-3/4 flex gap-2">
+                  <Input
+                    id="cep"
+                    value={cep}
+                    placeholder="00000000"
+                    onChange={(e) => setCep(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleResolveCep(); }}
+                    className="w-full"
+                    required
+                    max={8}
+                    min={8}
+                  />
+                  <Button type="button" variant="secondary" onClick={handleResolveCep} disabled={resolving}>
+                    {resolving ? 'Buscando...' : 'Buscar'}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Label className="w-1/4 text-right">Cidade</Label>
                 <Select
                   value={selectedCityId}
-                  onValueChange={(value: string) => setSelectedCityId(value)}
+                  onValueChange={(v: string) => setSelectedCityId(v)}
+                  disabled={true} // travado: vem do CEP
                 >
                   <SelectTrigger className="w-[343px]">
-                    <SelectValue placeholder="Escolha a cidade" />
+                    <SelectValue placeholder="Resolva pelo CEP" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       {cities.length > 0 ? (
                         <>
-                          <SelectLabel>Cidades</SelectLabel>
+                          <SelectLabel>Cidade detectada</SelectLabel>
                           {cities.map((city) =>
                             city.id !== undefined ? (
                               <SelectItem key={city.id} value={city.id.toString()}>
@@ -142,13 +182,14 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
                           )}
                         </>
                       ) : (
-                        <SelectLabel>Adicione as cidades</SelectLabel>
+                        <SelectLabel>Nenhuma cidade resolvida</SelectLabel>
                       )}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
             </div>
+
             <div className="flex justify-center items-center w-full">
               <DialogFooter>
                 <Button

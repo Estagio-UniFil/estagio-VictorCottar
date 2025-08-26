@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
+import { ResolveByCepDto } from './dto/resolve-by-cep.dto';
 
 @Controller('cities')
 export class CityController {
@@ -37,6 +38,16 @@ export class CityController {
     return {
       message: 'Cidade encontrada com sucesso.',
       data: city,
+    };
+  }
+
+  @Post('resolve-by-cep')
+  @UseGuards(AuthGuard('jwt'))
+  async resolveByCep(@Body() dto: ResolveByCepDto) {
+    const result = await this.cityService.resolveByCep(dto.cep);
+    return {
+      message: 'Cidade resolvida com sucesso.',
+      data: result,
     };
   }
 

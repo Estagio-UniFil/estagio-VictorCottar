@@ -70,7 +70,7 @@ export async function createCostumer(costumer: Costumer): Promise<void> {
 
 export async function updateCostumer(data: UpdateCostumerPayload): Promise<void> {
   const { id, ...updateData } = data;
-  
+
   const response = await fetch(`${API_URL}/costumer/${id}`, {
     method: "PUT",
     headers: getHeaders(),

@@ -21,6 +21,21 @@ export async function fetchCities(): Promise<City[]> {
   }
 }
 
+export async function resolveCityByCep(cep: string): Promise<{ id: number; name: string; state: string }> {
+  const cleanCep = cep.replace(/\D/g, '');
+  const r = await fetch(`${API_URL}/cities/resolve-by-cep`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ cep: cleanCep }),
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(err?.message || 'Erro ao resolver CEP');
+  }
+  const { data } = await r.json();
+  return data;
+}
+
 export async function removeCity(id: number): Promise<void> {
   const response = await fetch(`${API_URL}/cities/${id}`, {
     method: "DELETE",
