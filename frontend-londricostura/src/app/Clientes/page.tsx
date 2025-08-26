@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from "react";
 import HeaderPage from "@/components/header-pages";
-import DialogAddCity from "@/components/dialogs-city/dialog-add-city";
 import DialogAddCostumer from "@/components/dialogs-costumers/dialog-add-costumer";
 import CostumersDataTable from "@/components/datatable-costumer/_components/costumer-datatable";
 import { Costumer } from "@/interfaces/costumer";
@@ -37,10 +36,7 @@ export default function Clientes() {
     <>
       <HeaderPage pageName="Clientes" />
       <div className="flex justify-end ">
-        <div className="flex items-center space-x-4 mr-19">
-          <DialogAddCity />
-          <DialogAddCostumer onCostumerAdded={refreshCostumers} />
-        </div>
+        <DialogAddCostumer onCostumerAdded={refreshCostumers} />
       </div>
       <CostumersDataTable
         costumers={costumers}
