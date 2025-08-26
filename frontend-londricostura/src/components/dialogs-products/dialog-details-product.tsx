@@ -56,6 +56,14 @@ export default function ({ product }: DialogDetailsProductProps) {
             </p>
           </div>
           <div className="flex flex-row text-center">
+            <Label htmlFor="name" className="w-[90px] text-right">
+              Quantidade:
+            </Label>
+            <p className="leading-7">
+              {product.available}
+            </p>
+          </div>
+          <div className="flex flex-row text-center">
             <Label htmlFor="name" className="w-[50px] text-right">
               Preço:
             </Label>

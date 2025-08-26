@@ -45,56 +45,52 @@ export default function DialogOutInventory({ product, onProductAdded }: DialogOu
   };
 
   return (
-    <div className="flex w-full">
-      <div className="flex justify-end w-[95%] mt-3">
-        <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
-          <DialogTrigger asChild>
+    <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
+      <DialogTrigger asChild>
+        <Button
+          onClick={() => setOpen(true)}
+          className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+          variant="ghost"
+        >
+          <Minus size={16} />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Saída de produto</DialogTitle>
+          <DialogDescription>
+            Produto: {product?.name} ({product?.code})
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex items-center gap-2 py-2">
+          <Label htmlFor="quantity" className="w-1/4 text-right">
+            Quantidade
+          </Label>
+          <Input
+            id="quantity"
+            type="number"
+            min={1}
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value || 0))}
+            className="w-3/4"
+            required
+          />
+        </div>
+
+        <div className="flex justify-center items-center w-full">
+          <DialogFooter>
             <Button
-              onClick={() => setOpen(true)}
-              className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+              className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
               variant="ghost"
+              type="button"
+              onClick={handleInventoryOut}
             >
-              <Minus size={16} />
+              Criar saída
             </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Saída de produto</DialogTitle>
-              <DialogDescription>
-                Produto: {product?.name} ({product?.code})
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="flex items-center gap-2 py-2">
-              <Label htmlFor="quantity" className="w-1/4 text-right">
-                Quantidade
-              </Label>
-              <Input
-                id="quantity"
-                type="number"
-                min={1}
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value || 0))}
-                className="w-3/4"
-                required
-              />
-            </div>
-
-            <div className="flex justify-center items-center w-full">
-              <DialogFooter>
-                <Button
-                  className="p-4 w-[290px] cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
-                  variant="ghost"
-                  type="button"
-                  onClick={handleInventoryOut}
-                >
-                  Criar saída
-                </Button>
-              </DialogFooter>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

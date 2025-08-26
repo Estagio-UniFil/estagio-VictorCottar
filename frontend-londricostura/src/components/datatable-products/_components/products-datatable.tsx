@@ -166,7 +166,6 @@ export default function ProductsDataTable({
 
       <DataTable columns={columns(onProductsChanged, refreshAvailable)} data={filteredProducts} />
 
-
       <div className="flex justify-center items-center gap-4 mb-4 h-[80px]">
         <Button
           variant="outline"
