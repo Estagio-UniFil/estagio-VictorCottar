@@ -1,6 +1,7 @@
 import {
   Controller, Get, Post, Put, Delete,
-  Body, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards
+  Body, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards,
+  BadRequestException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CostumerService } from './costumer.service';
@@ -10,26 +11,39 @@ import { CostumerResponseDto } from './dto/costumer-response.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { plainToInstance } from 'class-transformer';
 import { Costumer } from './entities/costumer.entity';
+import { CityService } from 'src/city/city.service';
 
-type FilterField = 'id' | 'name' | 'phone' ;
+type FilterField = 'id' | 'name' | 'phone';
 const ALLOWED_FIELDS: FilterField[] = ['id', 'name', 'phone'];
 
 @Controller('costumer')
 export class CostumerController {
-  constructor(private readonly costumerService: CostumerService) {}
+  constructor(
+    private readonly costumerService: CostumerService,
+    private readonly cityService: CityService,
+  ) { }
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
   async create(
     @Body() createCostumerDto: CreateCostumerDto,
     @GetUser('id') userId: number,
-    @Body('city_id', ParseIntPipe) cityId: number
+    @Body('city_id', ParseIntPipe) cityId: number,
+    @Body('cep') cep: string,
+    @Body('number') numberHouse: number
   ) {
-    const costumer = await this.costumerService.create(createCostumerDto, userId, cityId);
-    const costumerResponse = plainToInstance(CostumerResponseDto, costumer, { excludeExtraneousValues: true });
+
+    if (!cep || cep.trim() === '') {
+      throw new BadRequestException('CEP não pode ser vazio');
+    }
+
+    const { id, name, state, neighborhood, street, } = await this.cityService.resolveByCep(cep);
+
+    const costumer = await this.costumerService.create(createCostumerDto, userId, id, neighborhood, street, numberHouse);
+
     return {
       message: 'Cliente criado com sucesso.',
-      data: costumerResponse,
+      data: costumer,
     };
   }
 

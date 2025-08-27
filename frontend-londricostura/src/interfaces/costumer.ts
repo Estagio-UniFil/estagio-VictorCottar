@@ -7,6 +7,9 @@ export interface Costumer {
     name?: string;
     state?: string;
   };
+  neighborhood?: string;
+  street?: string;
+  number?: number;
   user?: {
     name?: string;
   };

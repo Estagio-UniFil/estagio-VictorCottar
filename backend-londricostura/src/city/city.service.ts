@@ -19,8 +19,12 @@ export class CityService {
   ) { }
 
   private normalizeCep(cep: string) {
+    if (!cep) {
+      throw new Error('CEP não pode ser vazio');
+    }
     return cep.replace(/\D/g, '').slice(0, 8);
   }
+
   private cleanName(s: string) {
     return s?.trim().replace(/\s+/g, ' ');
   }
@@ -80,8 +84,13 @@ export class CityService {
     await this.cityRepository.delete(id);
   }
 
-  async resolveByCep(cepRaw: string): Promise<{ id: number; name: string; state: string; neighborhood: string; street: string; numberHouse: number }> {
+  async resolveByCep(cepRaw: string): Promise<{ id: number; name: string; state: string; neighborhood: string; street: string;  }> {
+    if (!cepRaw || cepRaw.trim() === '') {
+      throw new BadRequestException('CEP não pode ser vazio');
+    }
+
     const cep = this.normalizeCep(cepRaw);
+
     if (!/^\d{8}$/.test(cep)) {
       throw new BadRequestException('CEP inválido. Use 8 dígitos.');
     }
@@ -105,7 +114,7 @@ export class CityService {
         city = await this.cityRepository.save({ name: cityName, state: stateName });
       }
 
-      return { id: city.id, name: cityName, state: stateName, neighborhood, street, numberHouse: 0 };
+      return { id: city.id, name: cityName, state: stateName, neighborhood, street };
     } catch (error) {
       throw new InternalServerErrorException('Erro ao consultar a BrasilAPI.');
     }

@@ -3,20 +3,17 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Select, SelectTrigger, SelectValue, SelectContent,
-  SelectGroup, SelectLabel, SelectItem,
-} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { Costumer } from "@/interfaces/costumer"
 import { City } from "@/interfaces/city"
 import { createCostumer } from "@/services/costumerService"
 import { resolveCityByCep } from "@/services/cityService"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select"
 
 interface DialogAddCostumerProps {
   onCostumerAdded: () => void;
@@ -26,13 +23,15 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
   const [open, setOpen] = useState(false);
   const [cep, setCep] = useState('');
   const [resolving, setResolving] = useState(false);
-
   const [selectedCityId, setSelectedCityId] = useState<string>('');
   const [cities, setCities] = useState<City[]>([]);
   const [costumer, setCostumer] = useState<Costumer>({
     name: '',
     phone: '',
     city: undefined,
+    neighborhood: '',
+    street: '',
+    number: 0,
   });
 
   useEffect(() => {
@@ -40,12 +39,13 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
       setCep('');
       setCities([]);
       setSelectedCityId('');
-      setCostumer({ name: '', phone: '', city: undefined });
+      setCostumer({ name: '', phone: '', city: undefined, neighborhood: '', street: '', number: 0 });
     }
   }, [open]);
 
-  const handleResolveCep = async () => {
+  const handleResolveCep = async (cep: string) => {
     const clean = cep.replace(/\D/g, '');
+
     if (clean.length !== 8) {
       toast.error('Informe um CEP com 8 dígitos.');
       return;
@@ -56,6 +56,11 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
       const c: City = { id: resolved.id, name: resolved.name, state: resolved.state };
       setCities([c]);
       setSelectedCityId(String(resolved.id));
+      setCostumer({
+        ...costumer,
+        street: resolved.street,
+        neighborhood: resolved.neighborhood,
+      });
       toast.success(`${resolved.name} - ${resolved.state} selecionada pelo CEP.`);
     } catch (e: any) {
       toast.error(e.message || 'Erro ao resolver CEP');
@@ -66,9 +71,31 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
     }
   };
 
+  const handleChangeCep = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCep(value);
+
+    if (value.replace(/\D/g, '').length === 8) {
+      handleResolveCep(value);
+    }
+  };
+
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const parsedNumber = parseInt(value, 10);
+
+    if (!isNaN(parsedNumber) && parsedNumber > 0) {
+      setCostumer({ ...costumer, number: parsedNumber });
+    } else if (value === "") {
+      setCostumer({ ...costumer, number: 0 });
+    } else {
+      toast.error("Número da casa deve ser maior que 0.");
+    }
+  };
+
   const handleAddCostumer = async () => {
-    if (!costumer.name || !costumer.phone || !selectedCityId) {
-      toast.error("Preencha nome, telefone e um CEP válido para resolver a cidade.");
+    if (!cep || cep.length !== 8) {
+      toast.error("O CEP deve ter 8 dígitos.");
       return;
     }
 
@@ -81,23 +108,26 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
     const costumerPayload = {
       name: costumer.name,
       phone: costumer.phone,
-      city_id: selectedCity.id
+      city_id: selectedCity.id,
+      neighborhood: costumer.neighborhood,
+      street: costumer.street,
+      number: costumer.number,
+      cep: cep
     };
 
     try {
-      await createCostumer(costumerPayload as any);
+      await createCostumer(costumerPayload);
       onCostumerAdded();
       toast.success("Cliente criado com sucesso!");
       setOpen(false);
     } catch (error: any) {
       toast.error("Erro ao criar cliente: " + error.message);
-      console.error("Erro ao criar cliente:", error);
     }
   };
 
   return (
     <div className="flex w-full">
-      <div className="flex justify-end w-[95%] mt-3"> 
+      <div className="flex justify-end w-[95%] mt-3">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button
@@ -145,48 +175,81 @@ export default function DialogAddCostumer({ onCostumerAdded }: DialogAddCostumer
                     id="cep"
                     value={cep}
                     placeholder="00000000"
-                    onChange={(e) => setCep(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') handleResolveCep(); }}
+                    onChange={handleChangeCep}
                     className="w-full"
                     required
-                    max={8}
-                    min={8}
+                    maxLength={8}
+                    minLength={8}
                   />
-                  <Button type="button" variant="secondary" onClick={handleResolveCep} disabled={resolving}>
-                    {resolving ? 'Buscando...' : 'Buscar'}
-                  </Button>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Label className="w-1/4 text-right">Cidade</Label>
-                <Select
-                  value={selectedCityId}
-                  onValueChange={(v: string) => setSelectedCityId(v)}
-                  disabled={true} // travado: vem do CEP
-                >
-                  <SelectTrigger className="w-[343px]">
-                    <SelectValue placeholder="Resolva pelo CEP" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {cities.length > 0 ? (
-                        <>
-                          <SelectLabel>Cidade detectada</SelectLabel>
-                          {cities.map((city) =>
-                            city.id !== undefined ? (
-                              <SelectItem key={city.id} value={city.id.toString()}>
-                                {city.name} - {city.state}
-                              </SelectItem>
-                            ) : null
-                          )}
-                        </>
-                      ) : (
-                        <SelectLabel>Nenhuma cidade resolvida</SelectLabel>
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="neighborhood" className="w-1/4 text-right">Bairro</Label>
+                <Input
+                  id="neighborhood"
+                  value={costumer.neighborhood}
+                  onChange={(e) => setCostumer({ ...costumer, neighborhood: e.target.value })}
+                  className="w-3/4"
+                  required
+                  disabled={resolving}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Label htmlFor="street" className="w-1/4 text-right">Endereço</Label>
+                <Input
+                  id="street"
+                  value={costumer.street}
+                  onChange={(e) => setCostumer({ ...costumer, street: e.target.value })}
+                  className="w-3/4"
+                  required
+                  disabled={resolving}
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Label htmlFor="number" className="w-1/4 text-right">Número</Label>
+                <Input
+                  id="number"
+                  value={costumer.number === 0 ? '' : costumer.number}
+                  onChange={handleNumberChange}
+                  className="w-3/4"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Label htmlFor="city" className="w-1/4 text-right">Cidade</Label>
+                <div className="w-3/4 flex gap-2">
+                  <Select
+                    value={selectedCityId}
+                    onValueChange={(v: string) => setSelectedCityId(v)}
+                    disabled={true}
+                  >
+                    <SelectTrigger className="w-[343px]">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {cities.length > 0 ? (
+                          <>
+                            <SelectLabel>Cidade detectada</SelectLabel>
+                            {cities.map((city) =>
+                              city.id !== undefined ? (
+                                <SelectItem key={city.id} value={city.id.toString()}>
+                                  {city.name} - {city.state}
+                                </SelectItem>
+                              ) : null
+                            )}
+                          </>
+                        ) : (
+                          <SelectLabel>Nenhuma cidade localizada</SelectLabel>
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 

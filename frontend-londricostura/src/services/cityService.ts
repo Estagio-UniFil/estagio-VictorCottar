@@ -21,7 +21,7 @@ export async function fetchCities(): Promise<City[]> {
   }
 }
 
-export async function resolveCityByCep(cep: string): Promise<{ id: number; name: string; state: string }> {
+export async function resolveCityByCep(cep: string): Promise<{ id: number; name: string; state: string, street: string, neighborhood: string }> {
   const cleanCep = cep.replace(/\D/g, '');
   const r = await fetch(`${API_URL}/cities/resolve-by-cep`, {
     method: 'POST',

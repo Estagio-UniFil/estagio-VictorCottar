@@ -31,7 +31,7 @@ export default function ({ product }: DialogDetailsProductProps) {
           <BadgeAlertIcon size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] h-[420px]">
+      <DialogContent className="sm:max-w-[500px] h-[480px]">
         <DialogHeader>
           <DialogTitle>Dados do produto</DialogTitle>
           <DialogDescription>

@@ -32,9 +32,9 @@ export class CostumerService {
       city: { id: cityId } as City,
       neighborhood: neighborhood,
       street: street,
-      number: number,
+      number: number
     });
-    
+
     return this.costumerRepository.save(client);
   }
 
