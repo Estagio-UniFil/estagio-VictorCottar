@@ -16,7 +16,7 @@ export class CityService {
   constructor(
     @InjectRepository(City)
     private readonly cityRepository: Repository<City>,
-  ) {}
+  ) { }
 
   private normalizeCep(cep: string) {
     return cep.replace(/\D/g, '').slice(0, 8);
@@ -80,66 +80,35 @@ export class CityService {
     await this.cityRepository.delete(id);
   }
 
-  async resolveByCep(cepRaw: string): Promise<{ id: number; name: string; state: string }> {
+  async resolveByCep(cepRaw: string): Promise<{ id: number; name: string; state: string; neighborhood: string; street: string; numberHouse: number }> {
     const cep = this.normalizeCep(cepRaw);
     if (!/^\d{8}$/.test(cep)) {
       throw new BadRequestException('CEP inválido. Use 8 dígitos.');
     }
 
-    let data: any;
     try {
-      const r = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      if (!r.ok) throw new Error(`ViaCEP status ${r.status}`);
-      data = await r.json();
-    } catch {
-      throw new InternalServerErrorException('Falha ao consultar CEP.');
-    }
-    if (data?.erro) throw new BadRequestException('CEP não encontrado.');
+      const response = await fetch(`https://brasilapi.com.br/api/cep/v2/${cep}`);
+      const data = await response.json();
 
-    const name = this.cleanName(data.localidade);
-    const state = this.cleanUf(data.uf);
-    if (!name || !state) {
-      throw new InternalServerErrorException('Resposta de CEP sem localidade/UF.');
-    }
-
-    let city = await this.cityRepository.findOne({ where: { name: ILike(name), state } });
-
-    if (!city) {
-
-      try {
-        await this.cityRepository.upsert({ name, state } as City, ['name', 'state']);
-      } catch (e: any) {
-        try {
-          const qb: any = this.cityRepository
-            .createQueryBuilder()
-            .insert()
-            .into(City)
-            .values({ name, state });
-
-          if (typeof qb.orIgnore === 'function') qb.orIgnore();
-          await qb.execute();
-        } catch (err: any) {
-          const code = err?.code || err?.errno || err?.name || '';
-          const msg = String(err?.message || '');
-          const isDup =
-            code === '23505' ||               
-            code === 'ER_DUP_ENTRY' ||        
-            code === 'SQLITE_CONSTRAINT' ||   
-            /unique|duplicate/i.test(msg);    
-
-          if (!isDup) {
-            throw new InternalServerErrorException('Erro ao salvar cidade.');
-          }
-        }
+      if (!data.city || !data.neighborhood || !data.street || !data.state) {
+        throw new InternalServerErrorException('Resposta incompleta da BrasilAPI');
       }
 
-      city = await this.cityRepository.findOne({ where: { name: ILike(name), state } });
-    }
+      const cityName = this.cleanName(data.city);
+      const stateName = this.cleanUf(data.state);
+      const neighborhood = this.cleanName(data.neighborhood);
+      const street = this.cleanName(data.street);
 
-    if (!city) {
-      throw new InternalServerErrorException('Não foi possível resolver a cidade.');
-    }
+      let city = await this.cityRepository.findOne({ where: { name: ILike(cityName), state: stateName } });
 
-    return { id: city.id, name: city.name, state: city.state };
+      if (!city) {
+        city = await this.cityRepository.save({ name: cityName, state: stateName });
+      }
+
+      return { id: city.id, name: cityName, state: stateName, neighborhood, street, numberHouse: 0 };
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao consultar a BrasilAPI.');
+    }
   }
 }
+

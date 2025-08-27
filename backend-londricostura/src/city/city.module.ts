@@ -15,5 +15,6 @@ import { AuthModule } from 'src/auth/auth.module';
   ],
   controllers: [CityController],
   providers: [CityService],
+  exports: [CityService],
 })
 export class CityModule {}

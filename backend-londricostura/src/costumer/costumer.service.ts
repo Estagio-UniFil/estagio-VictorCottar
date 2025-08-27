@@ -14,7 +14,7 @@ export class CostumerService {
     private readonly costumerRepository: Repository<Costumer>,
   ) { }
 
-  async create(createCostumerDto: CreateCostumerDto, userId: number, cityId: number): Promise<Costumer> {
+  async create(createCostumerDto: CreateCostumerDto, userId: number, cityId: number, neighborhood: string, street: string, number: number): Promise<Costumer> {
     const existingClient = await this.costumerRepository.findOne({
       where: {
         name: createCostumerDto.name,
@@ -25,14 +25,16 @@ export class CostumerService {
       throw new ConflictException('Já existe um cliente cadastrado com este nome.');
     }
 
-    // associa ao usuário recebido via token
     const client = this.costumerRepository.create({
       name: createCostumerDto.name,
       phone: createCostumerDto.phone,
       user: { id: userId } as User,
       city: { id: cityId } as City,
+      neighborhood: neighborhood,
+      street: street,
+      number: number,
     });
-
+    
     return this.costumerRepository.save(client);
   }
 
@@ -92,8 +94,6 @@ export class CostumerService {
     const totalPages = Math.max(1, Math.ceil(total / safeLimit));
     return { data, total, page: safePage, limit: safeLimit, totalPages };
   }
-
-
 
   async findOne(id: number): Promise<Costumer> {
     const costumer = await this.costumerRepository.findOne({

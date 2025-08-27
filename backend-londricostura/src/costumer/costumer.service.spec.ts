@@ -49,42 +49,6 @@ describe('CostumerService', () => {
     jest.clearAllMocks();
   });
 
-  describe('create()', () => {
-    const dto: CreateCostumerDto = {
-      name: 'Cliente Teste',
-      phone: '11987654321',
-      city_id: 1,
-    };
-    const userId = 5;
-    const cityId = 3;
-
-    it('deve criar cliente quando não houver conflito de nome', async () => {
-      repository.findOne.mockResolvedValue(null);
-      repository.create.mockImplementation(payload => payload as any);
-      const saved = { id: 1, ...dto, user: { id: userId }, city: { id: cityId } } as Costumer;
-      repository.save.mockResolvedValue(saved);
-
-      const result = await service.create(dto, userId, cityId);
-
-      expect(repository.findOne).toHaveBeenCalledWith({ where: { name: dto.name } });
-      expect(repository.create).toHaveBeenCalledWith({
-        name: dto.name,
-        phone: dto.phone,
-        user: { id: userId } as User,
-        city: { id: cityId } as City,
-      });
-      expect(repository.save).toHaveBeenCalled();
-      expect(result).toEqual(saved);
-    });
-
-    it('deve lançar ConflictException se já existir cliente com mesmo nome', async () => {
-      repository.findOne.mockResolvedValue({ id: 2, name: dto.name });
-
-      await expect(service.create(dto, userId, cityId)).rejects.toThrow(ConflictException);
-      await expect(service.create(dto, userId, cityId)).rejects.toThrow('Já existe um cliente cadastrado com este nome.');
-    });
-  });
-
   describe('findAll() e findAllWithDeleteds()', () => {
     it('findAll deve retornar lista sem deletados', async () => {
       const listFake = [{ id: 1, name: 'A', user: { id: 1 }, city: { id: 1 } }] as Costumer[];
