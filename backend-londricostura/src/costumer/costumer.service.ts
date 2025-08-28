@@ -96,15 +96,17 @@ export class CostumerService {
   }
 
   async findOne(id: number): Promise<Costumer> {
-    const costumer = await this.costumerRepository.findOne({
-      where: { id },
-      relations: ['user', 'city']
-    });
-    if (!costumer) {
-      throw new NotFoundException(`Cliente com id ${id} não encontrado.`);
-    }
-    return costumer;
+  const costumer = await this.costumerRepository.findOne({
+    where: { id },
+    relations: ['user', 'city'],
+  });
+
+  if (!costumer) {
+    throw new NotFoundException(`Cliente com id ${id} não encontrado.`);
   }
+
+  return costumer;
+}
 
   async update(id: number, updateCostumerDto: UpdateCostumerDto): Promise<Costumer> {
     const costumer = await this.costumerRepository.findOne({

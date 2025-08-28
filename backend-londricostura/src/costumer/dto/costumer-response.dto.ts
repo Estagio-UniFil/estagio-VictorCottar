@@ -17,6 +17,7 @@ class CityMinimal {
 
   @Expose()
   state: string;
+
 }
 
 export class CostumerResponseDto {
@@ -42,4 +43,13 @@ export class CostumerResponseDto {
 
   @Expose()
   deletedAt: Date | null;
+
+  @Expose()
+  street: string;
+
+  @Expose()
+  neighborhood: string;
+
+  @Expose()
+  number: number;
 }

@@ -78,6 +78,9 @@ const fieldLabels: Record<keyof Costumer, string> = {
   phone: "Telefone",
   city: "Cidade",
   user: "Usuário",
+  street: "Rua",
+  neighborhood: "Bairro",
+  number: "Número",
 };
 
 export default function CostumersDataTable({

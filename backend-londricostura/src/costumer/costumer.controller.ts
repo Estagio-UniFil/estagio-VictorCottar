@@ -122,6 +122,7 @@ export class CostumerController {
     const costumerResponse = plainToInstance(CostumerResponseDto, costumer, {
       excludeExtraneousValues: true,
     });
+
     return {
       message: 'Cliente encontrado com sucesso.',
       data: costumerResponse,

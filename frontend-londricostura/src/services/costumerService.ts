@@ -38,6 +38,25 @@ export async function fetchCostumer(page: number, limit: number, filterField?: s
   }
 }
 
+export async function fetchCostumerDetails(id: number): Promise<Costumer> {
+  try {
+    const response = await fetch(`${API_URL}/costumer/${id}`, {
+      method: "GET",
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar os dados do cliente");
+    }
+
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error("Erro ao buscar os dados do cliente", error);
+    throw error;
+  }
+}
+
 export async function removeCostumer(id: number): Promise<void> {
   const response = await fetch(`${API_URL}/costumer/${id}`, {
     method: "DELETE",
