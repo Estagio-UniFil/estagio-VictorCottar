@@ -6,5 +6,5 @@ export class AvailableResponseDto {
   product?: { name: string; code: string; price: number };
 
   @Expose()
-  available: number; // renomeado de "quantity" para alinhar com o front
+  available: number; 
 }

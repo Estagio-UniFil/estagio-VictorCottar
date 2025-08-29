@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { CostumerModule } from './costumer/costumer.module';
 import { ProductModule } from './products/product.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { SaleItemModule } from './sale-item/sale-item.module';
+import { SaleModule } from './sale/sale.module';
 import { CityModule } from './city/city.module';
 
 @Module({
@@ -32,6 +34,8 @@ import { CityModule } from './city/city.module';
     }),
     UserModule,
     ProductModule,
+    SaleItemModule,
+    SaleModule,
     CityModule,
     InventoryModule,
     CostumerModule,
