@@ -6,6 +6,10 @@ interface UpdateCostumerPayload {
   name?: string;
   phone?: string;
   city_id?: number;
+  cep?: string;
+  neighborhood?: string;
+  street?: string;
+  number?: number;
 }
 
 export async function fetchCostumer(page: number, limit: number, filterField?: string, filterValue?: string): Promise<{ data: Costumer[]; total: number }> {

@@ -132,10 +132,21 @@ export class CostumerController {
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
   async update(
-    @Param('id') id: string,
-    @Body() updateCostumerDto: UpdateCostumerDto,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateCostumerDto,
   ) {
-    const updated = await this.costumerService.update(+id, updateCostumerDto);
+    if (dto.cep && dto.cep.trim() !== '') {
+      const clean = dto.cep.replace(/\D/g, '');
+      if (clean.length !== 8) {
+        throw new BadRequestException('CEP deve ter 8 dígitos.');
+      }
+      const resolved = await this.cityService.resolveByCep(clean);
+      dto.city_id = resolved.id;
+      dto.neighborhood = resolved.neighborhood;
+      dto.street = resolved.street;
+    }
+
+    const updated = await this.costumerService.update(id, dto);
     return {
       message: 'Cliente atualizado com sucesso.',
       data: updated,

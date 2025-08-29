@@ -46,7 +46,7 @@ export default function DialogDetailsCostumer({ costumer }: DialogDetailsCostume
           <BadgeAlertIcon size={16} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] h-[550px]">
+      <DialogContent className="sm:max-w-[500px] h-[580px]">
         <DialogHeader>
           <DialogTitle>Dados do cliente</DialogTitle>
           <DialogDescription>
@@ -71,10 +71,10 @@ export default function DialogDetailsCostumer({ costumer }: DialogDetailsCostume
             </p>
           </div>
           <div className="flex flex-row text-center">
-            <Label htmlFor="city" className="w-[50px] text-right">
+            <Label htmlFor="city" className="w-[20px] text-right">
               Cidade:
             </Label>
-            <p className="leading-5 text-sm w-[100px] text-right">
+            <p className="leading-5 text-sm w-[150px] text-right">
               {fullCostumer.city?.name} - {fullCostumer.city?.state}
             </p>
           </div>
