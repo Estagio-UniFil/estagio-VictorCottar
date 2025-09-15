@@ -40,8 +40,6 @@ export class SaleService {
       });
       await manager.save(sale);
 
-
-
       const items: SaleItem[] = [];
       for (const it of dto.items) {
         const prod = byId.get(it.product_id)!;

@@ -32,7 +32,7 @@ export default function Estoque() {
       <div className="flex justify-end mb-12">
         <div className="flex items-center space-x-4 mr-15">
           <DialogAddProduct onProductAdded={refreshProducts} />
-          <DialogAddProduct onProductAdded={refreshProducts} />
+
         </div>
       </div>
       <ProductsDataTable

@@ -1,23 +1,28 @@
 import { Product } from "@/interfaces/product";
 import { API_URL, getHeaders } from "./loginService";
 
-export async function fetchProducts(): Promise<Product[]> {
+export async function fetchProducts(
+  page: number,
+  limit: number,
+  filterField: keyof Product = 'name',
+  filterValue: string = ''
+): Promise<{ data: Product[]; total: number }> {
   try {
-    const response = await fetch(`${API_URL}/products`, {
+    const response = await fetch(`${API_URL}/products/paginated?page=${page}&limit=${limit}&filterField=${filterField}&filterValue=${filterValue}`, {
       method: "GET",
       headers: getHeaders(),
     });
 
     if (!response.ok) {
       console.error("Erro ao buscar produtos:", response.statusText);
-      return [];
+      return { data: [], total: 0 };
     }
 
     const data = await response.json();
-    return data.data || [];
+    return { data: data.data || [], total: data.total || 0 };
   } catch (error) {
     console.error("Erro na requisição de produtos:", error);
-    return [];
+    return { data: [], total: 0 };
   }
 }
 
