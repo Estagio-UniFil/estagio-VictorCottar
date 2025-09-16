@@ -1,164 +1,80 @@
-import {
-  Controller, Get, Post, Put, Delete,
-  Body, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards,
-  BadRequestException
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { CostumerService } from './costumer.service';
 import { CreateCostumerDto } from './dto/create-costumer.dto';
 import { UpdateCostumerDto } from './dto/update-costumer.dto';
-import { CostumerResponseDto } from './dto/costumer-response.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
-import { plainToInstance } from 'class-transformer';
-import { Costumer } from './entities/costumer.entity';
-import { CityService } from 'src/city/city.service';
-
-type FilterField = 'id' | 'name' | 'phone';
-const ALLOWED_FIELDS: FilterField[] = ['id', 'name', 'phone'];
+import { User } from 'src/user/entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('costumer')
+@UseGuards(AuthGuard('jwt'))
 export class CostumerController {
-  constructor(
-    private readonly costumerService: CostumerService,
-    private readonly cityService: CityService,
-  ) { }
+  constructor(private readonly costumerService: CostumerService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
-  async create(
-    @Body() createCostumerDto: CreateCostumerDto,
-    @GetUser('id') userId: number,
-    @Body('city_id', ParseIntPipe) cityId: number,
-    @Body('cep') cep: string,
-    @Body('number') numberHouse: number
-  ) {
-
-    if (!cep || cep.trim() === '') {
-      throw new BadRequestException('CEP não pode ser vazio');
-    }
-
-    const { id, name, state, neighborhood, street, } = await this.cityService.resolveByCep(cep);
-
-    const costumer = await this.costumerService.create(createCostumerDto, userId, id, neighborhood, street, numberHouse);
-
-    return {
-      message: 'Cliente criado com sucesso.',
-      data: costumer,
-    };
+  create(@Body() createCostumerDto: CreateCostumerDto, @GetUser() user: User) {
+    return this.costumerService.create(
+      createCostumerDto,
+      user.id,
+      createCostumerDto.city_id,
+      createCostumerDto.neighborhood,
+      createCostumerDto.street,
+      createCostumerDto.number,
+    );
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   async findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-    @Query('filterField') filterField?: string,
-    @Query('filterValue') filterValue?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('name') name?: string,
+    @Query('phone') phone?: string,
+    @Query('city') city?: string,
+    @Query('neighborhood') neighborhood?: string,
+    @Query('street') street?: string,
   ) {
-    const ff = ALLOWED_FIELDS.includes(filterField as FilterField)
-      ? (filterField as FilterField)
-      : undefined;
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const limitNumber = limit ? parseInt(limit, 10) : 10;
 
-    const result = await this.costumerService.findAllPaginated(page, limit, ff as keyof Costumer, filterValue);
+    const filters: any = {};
+    if (search) filters.search = search;
+    if (name) filters.name = name;
+    if (phone) filters.phone = phone;
+    if (city) filters.city = city;
+    if (neighborhood) filters.neighborhood = neighborhood;
+    if (street) filters.street = street;
 
-    const data = result.data.map((prod) =>
-      plainToInstance(CostumerResponseDto, prod, { excludeExtraneousValues: true }),
-    );
+    // Se não há filtros, retorna apenas uma busca básica
+    if (Object.keys(filters).length === 0) {
+      return this.costumerService.findAllPaginated(pageNumber, limitNumber);
+    }
 
-    return {
-      message: 'Clientes encontrados com sucesso.',
-      data,
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-    };
+    return this.costumerService.findAllPaginated(pageNumber, limitNumber, filters);
   }
 
-  @Get('paginated')
-  @UseGuards(AuthGuard('jwt'))
-  async findAllPaginated(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-    @Query('filterField') filterField?: string,
-    @Query('filterValue') filterValue?: string,
-  ) {
-    const ff = ALLOWED_FIELDS.includes(filterField as FilterField)
-      ? (filterField as FilterField)
-      : undefined;
-
-    const result = await this.costumerService.findAllPaginated(page, limit, ff as keyof Costumer, filterValue);
-
-    const data = result.data.map((prod) =>
-      plainToInstance(CostumerResponseDto, prod, { excludeExtraneousValues: true }),
-    );
-
-    return {
-      message: 'Clientes encontrados com sucesso.',
-      data,
-      total: result.total,
-      page: result.page,
-      limit: result.limit,
-    };
+  @Get('all')
+  findAllWithoutPagination() {
+    return this.costumerService.findAll();
   }
 
-  @Get('findWithDeleted')
-  @UseGuards(AuthGuard('jwt'))
-  async findAllWithDeleted() {
-    const costumer = await this.costumerService.findAllWithDeleteds();
-    const data = costumer.map((prod) =>
-      plainToInstance(CostumerResponseDto, prod, { excludeExtraneousValues: true }),
-    );
-
-    return {
-      message: 'Clientes encontrados com sucesso.',
-      data,
-    };
+  @Get('with-deleted')
+  findAllWithDeleted() {
+    return this.costumerService.findAllWithDeleteds();
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    const costumer = await this.costumerService.findOne(id);
-    const costumerResponse = plainToInstance(CostumerResponseDto, costumer, {
-      excludeExtraneousValues: true,
-    });
-
-    return {
-      message: 'Cliente encontrado com sucesso.',
-      data: costumerResponse,
-    };
+  findOne(@Param('id') id: string) {
+    return this.costumerService.findOne(+id);
   }
 
-  @Put(':id')
-  @UseGuards(AuthGuard('jwt'))
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateCostumerDto,
-  ) {
-    if (dto.cep && dto.cep.trim() !== '') {
-      const clean = dto.cep.replace(/\D/g, '');
-      if (clean.length !== 8) {
-        throw new BadRequestException('CEP deve ter 8 dígitos.');
-      }
-      const resolved = await this.cityService.resolveByCep(clean);
-      dto.city_id = resolved.id;
-      dto.neighborhood = resolved.neighborhood;
-      dto.street = resolved.street;
-    }
-
-    const updated = await this.costumerService.update(id, dto);
-    return {
-      message: 'Cliente atualizado com sucesso.',
-      data: updated,
-    };
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateCostumerDto: UpdateCostumerDto) {
+    return this.costumerService.update(+id, updateCostumerDto);
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
-  async remove(@Param('id') id: string) {
-    await this.costumerService.remove(+id);
-    return {
-      message: 'Cliente removido com sucesso.',
-    };
+  remove(@Param('id') id: string) {
+    return this.costumerService.remove(+id);
   }
 }

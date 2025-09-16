@@ -19,4 +19,15 @@ export class CreateCostumerDto {
 
   @IsNotEmpty({ message: 'Cidade é obrigatória.' })
   city_id: number;
+
+  @IsNotEmpty({ message: 'Bairro é obrigatório.' })
+  @IsString()
+  neighborhood: string;
+
+  @IsNotEmpty({ message: 'Rua é obrigatória.' })
+  @IsString()
+  street: string;
+  
+  @IsNotEmpty({ message: 'Número é obrigatório.' })
+  number: number;
 }

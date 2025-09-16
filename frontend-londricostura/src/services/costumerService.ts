@@ -12,12 +12,30 @@ interface UpdateCostumerPayload {
   number?: number;
 }
 
-export async function fetchCostumer(page: number, limit: number, filterField?: string, filterValue?: string): Promise<{ data: Costumer[]; total: number }> {
+interface CostumerFilters {
+  search?: string; // Busca geral em nome, telefone e cidade
+  name?: string;
+  phone?: string;
+  city?: string;
+  neighborhood?: string;
+  street?: string;
+}
+
+export async function fetchCostumer(
+  page: number, 
+  limit: number, 
+  filters?: CostumerFilters
+): Promise<{ data: Costumer[]; total: number }> {
   try {
     let url = `${API_URL}/costumer?page=${page}&limit=${limit}`;
 
-    if (filterField && filterValue) {
-      url += `&filterField=${filterField}&filterValue=${filterValue}`;
+    if (filters) {
+      // Adiciona os filtros à URL
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value && value.trim() !== '') {
+          url += `&${key}=${encodeURIComponent(value.trim())}`;
+        }
+      });
     }
 
     const response = await fetch(url, {
