@@ -147,7 +147,6 @@ export default function SaleCart({
               </Table>
             </div>
             
-            {/* Total Geral */}
             <div className="border-t pt-4">
               <div className="flex justify-between items-center">
                 <div className="text-lg font-medium">Total da Venda:</div>

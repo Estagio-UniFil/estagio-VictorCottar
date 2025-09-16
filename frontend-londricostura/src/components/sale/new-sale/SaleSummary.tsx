@@ -12,14 +12,13 @@ import type { SaleItem } from "@/components/sale/new-sale/SaleCart";
 type Props = {
   selectedCostumer: Costumer | null;
   saleItems: SaleItem[];
-  saleDate: string;          // esperado no formato YYYY-MM-DD
+  saleDate: string;
   savingSale: boolean;
   onFinalize: () => void | Promise<void>;
   onClearAll: () => void;
   onClearCart: () => void;
 };
 
-// Exibe a string YYYY-MM-DD como DD/MM/YYYY sem criar Date (evita UTC -1 dia)
 const formatDateBR = (yyyyMmDd: string) => {
   if (!yyyyMmDd) return "";
   const [y, m, d] = yyyyMmDd.split("-");
@@ -44,7 +43,6 @@ export default function SaleSummary({
         <CardTitle>Resumo da Venda</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Cliente */}
         {selectedCostumer ? (
           <div>
             <div className="text-sm font-medium text-gray-700 mb-2">Cliente</div>
@@ -73,7 +71,6 @@ export default function SaleSummary({
 
         <Separator />
 
-        {/* Data */}
         <div>
           <div className="text-sm font-medium text-gray-700 mb-2">Data</div>
           <div className="text-sm text-gray-600">{formatDateBR(saleDate)}</div>
@@ -81,7 +78,6 @@ export default function SaleSummary({
 
         <Separator />
 
-        {/* Itens */}
         <div>
           <div className="text-sm font-medium text-gray-700 mb-2">Itens</div>
           <div className="space-y-2">
@@ -98,7 +94,6 @@ export default function SaleSummary({
 
         <Separator />
 
-        {/* Total */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-lg font-semibold">Total:</span>
@@ -116,7 +111,6 @@ export default function SaleSummary({
 
         <Separator />
 
-        {/* Ações */}
         <div className="space-y-3">
           <Button
             className="w-full cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"

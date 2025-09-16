@@ -12,7 +12,6 @@ import { formatPhone } from "@/utils/formatPhone";
 import { fetchCostumer } from "@/services/costumerService";
 import { toast } from "sonner";
 
-// Função para remover acentos (alternativa ao UNACCENT do PostgreSQL)
 const removeAccents = (str: string): string => {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 };
@@ -47,7 +46,6 @@ export default function CostumerSelector({
   const [loading, setLoading] = useState(false);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
-  // Ref para o timeout do debounce
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [filters, setFilters] = useState<CostumerFilters>({
@@ -58,15 +56,12 @@ export default function CostumerSelector({
     neighborhood: "",
   });
 
-  // Função debouncedSearch - adicione no seu componente
   const debouncedSearch = useCallback((currentFilters: CostumerFilters) => {
-    // Cancela a requisição anterior se existir
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
       searchTimeoutRef.current = null;
     }
 
-    // Verifica se há filtros antes de agendar a busca
     const hasFilter = Object.values(currentFilters).some(value => value.trim() !== '');
 
     if (!hasFilter) {
@@ -75,13 +70,10 @@ export default function CostumerSelector({
       return;
     }
 
-    // Mostra loading imediatamente para feedback do usuário
     setLoading(true);
 
-    // Agenda a busca com delay de 500ms
     searchTimeoutRef.current = setTimeout(async () => {
       try {
-        // Prepara os filtros, enviando apenas os que têm valor
         const activeFilters: any = {};
         Object.entries(currentFilters).forEach(([key, value]) => {
           if (value && value.trim() !== '') {
@@ -174,7 +166,7 @@ export default function CostumerSelector({
               />
               <Dialog open={showCostumerDialog} onOpenChange={setShowCostumerDialog}>
                 <DialogTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="outline" className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200">
                     <Search className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
@@ -199,7 +191,7 @@ export default function CostumerSelector({
                             size="sm"
                             onClick={() => handleFilterChange('search', '')}
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-4 h-4 cursor-pointer hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200" />
                           </Button>
                         )}
                       </div>
@@ -207,7 +199,7 @@ export default function CostumerSelector({
 
                     <Collapsible open={showAdvancedFilters} onOpenChange={setShowAdvancedFilters}>
                       <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" className="flex items-center gap-2 cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200">
                           <Filter className="w-4 h-4" />
                           Filtros Avançados
                         </Button>
@@ -252,14 +244,13 @@ export default function CostumerSelector({
                           variant="outline"
                           size="sm"
                           onClick={clearAllFilters}
-                          className="w-full"
+                          className="w-full cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
                         >
                           Limpar Todos os Filtros
                         </Button>
                       </CollapsibleContent>
                     </Collapsible>
 
-                    {/* Status da Busca */}
                     {loading && (
                       <div className="text-center text-sm text-gray-500 py-2">
                         <div className="flex items-center justify-center gap-2">
@@ -269,7 +260,6 @@ export default function CostumerSelector({
                       </div>
                     )}
 
-                    {/* Resultados */}
                     <div className="max-h-96 overflow-y-auto space-y-2">
                       {costumerResults.map((costumer) => (
                         <div
@@ -296,7 +286,7 @@ export default function CostumerSelector({
                                 </div>
                               )}
                             </div>
-                            <Button size="sm" variant="ghost">
+                            <Button size="sm" variant="ghost" className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200">
                               Selecionar
                             </Button>
                           </div>
@@ -324,7 +314,7 @@ export default function CostumerSelector({
               </Dialog>
 
               {selectedCostumer && (
-                <Button variant="outline" onClick={clearCostumer}>
+                <Button variant="outline" onClick={clearCostumer} className="cursor-pointer hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200">
                   Limpar
                 </Button>
               )}

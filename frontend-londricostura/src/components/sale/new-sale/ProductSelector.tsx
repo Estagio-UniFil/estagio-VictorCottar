@@ -35,7 +35,6 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
 
       const result = await fetchProducts(1, 20, "name", search);
 
-      // Normaliza: aceita array direto ou { data: [...] }
       let productsWithStock: Product[] = Array.isArray(result)
         ? result
         : Array.isArray((result as any)?.data)
@@ -47,7 +46,6 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
         .filter((id): id is number => typeof id === "number");
 
       if (productIds.length > 0) {
-        // Garante array mesmo em erro/shape inesperado
         const stockUnsafe = await getAvailableBulk(productIds).catch(() => []);
         const stockData: Array<{ product_id: number; available: number }> =
           Array.isArray(stockUnsafe)
@@ -97,7 +95,6 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
 
     onProductAdd(product, selectedQuantity, price);
 
-    // Limpar campos e fechar dialog
     setShowProductDialog(false);
     setSelectedQuantity(1);
     setSelectedPrice("");
@@ -110,7 +107,6 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
     setSelectedPrice("");
   };
 
-  // Reset form when dialog opens
   useEffect(() => {
     if (showProductDialog) {
       resetForm();

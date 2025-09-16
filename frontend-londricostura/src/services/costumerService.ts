@@ -13,7 +13,7 @@ interface UpdateCostumerPayload {
 }
 
 interface CostumerFilters {
-  search?: string; // Busca geral em nome, telefone e cidade
+  search?: string;
   name?: string;
   phone?: string;
   city?: string;
@@ -30,7 +30,6 @@ export async function fetchCostumer(
     let url = `${API_URL}/costumer?page=${page}&limit=${limit}`;
 
     if (filters) {
-      // Adiciona os filtros à URL
       Object.entries(filters).forEach(([key, value]) => {
         if (value && value.trim() !== '') {
           url += `&${key}=${encodeURIComponent(value.trim())}`;

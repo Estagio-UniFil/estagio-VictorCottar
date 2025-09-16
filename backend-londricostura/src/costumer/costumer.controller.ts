@@ -45,7 +45,6 @@ export class CostumerController {
     if (neighborhood) filters.neighborhood = neighborhood;
     if (street) filters.street = street;
 
-    // Se não há filtros, retorna apenas uma busca básica
     if (Object.keys(filters).length === 0) {
       return this.costumerService.findAllPaginated(pageNumber, limitNumber);
     }

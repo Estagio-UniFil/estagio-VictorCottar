@@ -130,7 +130,7 @@ export default function SalesDataTable({
         <div className="p-2 mr-20 w-1/2 flex justify-end">
           <Link
             href="/Vendas/NovaVenda"
-            className="inline-flex items-center gap-2 rounded-lg transition-colors duration-200 p-2 hover:bg-blue-100 hover:text-blue-700"
+            className="inline-flex font-medium items-center gap-2 rounded-lg transition-colors duration-200 p-2 hover:bg-blue-100 hover:text-blue-700"
           >
             <Plus size={16} />
             <span>Nova venda</span>
