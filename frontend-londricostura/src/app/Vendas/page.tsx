@@ -1,6 +1,5 @@
 'use client'
 import SalesDataTable from "@/components/datatable-sales/_components/sale-datatable";
-// import DialogAddSale from "@/components/dialogs-sales/dialog-add-sale";
 import HeaderPage from "@/components/header-pages";
 import { Sale } from "@/interfaces/sale";
 import { fetchSales } from "@/services/saleService";

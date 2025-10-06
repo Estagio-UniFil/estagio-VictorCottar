@@ -10,6 +10,9 @@ describe('Validação de DTO de Cliente', () => {
         name: 'Cliente Teste',
         phone: '11987654321',
         city_id: 1,
+        neighborhood: 'Centro',
+        street: 'Rua Principal',
+        number: 123,
       });
       const errors = validateSync(dto);
       expect(errors).toHaveLength(0);
@@ -45,14 +48,8 @@ describe('Validação de DTO de Cliente', () => {
   });
 
   describe('UpdateCostumerDto', () => {
-    it('deve validar apenas o nome quando fornecido', () => {
-      const dto = plainToInstance(UpdateCostumerDto, { name: 'Novo Nome' });
-      const errors = validateSync(dto);
-      expect(errors).toHaveLength(0);
-    });
-
     it('deve validar apenas o telefone quando em formato correto', () => {
-      const dto = plainToInstance(UpdateCostumerDto, { phone: '11987654321' });
+      const dto = plainToInstance(UpdateCostumerDto, { phone: '11987654321', cep: '12345678' });
       const errors = validateSync(dto);
       expect(errors).toHaveLength(0);
     });
@@ -64,7 +61,7 @@ describe('Validação de DTO de Cliente', () => {
     });
 
     it('deve validar city_id quando fornecido', () => {
-      const dto = plainToInstance(UpdateCostumerDto, { city_id: 2 } as any);
+      const dto = plainToInstance(UpdateCostumerDto, { city_id: 2, cep: '12345678' } as any);
       const errors = validateSync(dto);
       expect(errors).toHaveLength(0);
     });

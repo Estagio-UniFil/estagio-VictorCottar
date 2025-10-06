@@ -7,6 +7,7 @@ import { UpdateSaleDto } from './dto/update-sale.dto';
 import { Product } from 'src/products/entities/product.entity';
 import { SaleItem } from 'src/sale-item/entities/sale-item.entity';
 import { InventoryService } from 'src/inventory/inventory.service';
+import { SaleResponseDto } from './dto/sale-response.dto';
 
 @Injectable()
 export class SaleService {
@@ -18,7 +19,27 @@ export class SaleService {
     private readonly inventory: InventoryService,
   ) { }
 
-  async create(dto: CreateSaleDto): Promise<Sale> {
+ private transformSale(sale: any): SaleResponseDto {
+  return {
+    id: sale.id,
+    costumerId: sale.costumerId,
+    userId: sale.userId,
+    date: sale.date,
+    costumer_name: sale.costumer?.name ?? null,
+    items: (sale.items ?? []).map((item: any) => ({
+      id: item.id,
+      saleId: item.saleId,
+      product_id: item.productId,
+      product_name: item.product?.name ?? null,
+      product_code: item.product?.code ?? null,
+      quantity: item.quantity,
+      price: Number(item.price),
+      total: Number(item.price) * item.quantity,
+    })),
+  };
+}
+
+  async create(dto: CreateSaleDto): Promise<any> {
     return this.dataSource.transaction(async (manager) => {
       const productIds = dto.items.map(i => i.product_id);
       const products = await manager.getRepository(Product).find({ where: { id: In(productIds) } });
@@ -35,9 +56,11 @@ export class SaleService {
 
       const sale = manager.create(Sale, {
         costumerId: dto.costumer_id,
+        costumerName: dto.costumer_name,
         userId: dto.user_id,
         date: dto.date,
       });
+
       await manager.save(sale);
 
       const items: SaleItem[] = [];
@@ -59,28 +82,55 @@ export class SaleService {
         });
       }
       await manager.save(items);
+
       const saleRepo = manager.getRepository(Sale);
       const fullSale = await saleRepo.findOne({
         where: { id: sale.id },
-        relations: ['items', 'items.product', 'costumer', 'user'],
+        relations: {
+          costumer: true,
+          user: true,
+          items: {
+            product: true,
+          },
+        },
       });
-      return fullSale!;
+
+      return this.transformSale(fullSale!);
     });
   }
 
   async findAllPaginated(page = 1, limit = 10) {
     const [data, total] = await this.saleRepo.findAndCount({
+      relations: {
+        costumer: true,
+        user: true,
+        items: {
+          product: true,
+        },
+      },
       order: { id: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
     });
-    return { data, total, page, limit };
+
+    const transformedData = data.map(sale => this.transformSale(sale)!);
+    return { data: transformedData, total, page, limit };
   }
 
   async findOne(id: number) {
-    const sale = await this.saleRepo.findOne({ where: { id } });
+    const sale = await this.saleRepo.findOne({
+      where: { id },
+      relations: {
+        costumer: true,
+        user: true,
+        items: {
+          product: true,
+        },
+      },
+    });
     if (!sale) throw new NotFoundException('Venda não encontrada');
-    return sale;
+
+    return this.transformSale(sale);
   }
 
   async update(id: number, dto: UpdateSaleDto) {
@@ -93,14 +143,17 @@ export class SaleService {
   }
 
   async remove(id: number) {
-    const sale = await this.saleRepo.findOne({ where: { id } });
+    const sale = await this.saleRepo.findOne({
+      where: { id },
+      relations: { items: true },
+    });
     if (!sale) return;
 
     for (const it of sale.items ?? []) {
       await this.inventory.register({
         product_id: it.productId,
         quantity: it.quantity,
-        movement_type: 'OUT',
+        movement_type: 'IN',
       });
     }
     await this.saleRepo.softRemove(sale);

@@ -1,17 +1,12 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class SaleItemResponseDto {
   @Expose() id: number;
-
-  @Expose()
-  @Transform(({ obj }) => obj.productId)
-  product_id: number;
-
-  @Expose()
-  @Transform(({ obj }) => obj.product?.name ?? null)
-  product_name: string | null;
-
+  @Expose() saleId: number;
+  @Expose() product_id: number;
+  @Expose() product_name: string;
+  @Expose() product_code: string;
   @Expose() quantity: number;
-
-  @Expose() price: string; // unitário
+  @Expose() price: number | string;
+  @Expose() total: number;
 }

@@ -21,7 +21,6 @@ export default function DialogDetailsCostumer({ costumer }: DialogDetailsCostume
       try {
         if (costumer.id !== undefined) {
           const details = await fetchCostumerDetails(costumer.id);
-          console.log("Dados completos do cliente:", details);
           setFullCostumer(details);
         }
       } catch (error) {

@@ -1,11 +1,12 @@
 'use client'
-import { useState, useEffect } from "react";
-import { Plus } from 'lucide-react';
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Plus, Search, Filter, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Product } from "@/interfaces/product";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { fetchProducts } from "@/services/productService";
@@ -16,63 +17,125 @@ interface ProductSelectorProps {
   onProductAdd: (product: Product, quantity: number, price: number) => void;
 }
 
+interface ProductFilters {
+  search: string;
+  name: string;
+  code: string;
+}
+
 export default function ProductSelector({ onProductAdd }: ProductSelectorProps) {
-  const [productSearch, setProductSearch] = useState("");
   const [productResults, setProductResults] = useState<Product[]>([]);
   const [showProductDialog, setShowProductDialog] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [selectedPrice, setSelectedPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
-  const searchProducts = async (search: string) => {
-    if (!search.trim()) {
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [filters, setFilters] = useState<ProductFilters>({
+    search: "",
+    name: "",
+    code: "",
+  });
+
+  const debouncedSearch = useCallback((currentFilters: ProductFilters) => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+      searchTimeoutRef.current = null;
+    }
+
+    const hasFilter = Object.values(currentFilters).some(value => value.trim() !== '');
+
+    if (!hasFilter) {
       setProductResults([]);
+      setLoading(false);
       return;
     }
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const result = await fetchProducts(1, 20, "name", search);
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        let result;
+        
+        if (currentFilters.search.trim()) {
+          result = await fetchProducts(1, 20, "name", currentFilters.search.trim());
+        } else if (currentFilters.name.trim()) {
+          result = await fetchProducts(1, 20, "name", currentFilters.name.trim());
+        } else if (currentFilters.code.trim()) {
+          result = await fetchProducts(1, 20, "code", currentFilters.code.trim());
+        } else {
+          // Se não tem busca específica, busca tudo
+          result = await fetchProducts(1, 20);
+        }
 
-      let productsWithStock: Product[] = Array.isArray(result)
-        ? result
-        : Array.isArray((result as any)?.data)
-        ? (result as any).data
-        : [];
+        let productsWithStock: Product[] = Array.isArray(result)
+          ? result
+          : Array.isArray((result as any)?.data)
+          ? (result as any).data
+          : [];
 
-      const productIds = productsWithStock
-        .map((p) => p?.id)
-        .filter((id): id is number => typeof id === "number");
+        const productIds = productsWithStock
+          .map((p) => p?.id)
+          .filter((id): id is number => typeof id === "number");
 
-      if (productIds.length > 0) {
-        const stockUnsafe = await getAvailableBulk(productIds).catch(() => []);
-        const stockData: Array<{ product_id: number; available: number }> =
-          Array.isArray(stockUnsafe)
-            ? stockUnsafe
-            : Array.isArray((stockUnsafe as any)?.data)
-            ? (stockUnsafe as any).data
-            : [];
+        if (productIds.length > 0) {
+          const stockUnsafe = await getAvailableBulk(productIds).catch(() => []);
+          const stockData: Array<{ product_id: number; available: number }> =
+            Array.isArray(stockUnsafe)
+              ? stockUnsafe
+              : Array.isArray((stockUnsafe as any)?.data)
+              ? (stockUnsafe as any).data
+              : [];
 
-        const stockMap = new Map<number, number>(
-          stockData.map((s) => [Number(s.product_id), Number(s.available ?? 0)])
-        );
+          const stockMap = new Map<number, number>(
+            stockData.map((s) => [Number(s.product_id), Number(s.available ?? 0)])
+          );
 
-        productsWithStock = productsWithStock
-          .map((product) => ({
-            ...product,
-            available: stockMap.get(product.id!) || 0,
-          }))
-          .filter((p) => (p.available || 0) > 0);
+          productsWithStock = productsWithStock
+            .map((product) => ({
+              ...product,
+              available: stockMap.get(product.id!) || 0,
+            }))
+            .filter((p) => (p.available || 0) > 0);
+        }
+
+        setProductResults(productsWithStock);
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+        toast.error("Erro ao buscar produtos");
+        setProductResults([]);
+      } finally {
+        setLoading(false);
       }
+    }, 500);
+  }, []);
 
-      setProductResults(productsWithStock);
-    } catch (error) {
-      console.error("Erro ao buscar produtos:", error);
-      toast.error("Erro ao buscar produtos");
-    } finally {
-      setLoading(false);
+  const handleFilterChange = (field: keyof ProductFilters, value: string) => {
+    const newFilters = { ...filters };
+
+    if (field === 'search') {
+      newFilters.name = "";
+      newFilters.code = "";
+    } else {
+      newFilters.search = "";
     }
+
+    newFilters[field] = value;
+
+    setFilters(newFilters);
+    debouncedSearch(newFilters);
+  };
+
+  const clearAllFilters = () => {
+    const emptyFilters = {
+      search: "",
+      name: "",
+      code: "",
+    };
+    setFilters(emptyFilters);
+    debouncedSearch(emptyFilters);
   };
 
   const handleAddProduct = (product: Product) => {
@@ -98,8 +161,7 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
     setShowProductDialog(false);
     setSelectedQuantity(1);
     setSelectedPrice("");
-    setProductSearch("");
-    setProductResults([]);
+    clearAllFilters();
   };
 
   const resetForm = () => {
@@ -112,6 +174,14 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
       resetForm();
     }
   }, [showProductDialog]);
+
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <Card>
@@ -132,27 +202,77 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
               Buscar Produto
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Buscar Produto</DialogTitle>
             </DialogHeader>
+
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Buscar por nome ou código</Label>
-                <Input
-                  placeholder="Digite o nome ou código do produto..."
-                  value={productSearch}
-                  onChange={(e) => {
-                    setProductSearch(e.target.value);
-                    searchProducts(e.target.value);
-                  }}
-                  autoFocus
-                />
+                <Label>Busca Geral</Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Digite nome ou código do produto..."
+                    value={filters.search}
+                    onChange={(e) => handleFilterChange('search', e.target.value)}
+                    className="flex-1"
+                  />
+                  {filters.search && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleFilterChange('search', '')}
+                    >
+                      <X className="w-4 h-4 cursor-pointer hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200" />
+                    </Button>
+                  )}
+                </div>
               </div>
 
+              <Collapsible open={showAdvancedFilters} onOpenChange={setShowAdvancedFilters}>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2 cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200">
+                    <Filter className="w-4 h-4" />
+                    Filtros Avançados
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-3 pt-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label>Nome</Label>
+                      <Input
+                        placeholder="Filtrar por nome..."
+                        value={filters.name}
+                        onChange={(e) => handleFilterChange('name', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label>Código</Label>
+                      <Input
+                        placeholder="Filtrar por código..."
+                        value={filters.code}
+                        onChange={(e) => handleFilterChange('code', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearAllFilters}
+                    className="w-full cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+                  >
+                    Limpar Todos os Filtros
+                  </Button>
+                </CollapsibleContent>
+              </Collapsible>
+
               {loading && (
-                <div className="text-center text-sm text-gray-500">
-                  Buscando produtos...
+                <div className="text-center text-sm text-gray-500 py-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                    Buscando produtos...
+                  </div>
                 </div>
               )}
 
@@ -225,20 +345,24 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
                   </div>
                 ))}
 
-                {!loading && productResults.length === 0 && productSearch.trim() && (
-                  <div className="text-center text-sm text-gray-500 py-8">
-                    <div>Nenhum produto encontrado</div>
-                    <div className="text-xs mt-1">
-                      Apenas produtos com estoque são exibidos
+                {!loading && productResults.length === 0 &&
+                  Object.values(filters).some(v => v.trim() !== '') && (
+                    <div className="text-center text-sm text-gray-500 py-8">
+                      <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                      Nenhum produto encontrado com os filtros aplicados
+                      <div className="text-xs mt-1">
+                        Apenas produtos com estoque são exibidos
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {!productSearch.trim() && (
-                  <div className="text-center text-sm text-gray-400 py-8">
-                    Digite para buscar produtos
-                  </div>
-                )}
+                {!loading && productResults.length === 0 &&
+                  Object.values(filters).every(v => v.trim() === '') && (
+                    <div className="text-center text-sm text-gray-500 py-8">
+                      <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                      Digite algo para buscar produtos
+                    </div>
+                  )}
               </div>
             </div>
           </DialogContent>

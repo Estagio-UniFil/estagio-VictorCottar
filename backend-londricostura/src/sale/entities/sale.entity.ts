@@ -1,36 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Costumer } from 'src/costumer/entities/costumer.entity';
-import { User } from 'src/user/entities/user.entity';
-import { SaleItem } from '../../sale-item/entities/sale-item.entity';
+import { SaleItem } from 'src/sale-item/entities/sale-item.entity';
+import { User } from 'src/user/entities/user.entity'; 
 
-@Entity('sale')
+@Entity()
 export class Sale {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'costumer_id' })
-  costumerId: number;
+  @Column({ nullable: true })
+  costumerId?: number;
 
-  @ManyToOne(() => Costumer, { eager: true })
-  @JoinColumn({ name: 'costumer_id' })
-  costumer: Costumer;
+  @ManyToOne(() => Costumer, { nullable: true })
+  costumer?: Costumer;
 
-  @Column({ type: 'date' })
+  @Column({ nullable: true })
+  userId?: number;
+
+  @ManyToOne(() => User, { nullable: true })
+  user?: User;
+
+  @OneToMany(() => SaleItem, item => item.sale)
+  items?: SaleItem[];
+
+  @Column()
   date: string;
-
-  @Column({ name: 'user_id' })
-  userId: number;
-
-  @ManyToOne(() => User, { eager: true })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
-  @OneToMany(() => SaleItem, (item) => item.sale, { cascade: ['insert'], eager: true })
-  items: SaleItem[];
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt: Date | null;
 }

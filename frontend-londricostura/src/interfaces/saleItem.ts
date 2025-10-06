@@ -1,7 +1,11 @@
-export interface SaleItem {
-  sale_id?: number;
-  product_id?: number;
+
+export interface SaleItem  {
+  id: number;
+  saleId: number;
+  product_id: number;
+  product_name: string | null;
+  product_code: string | null;
   quantity: number;
-  price: number;
+  price: number | string;
   total: number;
-}
+};

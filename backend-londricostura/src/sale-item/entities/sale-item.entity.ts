@@ -25,5 +25,5 @@ export class SaleItem {
   quantity: number;
 
   @Column({ type: 'numeric', precision: 12, scale: 2 })
-  price: string; // unitário
+  price: string;
 }

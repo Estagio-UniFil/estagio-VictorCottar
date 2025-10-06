@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link"
 import { Plus } from "lucide-react"
 
@@ -17,61 +18,95 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
     cell: ({ row }) => <div className="text-center">{row.getValue("id")}</div>,
   },
   {
-    id: "costumer_name",
+    accessorKey: "costumer_name",
     header: () => <div className="text-center">Cliente</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {row.getValue("costumer_name")}
-      </div>
-    ),
+    cell: ({ row }) => <div className="text-center">{row.getValue("costumer_name")}</div>,
   },
   {
     id: "product_name",
     header: () => <div className="text-center">Produto</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {(row.getValue("items") as Sale["items"] | undefined)?.[0]?.product_name}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const sale = row.original;
+      const productName = sale.items?.[0]?.product_name || 'N/A';
+      return <div className="text-center">{productName}</div>;
+    },
   },
   {
     id: "product_code",
     header: () => <div className="text-center">Cód. Produto</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {(row.getValue("items") as Sale["items"] | undefined)?.[0]?.product_id}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const sale = row.original;
+      const productCode = sale.items?.[0]?.product_code || 'N/A';
+      return <div className="text-center">{productCode}</div>;
+    },
   },
   {
     id: "quantity",
     header: () => <div className="text-center">Quantidade</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {(row.getValue("items") as Sale["items"] | undefined)?.[0]?.quantity}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const sale = row.original;
+      const firstItem = sale.items?.[0];
+      return <div className="text-center">{firstItem?.quantity || 0}</div>;
+    },
   },
   {
     id: "price",
-    header: () => <div className="text-center">Valor</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {(row.getValue("items") as Sale["items"] | undefined)?.[0]?.price}
-      </div>
-    ),
+    header: () => <div className="text-center">Valor Unitário</div>,
+    cell: ({ row }) => {
+      const sale = row.original;
+      const firstItem = sale.items?.[0];
+      const price = firstItem?.price ? parseFloat(firstItem.price.toString()) : 0;
+      return (
+        <div className="text-center">
+          {formatCurrency(price)}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "date",
+    header: () => <div className="text-center">Data</div>,
+    cell: ({ row }) => {
+      const date = row.getValue("date") as string;
+      const formattedDate = date ? new Date(date).toLocaleDateString('pt-BR') : '-';
+      return (
+        <div className="text-center">
+          {formattedDate}
+        </div>
+      );
+    },
+  },
+  {
+    id: "total",
+    header: () => <div className="text-center">Total</div>,
+    cell: ({ row }) => {
+      const sale = row.original;
+      const total = sale.items?.reduce((sum, item) => {
+        const itemTotal = item.total || (item.quantity * parseFloat(item.price?.toString() || '0'));
+        return sum + itemTotal;
+      }, 0) || 0;
+
+      return (
+        <div className="text-center font-medium">
+          R$ {total.toFixed(2)}
+        </div>
+      );
+    },
   },
   {
     id: "actions",
+    header: () => <div className="text-center">Ações</div>,
     cell: ({ row }) => {
       const sale = row.original;
       return (
-        <div className="flex items-center justify-evenly space-x-[-20px]">
-          
+        <div className="flex items-center justify-center space-x-2">
+          <Button variant="outline" size="sm">
+            Ver Detalhes
+          </Button>
         </div>
       );
-    }
-  }
+    },
+  },
 ];
 
 interface Props {
@@ -116,7 +151,7 @@ export default function SalesDataTable({
             setFilterField(value as keyof Sale);
             setFilterValue("");
           }}
-          defaultValue="name"
+          defaultValue="costumer_name"
         >
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Campo de filtro" />
