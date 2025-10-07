@@ -33,7 +33,7 @@ export async function fetchSaleById(id: number): Promise<Sale | null> {
   return data.data;
 }
 
-export async function createSale(sale: Sale): Promise<void> {
+export async function createSale(sale: any): Promise<void> {
   const response = await fetch(`${API_URL}/sale`, {
     method: "POST",
     headers: getHeaders(),

@@ -23,12 +23,30 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
     cell: ({ row }) => <div className="text-center">{row.getValue("costumer_name")}</div>,
   },
   {
+    id: "items_count",
+    header: () => <div className="text-center">Itens</div>,
+    cell: ({ row }) => {
+      const sale = row.original;
+      const itemCount = sale.items?.length || 0;
+      return (
+        <div className="text-center">
+          {itemCount > 1 ? `+${itemCount - 1} item(s)` : "1 item"}
+        </div>
+      );
+    },
+  },
+  {
     id: "product_name",
     header: () => <div className="text-center">Produto</div>,
     cell: ({ row }) => {
       const sale = row.original;
+      const itemCount = sale.items?.length || 0;
       const productName = sale.items?.[0]?.product_name || 'N/A';
-      return <div className="text-center">{productName}</div>;
+      return (
+        <div className="text-center">
+           {itemCount === 1 ? productName : `${productName} (+${itemCount - 1} item${itemCount > 1 ? 's' : productName})`}
+        </div>
+      );
     },
   },
   {
@@ -36,8 +54,13 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
     header: () => <div className="text-center">Cód. Produto</div>,
     cell: ({ row }) => {
       const sale = row.original;
+      const itemCount = sale.items?.length || 0;
       const productCode = sale.items?.[0]?.product_code || 'N/A';
-      return <div className="text-center">{productCode}</div>;
+      return (
+        <div className="text-center">
+          {itemCount === 1 ? productCode : `${productCode} (+${itemCount - 1} item${itemCount > 2 ? 's' : productCode})`}
+        </div>
+      );
     },
   },
   {
@@ -100,7 +123,7 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const sale = row.original;
       return (
         <div className="flex items-center justify-center space-x-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" className="cursor-pointer font-medium items-center rounded-lg transition-colors duration-200 p-3 hover:bg-blue-100 hover:text-blue-700" size="sm">
             Ver Detalhes
           </Button>
         </div>

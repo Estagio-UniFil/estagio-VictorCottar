@@ -4,7 +4,6 @@ import HeaderPage from "@/components/header-pages";
 import { Sale } from "@/interfaces/sale";
 import { fetchSales } from "@/services/saleService";
 import { useEffect, useState } from "react";
-import Link from "next/link"
 
 export default function Vendas() {
   const [sales, setSales] = useState<Sale[]>([]);
