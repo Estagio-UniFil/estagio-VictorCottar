@@ -97,7 +97,6 @@ export default function NovaVenda() {
     setSaleItems(updatedItems);
   };
 
-  // Remover produto do carrinho
   const handleRemoveItem = (productId: number) => {
     setSaleItems(saleItems.filter(item => item.product_id !== productId));
     toast.success("Produto removido do carrinho");
@@ -114,13 +113,15 @@ export default function NovaVenda() {
       return;
     }
 
+    const userId = localStorage.getItem('userID');
+
     try {
       setSavingSale(true);
 
       const saleData = {
         costumer_id: selectedCostumer.id!,
         costumer_name: selectedCostumer.name!,
-        user_id: 1, // Substitua pelo ID do usuário logado
+        user_id: userId,
         date: isoAtLocalMidnight(saleDate),
         items: saleItems.map(item => ({
           product_id: item.product_id,
@@ -134,7 +135,7 @@ export default function NovaVenda() {
       await createSale(saleData);
 
       toast.success("Venda realizada com sucesso!");
-      
+
       setSelectedCostumer(null);
       setSaleItems([]);
       setSaleDate(getLocalYYYYMMDD());

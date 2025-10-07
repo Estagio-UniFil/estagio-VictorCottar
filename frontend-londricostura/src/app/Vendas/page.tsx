@@ -29,7 +29,7 @@ export default function Vendas() {
   return (
     <>
       <HeaderPage pageName="Vendas" />
-
+      
       <SalesDataTable
         sales={sales}
         onSaleChanged={refreshSales}

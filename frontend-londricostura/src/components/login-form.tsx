@@ -30,6 +30,7 @@ export function LoginForm() {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("userName", data.userName);
       localStorage.setItem("userAdmin", data.userAdmin);
+      localStorage.setItem("userID", data.userID);
       router.push("/Vendas");
     } catch (error: any) {
       toast.error(error.message);
