@@ -22,7 +22,8 @@ export default function Clientes() {
   }, [filterField, filterValue]);
 
   useEffect(() => {
-    fetchCostumer(page, limit, filterField, filterValue)
+    const filters = filterValue.trim() !== "" ? { [filterField]: filterValue } : undefined;
+    fetchCostumer(page, limit, filters)
       .then((data) => {
         setCostumers(data.data);
         setTotal(data.total);

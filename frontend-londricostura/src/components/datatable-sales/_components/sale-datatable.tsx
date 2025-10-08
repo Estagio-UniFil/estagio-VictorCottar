@@ -44,7 +44,7 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const productName = sale.items?.[0]?.product_name || 'N/A';
       return (
         <div className="text-center">
-           {itemCount === 1 ? productName : `${productName} (+${itemCount - 1} item${itemCount > 1 ? 's' : productName})`}
+          {itemCount === 1 ? productName : `${productName} (+${itemCount - 1} item${itemCount > 1 ? 's' : productName})`}
         </div>
       );
     },
@@ -111,7 +111,7 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
 
       return (
         <div className="text-center font-medium">
-          R$ {total.toFixed(2)}
+          {formatCurrency(total)}
         </div>
       );
     },
@@ -123,9 +123,10 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const sale = row.original;
       return (
         <div className="flex items-center justify-center space-x-2">
-          <Button variant="outline" className="cursor-pointer font-medium items-center rounded-lg transition-colors duration-200 p-3 hover:bg-blue-100 hover:text-blue-700" size="sm">
+          <Link href={`/Vendas/DetalhesVenda/${sale.id}`}
+            className="cursor-pointer font-medium items-center rounded-lg transition-colors duration-200 p-3 hover:bg-blue-100 hover:text-blue-700">
             Ver Detalhes
-          </Button>
+          </Link>
         </div>
       );
     },

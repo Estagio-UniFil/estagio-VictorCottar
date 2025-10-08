@@ -114,6 +114,7 @@ export default function NovaVenda() {
     }
 
     const userId = localStorage.getItem('userID');
+    const userName = localStorage.getItem('userName');
     const userIdNum = userId ? parseInt(userId, 10) : null;
 
     try {
@@ -124,6 +125,7 @@ export default function NovaVenda() {
         costumer_id: selectedCostumer.id!,
         costumer_name: selectedCostumer.name!,
         user_id: userIdNum,
+        user_name: userName,
         date: isoAtLocalMidnight(saleDate),
         items: saleItems.map(item => ({
           product_id: item.product_id,
