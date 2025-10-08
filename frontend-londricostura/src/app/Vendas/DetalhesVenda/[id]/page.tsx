@@ -20,7 +20,7 @@ const formatDate = (dateString: string) => {
 export default function DetalhesVenda() {
   const params = useParams();
   const saleId = params?.id as string;
-  
+
   const [saleData, setSaleData] = useState<Sale | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ export default function DetalhesVenda() {
       try {
         setLoading(true);
         const data = await fetchSaleById(Number(saleId));
-        
+
         if (!data) {
           setError('Venda não encontrada');
           toast.error('Venda não encontrada');
@@ -245,7 +245,6 @@ export default function DetalhesVenda() {
           </div>
         </div>
 
-        {/* Informações da Venda */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mt-8">
           <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
             Informações da Venda
@@ -258,6 +257,10 @@ export default function DetalhesVenda() {
             <div className="flex justify-between py-2 border-b">
               <span className="text-sm text-gray-600">ID do Cliente:</span>
               <span className="text-sm font-medium text-gray-900">{saleData.costumerId}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-sm text-gray-600">Venda lançada por:</span>
+              <span className="text-sm font-medium text-gray-900">{saleData.user_name}</span>
             </div>
             <div className="flex justify-between py-2">
               <span className="text-sm text-gray-600">ID do Usuário:</span>

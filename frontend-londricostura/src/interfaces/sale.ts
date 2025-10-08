@@ -5,6 +5,7 @@ export interface Sale  {
   costumer_name?: string | null;
   costumerId?: number;
   userId?: number;
+  user_name?: string;
   date: string;
   items: SaleItem[];
 };

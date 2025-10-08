@@ -24,6 +24,7 @@ export class SaleService {
     id: sale.id,
     costumerId: sale.costumerId,
     userId: sale.userId,
+    user_name: sale.user?.name || 'Não informado',
     date: sale.date,
     costumer_name: sale.costumer?.name ?? null,
     items: (sale.items ?? []).map((item: any) => ({

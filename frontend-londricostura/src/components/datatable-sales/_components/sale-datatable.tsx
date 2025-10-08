@@ -58,7 +58,7 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const productCode = sale.items?.[0]?.product_code || 'N/A';
       return (
         <div className="text-center">
-          {itemCount === 1 ? productCode : `${productCode} (+${itemCount - 1} item${itemCount > 2 ? 's' : productCode})`}
+          {itemCount === 1 ? productCode : `${productCode} (+${itemCount - 1} item${itemCount > 2 ? 's' : ''})`}
         </div>
       );
     },

@@ -6,6 +6,7 @@ export class SaleResponseDto {
   @Expose() costumer_name?: string;
   @Expose() costumerId?: number;
   @Expose() userId?: number;
+  @Expose() user_name?: string;
   @Expose() date: string;
 
   @Expose()
