@@ -52,5 +52,25 @@ export class InventoryController {
     };
 
   }
+
+  @Get('logs')
+  async getLogs(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('movement_type') movementType?: string,
+    @Query('product_id') productId?: string,
+  ) {
+    const data = await this.inventoryService.getLogs(
+      Number(page) || 1,
+      Number(limit) || 10,
+      movementType as any,
+      productId ? Number(productId) : undefined,
+    );
+    
+    return {
+      message: 'Logs obtidos com sucesso.',
+      ...data,
+    };
+  }
 }
 

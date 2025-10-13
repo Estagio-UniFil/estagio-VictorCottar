@@ -4,6 +4,8 @@ import DialogAddProduct from "@/components/dialogs-products/dialog-add-product";
 import HeaderPage from "@/components/header-pages";
 import { Product } from "@/interfaces/product";
 import { fetchProductsPaginated } from "@/services/productService";
+import { FileText } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Estoque() {
@@ -30,9 +32,15 @@ export default function Estoque() {
     <>
       <HeaderPage pageName='Estoque' />
       <div className="flex justify-end mb-12">
-        <div className="flex items-center space-x-4 mr-15">
+        <div className="flex items-center space-x-6 mr-15">
+          <Link
+            href="/Estoque/Logs"
+            className="inline-flex items-center mt-3 gap-2 px-3 py-2 hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+          >
+            <FileText size={18} />
+            <p className="text-[15px]">Movimentações</p>
+          </Link>
           <DialogAddProduct onProductAdded={refreshProducts} />
-
         </div>
       </div>
       <ProductsDataTable

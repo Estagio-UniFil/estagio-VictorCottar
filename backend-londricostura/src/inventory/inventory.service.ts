@@ -84,4 +84,37 @@ export class InventoryService {
 
     return Array.from(map.entries()).map(([product_id, available]) => ({ product_id, available }));
   }
+
+  async getLogs(
+  page: number = 1,
+  limit: number = 10,
+  movementType?: 'IN' | 'OUT',
+  productId?: number,
+) {
+  const queryBuilder = this.inventoryRepository
+    .createQueryBuilder('inventory')
+    .leftJoinAndSelect('inventory.product', 'product')
+    .orderBy('inventory.createdAt', 'DESC');
+
+  if (movementType) {
+    queryBuilder.andWhere('inventory.movement_type = :movementType', { movementType });
+  }
+
+  if (productId) {
+    queryBuilder.andWhere('inventory.product_id = :productId', { productId });
+  }
+
+  const [data, total] = await queryBuilder
+    .skip((page - 1) * limit)
+    .take(limit)
+    .getManyAndCount();
+
+  return {
+    data,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
+}
 }
