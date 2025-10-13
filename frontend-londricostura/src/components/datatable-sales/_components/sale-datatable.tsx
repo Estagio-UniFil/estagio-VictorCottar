@@ -24,13 +24,15 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
   },
   {
     id: "items_count",
-    header: () => <div className="text-center">Itens</div>,
+    header: () => <div className="text-center">Qtd. Produtos</div>,
     cell: ({ row }) => {
       const sale = row.original;
       const itemCount = sale.items?.length || 0;
       return (
         <div className="text-center">
-          {itemCount > 1 ? `+${itemCount - 1} item(s)` : "1 item"}
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium">
+            {itemCount} 
+          </span>
         </div>
       );
     },
@@ -42,9 +44,17 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const sale = row.original;
       const itemCount = sale.items?.length || 0;
       const productName = sale.items?.[0]?.product_name || 'N/A';
+      
+      if (itemCount === 1) {
+        return <div className="text-center">{productName}</div>;
+      }
+      
       return (
         <div className="text-center">
-          {itemCount === 1 ? productName : `${productName} (+${itemCount - 1} item${itemCount > 1 ? 's' : productName})`}
+          <div className="font-medium">{productName}</div>
+          <div className="text-xs text-gray-500 mt-0.5">
+            e mais {itemCount - 1} {itemCount - 1 === 1 ? 'produto' : 'produtos'}
+          </div>
         </div>
       );
     },
@@ -56,9 +66,17 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const sale = row.original;
       const itemCount = sale.items?.length || 0;
       const productCode = sale.items?.[0]?.product_code || 'N/A';
+      
+      if (itemCount === 1) {
+        return <div className="text-center">{productCode}</div>;
+      }
+      
       return (
         <div className="text-center">
-          {itemCount === 1 ? productCode : `${productCode} (+${itemCount - 1} item${itemCount > 2 ? 's' : ''})`}
+          <div className="font-medium">{productCode}</div>
+          <div className="text-xs text-gray-500 mt-0.5">
+            +{itemCount - 1} {itemCount - 1 === 1 ? 'código' : 'códigos'}
+          </div>
         </div>
       );
     },
@@ -68,20 +86,19 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
     header: () => <div className="text-center">Quantidade</div>,
     cell: ({ row }) => {
       const sale = row.original;
-      const firstItem = sale.items?.[0];
-      return <div className="text-center">{firstItem?.quantity || 0}</div>;
-    },
-  },
-  {
-    id: "price",
-    header: () => <div className="text-center">Valor Unitário</div>,
-    cell: ({ row }) => {
-      const sale = row.original;
-      const firstItem = sale.items?.[0];
-      const price = firstItem?.price ? parseFloat(firstItem.price.toString()) : 0;
+      const totalQuantity = sale.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+      const itemCount = sale.items?.length || 0;
+      
+      if (itemCount === 1) {
+        return <div className="text-center">{totalQuantity}</div>;
+      }
+      
       return (
         <div className="text-center">
-          {formatCurrency(price)}
+          <div className="font-medium">{totalQuantity}</div>
+          <div className="text-xs text-gray-500 mt-0.5">
+            ({itemCount} produtos)
+          </div>
         </div>
       );
     },
@@ -175,15 +192,14 @@ export default function SalesDataTable({
             setFilterField(value as keyof Sale);
             setFilterValue("");
           }}
-          defaultValue="costumer_name"
+          defaultValue="Cliente"
         >
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Campo de filtro" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="id">ID</SelectItem>
-            <SelectItem value="costumer_name">Cliente</SelectItem>
-            <SelectItem value="date">Data</SelectItem>
+            <SelectItem value="ID">ID</SelectItem>
+            <SelectItem value="Cliente">Cliente</SelectItem>
           </SelectContent>
         </Select>
         <div className="p-2 mr-20 w-1/2 flex justify-end">

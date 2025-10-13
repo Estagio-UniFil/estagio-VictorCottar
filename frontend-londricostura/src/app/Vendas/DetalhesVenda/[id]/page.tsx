@@ -1,13 +1,24 @@
 'use client'
-import { ArrowLeft, Calendar, User, Package, DollarSign, Hash, Loader2 } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Package, DollarSign, Hash, Loader2, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { fetchSaleById } from '@/services/saleService';
+import { useParams, useRouter } from 'next/navigation';
+import { fetchSaleById, deleteSale } from '@/services/saleService';
 import { Sale } from '@/interfaces/sale';
 import { toast } from 'sonner';
 import HeaderPage from '@/components/header-pages';
 import { formatCurrency } from "@/utils/formatCurrency";
 import Link from 'next/link';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('pt-BR', {
@@ -19,11 +30,13 @@ const formatDate = (dateString: string) => {
 
 export default function DetalhesVenda() {
   const params = useParams();
+  const router = useRouter();
   const saleId = params?.id as string;
 
   const [saleData, setSaleData] = useState<Sale | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchSaleDetails = async () => {
@@ -57,7 +70,23 @@ export default function DetalhesVenda() {
     fetchSaleDetails();
   }, [saleId]);
 
-  // Estado de loading
+  const handleDeleteSale = async () => {
+    if (!saleId) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteSale(Number(saleId));
+      toast.success('Venda excluída com sucesso!');
+      router.push('/Vendas');
+    } catch (err: any) {
+      console.error('Erro ao excluir venda:', err);
+      const errorMessage = err?.message || 'Erro ao excluir venda';
+      toast.error(errorMessage);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <>
@@ -80,7 +109,6 @@ export default function DetalhesVenda() {
     );
   }
 
-  // Estado de erro
   if (error || !saleData) {
     return (
       <>
@@ -113,15 +141,68 @@ export default function DetalhesVenda() {
 
   return (
     <>
-      {/* Header existente */}
-      <div className="flex items-center w-150 p-2">
-        <Link
-          href="/Vendas"
-          className="mt-5 ml-6 inline-flex items-center gap-2 rounded-lg transition-colors duration-200 p-3 hover:bg-blue-100 hover:text-blue-700"
-        >
-          <ArrowLeft size={25} />
-        </Link>
-        <HeaderPage pageName="Detalhes da venda" />
+      <div className="flex items-center justify-between w-full p-2">
+        <div className="flex items-center">
+          <Link
+            href="/Vendas"
+            className="mt-5 ml-6 inline-flex items-center gap-2 rounded-lg transition-colors duration-200 p-3 hover:bg-blue-100 hover:text-blue-700"
+          >
+            <ArrowLeft size={25} />
+          </Link>
+          <HeaderPage pageName="Detalhes da venda" />
+        </div>
+        
+        <div className="mt-5 mr-6">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                className="cursor-pointer font-semibold inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    Excluindo...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={18} />
+                    Excluir Venda
+                  </>
+                )}
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Tem certeza que deseja excluir esta venda?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta ação não pode ser desfeita. A venda #{saleData.id} do cliente{' '}
+                  <span className="font-semibold text-gray-900">{saleData.costumer_name}</span>{' '}
+                  no valor de{' '}
+                  <span className="font-semibold text-gray-900">{formatCurrency(totalValue)}</span>{' '}
+                  será excluída do sistema.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="cursor-pointer font-semibold" disabled={isDeleting}>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteSale}
+                  disabled={isDeleting}
+                  className="bg-red-600 hover:bg-red-700 cursor-pointer font-semibold"
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin mr-2" />
+                      Excluindo...
+                    </>
+                  ) : (
+                    'Excluir'
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
 
       <div className="container mx-auto px-6 py-6 max-w-6xl">

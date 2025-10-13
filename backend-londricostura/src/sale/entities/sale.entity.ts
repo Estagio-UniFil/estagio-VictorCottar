@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, DeleteDateColumn } from 'typeorm';
 import { Costumer } from 'src/costumer/entities/costumer.entity';
 import { SaleItem } from 'src/sale-item/entities/sale-item.entity';
 import { User } from 'src/user/entities/user.entity'; 
@@ -25,4 +25,7 @@ export class Sale {
 
   @Column()
   date: string;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
