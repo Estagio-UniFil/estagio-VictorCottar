@@ -9,6 +9,63 @@ const s = StyleSheet.create({
   head: { fontSize: 11, fontWeight: 'bold' },
 });
 
+const detailedStyles = StyleSheet.create({
+  page: {
+    padding: 30,
+    fontSize: 9,
+    fontFamily: 'Helvetica',
+  },
+  h1: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    borderBottom: 0.5,
+    borderColor: '#ddd',
+    minHeight: 20,
+    alignItems: 'center',
+  },
+  head: {
+    fontWeight: 'bold',
+    backgroundColor: '#f0f0f0',
+  },
+  cellDate: {
+    width: '10%',
+    padding: 4,
+    fontSize: 8,
+  },
+  cellSmall: {
+    width: '7%',
+    padding: 4,
+    fontSize: 8,
+    textAlign: 'center',
+  },
+  cellMedium: {
+    width: '20%',
+    padding: 4,
+    fontSize: 8,
+  },
+  cellLarge: {
+    width: '18%',
+    padding: 4,
+    fontSize: 8,
+  },
+  cellPrice: {
+    width: '12%',
+    padding: 4,
+    fontSize: 8,
+    textAlign: 'right',
+  },
+});
+
+export function formatDateBR(date: string): string {
+  const [year, month, day] = date.split('-');
+  return `${day}/${month}/${year}`;
+}
+
 export function MonthlySalesPDF({ data, year }: { data: any[]; year: string }) {
   const totalSales = data.reduce((sum, r) => sum + r.count, 0);
   const totalValue = data.reduce((sum, r) => sum + r.total, 0);
@@ -42,18 +99,28 @@ export function MonthlySalesPDF({ data, year }: { data: any[]; year: string }) {
 export function PeriodSalesPDF({ data, start, end }: { data: any[]; start: string; end: string }) {
   return (
     <Document>
-      <Page size="A4" style={s.page}>
-        <Text style={s.h1}>Vendas — {start} a {end}</Text>
-        <View style={[s.row, { borderTop: 1 }]}>
-          <Text style={[s.cell, s.head]}>Data</Text>
-          <Text style={[s.cell, s.head]}>Cliente</Text>
-          <Text style={[s.cell, s.head]}>Total</Text>
+      <Page size="A4" style={detailedStyles.page} orientation="landscape">
+        <Text style={detailedStyles.h1}>Vendas Detalhadas — {formatDateBR(start)} a {formatDateBR(end)}</Text>
+        <View style={[detailedStyles.row, { borderTop: 1 }]}>
+          <Text style={[detailedStyles.cellDate, detailedStyles.head]}>Data</Text>
+          <Text style={[detailedStyles.cellSmall, detailedStyles.head]}>ID da Venda</Text>
+          <Text style={[detailedStyles.cellLarge, detailedStyles.head]}>Cliente</Text>
+          <Text style={[detailedStyles.cellMedium, detailedStyles.head]}>Produto</Text>
+          <Text style={[detailedStyles.cellSmall, detailedStyles.head]}>Código</Text>
+          <Text style={[detailedStyles.cellSmall, detailedStyles.head]}>Qtd</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head]}>Preço Un.</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head]}>Total</Text>
         </View>
-        {data.map((r, i) => (
-          <View key={i} style={s.row}>
-            <Text style={s.cell}>{r.date}</Text>
-            <Text style={s.cell}>{r.customer}</Text>
-            <Text style={s.cell}>{r.total}</Text>
+        {data.map((item, i) => (
+          <View key={i} style={detailedStyles.row}>
+            <Text style={detailedStyles.cellDate}>{formatDateBR(item.date)}</Text>
+            <Text style={detailedStyles.cellSmall}>{item.saleId}</Text>
+            <Text style={detailedStyles.cellLarge}>{item.customer}</Text>
+            <Text style={detailedStyles.cellMedium}>{item.productName}</Text>
+            <Text style={detailedStyles.cellSmall}>{item.productCode}</Text>
+            <Text style={detailedStyles.cellSmall}>{item.quantity}</Text>
+            <Text style={detailedStyles.cellPrice}>{formatCurrency(item.unitPrice)}</Text>
+            <Text style={detailedStyles.cellPrice}>{formatCurrency(item.itemTotal)}</Text>
           </View>
         ))}
       </Page>
@@ -77,7 +144,7 @@ export function StockPDF({ data }: { data: any[] }) {
             <Text style={s.cell}>{r.name}</Text>
             <Text style={s.cell}>{r.code}</Text>
             <Text style={s.cell}>{r.quantity}</Text>
-            <Text style={s.cell}>{r.price}</Text>
+            <Text style={s.cell}>{formatCurrency(r.price)}</Text>
           </View>
         ))}
       </Page>
@@ -101,7 +168,7 @@ export function CustomersPDF({ data }: { data: any[] }) {
             <Text style={s.cell}>{r.name}</Text>
             <Text style={s.cell}>{r.phone}</Text>
             <Text style={s.cell}>{r.city}</Text>
-            <Text style={s.cell}>{r.spent}</Text>
+            <Text style={s.cell}>{formatCurrency(r.spent)}</Text>
           </View>
         ))}
       </Page>

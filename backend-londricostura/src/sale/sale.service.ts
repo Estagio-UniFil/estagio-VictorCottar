@@ -182,14 +182,40 @@ export class SaleService {
     const rows = await this.saleRepo.createQueryBuilder('s')
       .leftJoin('s.costumer', 'c')
       .leftJoin('s.items', 'si')
-      .select("TO_CHAR(s.date, 'YYYY-MM-DD')", 'date')
-      .addSelect("COALESCE(c.name, s.costumerName)", 'customer')
-      .addSelect("COALESCE(SUM(si.quantity * CAST(si.price as decimal)), 0)", 'total')
+      .leftJoin('si.product', 'p')
+      .select("TO_CHAR(s.date::timestamp, 'YYYY-MM-DD')", 'date')
+      .addSelect("s.id", 'saleId')
+      .addSelect("COALESCE(c.name, 'Cliente não informado')", 'customer')
+      .addSelect("p.name", 'productName')
+      .addSelect("p.code", 'productCode')
+      .addSelect("si.quantity", 'quantity')
+      .addSelect("CAST(si.price as decimal)", 'unitPrice')
+      .addSelect("(si.quantity * CAST(si.price as decimal))", 'itemTotal')
       .where('s.date BETWEEN :start AND :end', { start, end })
-      .groupBy('s.id, c.name, s.costumerName, s.date')
+      .andWhere('s.deletedAt IS NULL')
       .orderBy('s.date', 'ASC')
-      .getRawMany<{ date: string; customer: string; total: string }>();
+      .addOrderBy('s.id', 'ASC')
+      .addOrderBy('si.id', 'ASC')
+      .getRawMany<{
+        date: string;
+        saleId: number;
+        customer: string;
+        productName: string;
+        productCode: string;
+        quantity: number;
+        unitPrice: string;
+        itemTotal: string;
+      }>();
 
-    return rows.map(r => ({ date: r.date, customer: r.customer, total: Number(r.total) }));
+    return rows.map(r => ({
+      date: r.date,
+      saleId: r.saleId,
+      customer: r.customer,
+      productName: r.productName,
+      productCode: r.productCode,
+      quantity: Number(r.quantity),
+      unitPrice: Number(r.unitPrice),
+      itemTotal: Number(r.itemTotal)
+    }));
   }
 }
