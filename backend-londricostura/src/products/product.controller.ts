@@ -110,4 +110,10 @@ export class ProductController {
       message: 'Produto removido com sucesso.',
     };
   }
+
+  @Get('stock-report')
+  async stockReport() {
+    const data = await this.productService.reportStock();
+    return { message: 'Relatório de estoque gerado com sucesso.', data };
+  }
 }

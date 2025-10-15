@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, In } from 'typeorm';
+import { Repository, DataSource, In, Between } from 'typeorm';
 import { Sale } from './entities/sale.entity';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
@@ -19,26 +19,26 @@ export class SaleService {
     private readonly inventory: InventoryService,
   ) { }
 
- private transformSale(sale: any): SaleResponseDto {
-  return {
-    id: sale.id,
-    costumerId: sale.costumerId,
-    userId: sale.userId,
-    user_name: sale.user?.name || 'Não informado',
-    date: sale.date,
-    costumer_name: sale.costumer?.name ?? null,
-    items: (sale.items ?? []).map((item: any) => ({
-      id: item.id,
-      saleId: item.saleId,
-      product_id: item.productId,
-      product_name: item.product?.name ?? null,
-      product_code: item.product?.code ?? null,
-      quantity: item.quantity,
-      price: Number(item.price),
-      total: Number(item.price) * item.quantity,
-    })),
-  };
-}
+  private transformSale(sale: any): SaleResponseDto {
+    return {
+      id: sale.id,
+      costumerId: sale.costumerId,
+      userId: sale.userId,
+      user_name: sale.user?.name || 'Não informado',
+      date: sale.date,
+      costumer_name: sale.costumer?.name ?? null,
+      items: (sale.items ?? []).map((item: any) => ({
+        id: item.id,
+        saleId: item.saleId,
+        product_id: item.productId,
+        product_name: item.product?.name ?? null,
+        product_code: item.product?.code ?? null,
+        quantity: item.quantity,
+        price: Number(item.price),
+        total: Number(item.price) * item.quantity,
+      })),
+    };
+  }
 
   async create(dto: CreateSaleDto): Promise<any> {
     return this.dataSource.transaction(async (manager) => {
@@ -158,5 +158,38 @@ export class SaleService {
       });
     }
     await this.saleRepo.softRemove(sale);
+  }
+
+  async reportMonthly(year: number) {
+    const rows = await this.saleRepo.createQueryBuilder('s')
+      .leftJoin('s.items', 'si')
+      .select("TO_CHAR(s.date::timestamp, 'MM')", 'month')
+      .addSelect('COUNT(DISTINCT s.id)', 'count')
+      .addSelect("COALESCE(SUM(si.quantity * CAST(si.price as decimal)), 0)", 'total')
+      .where("EXTRACT(YEAR FROM s.date::timestamp) = :year", { year })
+      .groupBy("TO_CHAR(s.date::timestamp, 'MM')")
+      .orderBy("TO_CHAR(s.date::timestamp, 'MM')", 'ASC')
+      .getRawMany<{ month: string; count: string; total: string }>();
+
+    return rows.map(r => ({
+      month: r.month,
+      count: Number(r.count),
+      total: Number(r.total)
+    }));
+  }
+
+  async reportByPeriod(start: string, end: string) {
+    const rows = await this.saleRepo.createQueryBuilder('s')
+      .leftJoin('s.costumer', 'c')
+      .leftJoin('s.items', 'si')
+      .select("TO_CHAR(s.date, 'YYYY-MM-DD')", 'date')
+      .addSelect("COALESCE(c.name, s.costumerName)", 'customer')
+      .addSelect("COALESCE(SUM(si.quantity * CAST(si.price as decimal)), 0)", 'total')
+      .where('s.date BETWEEN :start AND :end', { start, end })
+      .groupBy('s.id, c.name, s.costumerName, s.date')
+      .orderBy('s.date', 'ASC')
+      .getRawMany<{ date: string; customer: string; total: string }>();
+
+    return rows.map(r => ({ date: r.date, customer: r.customer, total: Number(r.total) }));
   }
 }

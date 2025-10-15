@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('costumer')
 @UseGuards(AuthGuard('jwt'))
 export class CostumerController {
-  constructor(private readonly costumerService: CostumerService) {}
+  constructor(private readonly costumerService: CostumerService) { }
 
   @Post()
   create(@Body() createCostumerDto: CreateCostumerDto, @GetUser() user: User) {
@@ -75,5 +75,11 @@ export class CostumerController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.costumerService.remove(+id);
+  }
+
+  @Get('report')
+  async reportCustomers(@Query('search') search?: string) {
+    const data = await this.costumerService.reportCustomers(search);
+    return { message: 'Relatório de clientes gerado com sucesso.', data };
   }
 }

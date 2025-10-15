@@ -6,6 +6,8 @@ import { User } from 'src/user/entities/user.entity';
 import { City } from 'src/city/entities/city.entity';
 import { CreateCostumerDto } from './dto/create-costumer.dto';
 import { UpdateCostumerDto } from './dto/update-costumer.dto';
+import { Sale } from 'src/sale/entities/sale.entity';
+import { SaleItem } from 'src/sale-item/entities/sale-item.entity';
 
 interface CostumerFilters {
   search?: string; // Busca geral
@@ -76,7 +78,7 @@ export class CostumerService {
       if (filters.search && filters.search.trim() !== '') {
         const searchTerm = filters.search.trim();
         const searchPattern = `${searchTerm}%`;
-        
+
         qb.andWhere(
           `(
             LOWER(costumer.name) ILIKE LOWER(:searchPattern) OR
@@ -84,7 +86,7 @@ export class CostumerService {
             LOWER(city.name) ILIKE LOWER(:searchPattern) OR
             LOWER(costumer.neighborhood) ILIKE LOWER(:searchPattern)
           )`,
-          { 
+          {
             searchPattern,
             phonePattern: `%${searchTerm.replace(/\D/g, '')}%`
           }
@@ -97,8 +99,8 @@ export class CostumerService {
 
         if (filters.phone && filters.phone.trim() !== '') {
           const phoneDigits = filters.phone.replace(/\D/g, '');
-          qb.andWhere('REGEXP_REPLACE(costumer.phone, \'[^0-9]\', \'\', \'g\') ILIKE :phonePattern', { 
-            phonePattern: `%${phoneDigits}%` 
+          qb.andWhere('REGEXP_REPLACE(costumer.phone, \'[^0-9]\', \'\', \'g\') ILIKE :phonePattern', {
+            phonePattern: `%${phoneDigits}%`
           });
         }
 
@@ -206,5 +208,30 @@ export class CostumerService {
   async remove(id: number): Promise<void> {
     await this.findOne(id);
     await this.costumerRepository.softDelete(id);
+  }
+
+  async reportCustomers(search?: string) {
+    const qb = this.costumerRepository.createQueryBuilder('c')
+      .leftJoin('c.city', 'city')
+      .leftJoin(Sale, 's', 's.costumerId = c.id')
+      .leftJoin(SaleItem, 'si', 'si.saleId = s.id')
+      .select('c.id', 'id')
+      .addSelect('c.name', 'name')
+      .addSelect('c.phone', 'phone')
+      .addSelect('city.name', 'city')
+      .addSelect("COALESCE(SUM(si.quantity * CAST(si.price as decimal)), 0)", 'spent')
+      .groupBy('c.id, c.name, c.phone, city.name')
+      .orderBy('c.name', 'ASC');
+
+    if (search?.trim()) {
+      const term = `%${search.trim().toLowerCase()}%`;
+      qb.andWhere(
+        `(LOWER(c.name) LIKE :term OR REGEXP_REPLACE(c.phone,'[^0-9]','','g') LIKE :digits OR LOWER(city.name) LIKE :term)`,
+        { term, digits: `%${search.replace(/\D/g, '')}%` },
+      );
+    }
+
+    const rows = await qb.getRawMany<{ id: number; name: string; phone: string; city: string; spent: string }>();
+    return rows.map(r => ({ ...r, spent: Number(r.spent) }));
   }
 }

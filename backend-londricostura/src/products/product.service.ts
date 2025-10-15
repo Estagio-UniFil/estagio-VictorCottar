@@ -1,3 +1,4 @@
+import { InventoryService } from 'src/inventory/inventory.service';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,6 +12,7 @@ export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly inventoryService: InventoryService,
   ) { }
 
   async create(createProductDto: CreateProductDto, userId: number): Promise<Product> {
@@ -108,5 +110,29 @@ export class ProductService {
   async remove(id: number): Promise<void> {
     await this.findOne(id);
     await this.productRepository.softDelete(id);
+  }
+
+  async reportStock() {
+    const products = await this.productRepository.find({
+      select: ['id', 'name', 'code', 'price'],
+      order: { id: 'ASC' },
+    });
+
+    const ids = products.map(p => p.id);
+    const bulk = await this.inventoryService.getAvailableBulk(ids);
+    const map = new Map(bulk.map(b => [b.product_id, b.available]));
+
+    return products.map(p => {
+      const quantity = Number(map.get(p.id) ?? 0);
+      const price = Number(p.price);
+      return {
+        id: p.id,
+        name: p.name,
+        code: p.code,
+        quantity,
+        price,
+        total: Number((price * quantity).toFixed(2)),
+      };
+    });
   }
 }

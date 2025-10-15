@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Put, Delete, ParseIntPipe, DefaultValuePipe, BadRequestException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { SaleService } from './sale.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
@@ -7,7 +7,7 @@ import { SaleResponseDto } from './dto//sale-response.dto';
 
 @Controller('sale')
 export class SaleController {
-  constructor(private readonly service: SaleService) {}
+  constructor(private readonly service: SaleService) { }
 
   @Post()
   async create(@Body() dto: CreateSaleDto) {
@@ -21,6 +21,29 @@ export class SaleController {
     const res = await this.service.findAllPaginated(+page, +limit);
     const data = res.data.map(s => plainToInstance(SaleResponseDto, s, { excludeExtraneousValues: true }));
     return { message: 'Lista de vendas', data, total: res.total, page: res.page, limit: res.limit };
+  }
+
+  @Get('reports/monthly')
+  async reportMonthly(
+    @Query('year', new DefaultValuePipe(new Date().getFullYear()), ParseIntPipe)
+    year: number,
+  ) {
+    const data = await this.service.reportMonthly(year);
+    return { message: 'Relatório de vendas mensais gerado com sucesso.', data };
+  }
+
+  @Get('reports/by-period')
+  async reportByPeriod(
+    @Query('start') start?: string,
+    @Query('end') end?: string,
+  ) {
+    if (!start || !end) {
+      throw new BadRequestException(
+        'Parâmetros start e end são obrigatórios (YYYY-MM-DD).',
+      );
+    }
+    const data = await this.service.reportByPeriod(start, end);
+    return { message: 'Relatório de vendas por período gerado com sucesso.', data };
   }
 
   @Get(':id')
