@@ -42,15 +42,28 @@ export async function fetchSalesByPeriod(start: string, end: string): Promise<Pe
 
 export async function fetchStockReport(): Promise<StockRow[]> {
   try {
-    const r = await fetch(`${API_URL}/products/stock-report`, {
+    const url = `${API_URL}/products/stock-report`;
+    
+    const r = await fetch(url, {
       method: "GET",
       headers: getHeaders(),
     });
-    if (!r.ok) { console.error("Erro estoque:", r.statusText); return []; }
+
+    if (!r.ok) {
+      const errorText = await r.text();
+      console.error("Erro estoque:", r.statusText, errorText);
+      return [];
+    }
+
     const j = await safeJson(r);
-    return j.data || j || [];
+    return (j.data || []).map((row: any) => ({
+      ...row,
+      quantity: Number(row.quantity) || 0,
+      price: Number(row.price) || 0,
+      total: Number(row.total) || 0,
+    }));
   } catch (e) {
-    console.error("Req estoque:", e);
+    console.error("Erro na requisição do estoque:", e);
     return [];
   }
 }

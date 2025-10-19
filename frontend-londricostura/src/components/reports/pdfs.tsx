@@ -132,7 +132,7 @@ export function StockPDF({ data }: { data: any[] }) {
   return (
     <Document>
       <Page size="A4" style={s.page}>
-        <Text style={s.h1}>Relatório de Estoque</Text>
+        <Text style={s.h1}>Relatório de Estoque - Londricostura</Text>
         <View style={[s.row, { borderTop: 1 }]}>
           <Text style={[s.cell, s.head]}>Produto</Text>
           <Text style={[s.cell, s.head]}>Código</Text>

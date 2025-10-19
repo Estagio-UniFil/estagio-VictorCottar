@@ -76,6 +76,12 @@ export class ProductController {
     };
   }
 
+  @Get('stock-report')
+  async stockReport() {
+    const data = await this.productService.reportStock();
+    return { message: 'Relatório de estoque gerado com sucesso.', data };
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -109,11 +115,5 @@ export class ProductController {
     return {
       message: 'Produto removido com sucesso.',
     };
-  }
-
-  @Get('stock-report')
-  async stockReport() {
-    const data = await this.productService.reportStock();
-    return { message: 'Relatório de estoque gerado com sucesso.', data };
   }
 }

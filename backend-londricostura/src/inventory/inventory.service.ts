@@ -67,6 +67,7 @@ export class InventoryService {
 
   async getAvailableBulk(productIds: number[]) {
     if (!productIds?.length) return [];
+
     const rows = await this.inventoryRepository
       .createQueryBuilder('i')
       .select('i.product_id', 'product_id')
@@ -84,7 +85,6 @@ export class InventoryService {
 
     return Array.from(map.entries()).map(([product_id, available]) => ({ product_id, available }));
   }
-
   async getLogs(
     page: number = 1,
     limit: number = 10,

@@ -113,14 +113,23 @@ export class ProductService {
   }
 
   async reportStock() {
+  try {
     const products = await this.productRepository.find({
       select: ['id', 'name', 'code', 'price'],
       order: { id: 'ASC' },
     });
 
+    if (products.length === 0) {
+      return [];
+    }
+
     const ids = products.map(p => p.id);
+
     const bulk = await this.inventoryService.getAvailableBulk(ids);
-    const map = new Map(bulk.map(b => [b.product_id, b.available]));
+
+    const map = new Map(
+      bulk.map(b => [Number(b.product_id), Number(b.available)])
+    );
 
     return products.map(p => {
       const quantity = Number(map.get(p.id) ?? 0);
@@ -134,5 +143,9 @@ export class ProductService {
         total: Number((price * quantity).toFixed(2)),
       };
     });
+  } catch (error) {
+    console.error('Erro ao gerar relatório de estoque:', error);
+    throw error;
   }
+}
 }
