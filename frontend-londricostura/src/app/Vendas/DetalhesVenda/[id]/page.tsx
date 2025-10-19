@@ -156,7 +156,7 @@ export default function DetalhesVenda() {
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
-                className="cursor-pointer font-semibold inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer font-semibold inline-flex items-center gap-2 px-4 py-2 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200 cursor-pointer"
                 disabled={isDeleting}
               >
                 {isDeleting ? (
@@ -188,7 +188,7 @@ export default function DetalhesVenda() {
                 <AlertDialogAction
                   onClick={handleDeleteSale}
                   disabled={isDeleting}
-                  className="bg-red-600 hover:bg-red-700 cursor-pointer font-semibold"
+                  className="hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200 cursor-pointer bg-red-600"
                 >
                   {isDeleting ? (
                     <>

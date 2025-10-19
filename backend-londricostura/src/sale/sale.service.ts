@@ -180,18 +180,27 @@ export class SaleService {
 
   async reportByPeriod(start: string, end: string) {
     const rows = await this.saleRepo.createQueryBuilder('s')
-      .leftJoin('s.costumer', 'c')
-      .leftJoin('s.items', 'si')
-      .leftJoin('si.product', 'p')
-      .select("TO_CHAR(s.date::timestamp, 'YYYY-MM-DD')", 'date')
-      .addSelect("s.id", 'saleId')
-      .addSelect("COALESCE(c.name, 'Cliente não informado')", 'customer')
-      .addSelect("p.name", 'productName')
-      .addSelect("p.code", 'productCode')
-      .addSelect("si.quantity", 'quantity')
-      .addSelect("CAST(si.price as decimal)", 'unitPrice')
-      .addSelect("(si.quantity * CAST(si.price as decimal))", 'itemTotal')
-      .where('s.date BETWEEN :start AND :end', { start, end })
+    .leftJoin('s.costumer', 'c')
+    .leftJoin('s.items', 'si')
+    .leftJoin('si.product', 'p')
+    // se quiser exibir no fuso de SP:
+    .select(
+      "TO_CHAR((s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo'), 'YYYY-MM-DD')",
+      'date'
+    )
+    .addSelect("s.id", 'saleId')
+    .addSelect("COALESCE(c.name, 'Cliente não informado')", 'customer')
+    .addSelect("p.name", 'productName')
+    .addSelect("p.code", 'productCode')
+    .addSelect("si.quantity", 'quantity')
+    .addSelect("CAST(si.price as decimal)", 'unitPrice')
+    .addSelect("(si.quantity * CAST(si.price as decimal))", 'itemTotal')
+    // intervalo meio-aberto incluindo TODO o dia final:
+    .where(
+      "(s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo')::date >= :start::date " +
+      "AND (s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo')::date <= :end::date",
+      { start, end }
+    )
       .andWhere('s.deletedAt IS NULL')
       .orderBy('s.date', 'ASC')
       .addOrderBy('s.id', 'ASC')
