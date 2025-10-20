@@ -43,7 +43,7 @@ export async function fetchSalesByPeriod(start: string, end: string): Promise<Pe
 export async function fetchStockReport(): Promise<StockRow[]> {
   try {
     const url = `${API_URL}/products/stock-report`;
-    
+
     const r = await fetch(url, {
       method: "GET",
       headers: getHeaders(),
@@ -68,17 +68,37 @@ export async function fetchStockReport(): Promise<StockRow[]> {
   }
 }
 
-export async function fetchCustomersReport(): Promise<CustomerRow[]> {
+export async function fetchCustomersReport(params?: {
+  customerId?: number;
+  search?: string;
+}): Promise<CustomerRow[]> {
   try {
-    const r = await fetch(`${API_URL}/costumer/report`, {
-      method: "GET",
-      headers: getHeaders(),
-    });
-    if (!r.ok) { console.error("Erro clientes:", r.statusText); return []; }
+    const url = new URL(`${API_URL}/costumer/report`);
+    if (typeof params?.customerId === 'number' && Number.isFinite(params.customerId)) {
+      url.searchParams.set('customerId', String(params.customerId));
+    }
+    if (params?.search?.trim()) {
+      url.searchParams.set('search', params.search.trim());
+    }
+
+    const r = await fetch(url, { method: 'GET', headers: getHeaders() });
+    if (!r.ok) {
+      const t = await r.text();
+      console.error('Erro relatório clientes:', r.status, t);
+      return [];
+    }
+
     const j = await safeJson(r);
-    return j.data || j || [];
+    const rows = Array.isArray(j) ? j : j.data || [];
+    return rows.map((row: any) => ({
+      id: Number(row.id),
+      name: String(row.name ?? row.nome ?? ''),
+      phone: String(row.phone ?? row.telefone ?? ''),
+      city: String(row.city ?? row.cidade ?? ''),
+      spent: Number(row.spent ?? row.totalSpent ?? row.total ?? 0),
+    }));
   } catch (e) {
-    console.error("Req clientes:", e);
+    console.error('Req relatório clientes:', e);
     return [];
   }
 }

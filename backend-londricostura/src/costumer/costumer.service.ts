@@ -210,7 +210,9 @@ export class CostumerService {
     await this.costumerRepository.softDelete(id);
   }
 
-  async reportCustomers(search?: string) {
+  async reportCustomers(params?: { customerId?: number; search?: string }) {
+    const { customerId, search } = params ?? {};
+
     const qb = this.costumerRepository.createQueryBuilder('c')
       .leftJoin('c.city', 'city')
       .leftJoin(Sale, 's', 's.costumerId = c.id')
@@ -222,6 +224,10 @@ export class CostumerService {
       .addSelect("COALESCE(SUM(si.quantity * CAST(si.price as decimal)), 0)", 'spent')
       .groupBy('c.id, c.name, c.phone, city.name')
       .orderBy('c.name', 'ASC');
+
+    if (customerId && !isNaN(customerId) && customerId > 0) {
+      qb.andWhere('c.id = :customerId', { customerId });
+    }
 
     if (search?.trim()) {
       const term = `%${search.trim().toLowerCase()}%`;

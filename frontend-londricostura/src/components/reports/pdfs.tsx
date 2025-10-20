@@ -156,7 +156,7 @@ export function CustomersPDF({ data }: { data: any[] }) {
   return (
     <Document>
       <Page size="A4" style={s.page}>
-        <Text style={s.h1}>Relatório de Clientes</Text>
+        <Text style={s.h1}>Relatório de Clientes - Londricostura</Text>
         <View style={[s.row, { borderTop: 1 }]}>
           <Text style={[s.cell, s.head]}>Nome</Text>
           <Text style={[s.cell, s.head]}>Telefone</Text>

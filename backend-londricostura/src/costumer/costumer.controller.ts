@@ -62,6 +62,19 @@ export class CostumerController {
     return this.costumerService.findAllWithDeleteds();
   }
 
+  @Get('report')
+  async customersReport(
+    @Query('customerId') customerId?: string,
+    @Query('search') search?: string,
+  ) {
+
+    const id = customerId?.trim() && /^\d+$/.test(customerId.trim())
+      ? Number(customerId.trim())
+      : undefined;
+
+    return this.costumerService.reportCustomers({ customerId: id, search });
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.costumerService.findOne(+id);
@@ -77,9 +90,4 @@ export class CostumerController {
     return this.costumerService.remove(+id);
   }
 
-  @Get('report')
-  async reportCustomers(@Query('search') search?: string) {
-    const data = await this.costumerService.reportCustomers(search);
-    return { message: 'Relatório de clientes gerado com sucesso.', data };
-  }
 }

@@ -13,11 +13,21 @@ export function CustomersCard() {
   const [data, setData] = useState<CustomerRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [customerId, setCustomerId] = useState('');
 
   const load = async () => {
     setLoading(true);
-    // Se quiser enviar search, ajuste o service para aceitar ?search=
-    const rows = await fetchCustomersReport(/* opcional: search */);
+
+    const trimmedId = customerId.trim();
+    const idNum = trimmedId && /^\d+$/.test(trimmedId)
+      ? Number(trimmedId)
+      : undefined;
+
+    const rows = await fetchCustomersReport({
+      customerId: idNum,
+      search: search.trim() || undefined,
+    });
+
     setData(rows);
     setLoading(false);
   };
@@ -29,22 +39,25 @@ export function CustomersCard() {
           <Users className="h-5 w-5" />
           <CardTitle>Relatório de Clientes</CardTitle>
         </div>
-        <CardDescription>Dados e histórico de compras.</CardDescription>
+        <CardDescription>Dados e valor total gastado em compras.</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-2">
-        <Input placeholder="Buscar (opcional)" value={search} onChange={(e) => setSearch(e.target.value)} />
-      </CardContent>
+
       <CardFooter className="mt-auto flex items-center gap-2">
         <Button
           onClick={load}
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
           disabled={loading}>
-          {loading ? 'Carregando...' : 'Visualizar'}
+          {loading ? 'Carregando...' : 'Gerar Relatório'}
         </Button>
         {data.length > 0 && (
           <PDFDownloadLink document={<CustomersPDF data={data} />} fileName="relatorio-clientes.pdf">
-            <Button variant="secondary">Baixar PDF</Button>
+            <Button
+              variant="secondary"
+              className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+            >
+              Baixar PDF
+            </Button>
           </PDFDownloadLink>
         )}
       </CardFooter>

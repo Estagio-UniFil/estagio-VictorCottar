@@ -40,11 +40,16 @@ export function MonthlySalesCard() {
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
           disabled={loading}>
-          {loading ? 'Carregando...' : 'Visualizar'}
+          {loading ? 'Carregando...' : 'Gerar Relatório'}
         </Button>
         {data.length > 0 && (
           <PDFDownloadLink document={<MonthlySalesPDF data={data} year={year} />} fileName={`relatorio-vendas-mensais-${year}.pdf`}>
-            <Button variant="secondary">Baixar PDF</Button>
+            <Button
+              variant="secondary"
+              className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+            >
+              Baixar PDF
+            </Button>
           </PDFDownloadLink>
         )}
       </CardFooter>

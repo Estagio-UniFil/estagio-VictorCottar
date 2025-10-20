@@ -156,7 +156,7 @@ export default function DetalhesVenda() {
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
-                className="cursor-pointer font-semibold inline-flex items-center gap-2 px-4 py-2 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200 cursor-pointer"
+                className="cursor-pointer font-semibold inline-flex items-center gap-2 px-4 py-2 hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors duration-200"
                 disabled={isDeleting}
               >
                 {isDeleting ? (
@@ -206,7 +206,6 @@ export default function DetalhesVenda() {
       </div>
 
       <div className="container mx-auto px-6 py-6 max-w-6xl">
-        {/* Cards de Informações Gerais */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-lg shadow-sm border p-5">
             <div className="flex items-center gap-3">
@@ -257,7 +256,6 @@ export default function DetalhesVenda() {
           </div>
         </div>
 
-        {/* Tabela de Itens */}
         <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
           <div className="px-6 py-4 border-b bg-gray-50">
             <h2 className="text-lg font-semibold text-gray-900">Itens da Venda</h2>
