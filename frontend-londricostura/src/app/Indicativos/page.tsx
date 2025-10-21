@@ -61,7 +61,7 @@ export default function Indicativos() {
         ...prev,
         vendasHoje: vendasData.totalSalesValue,
         clientesAtendidos: vendasData.customersServed,
-        ticketMedio: vendasData.totalSalesValue,
+        ticketMedio: vendasData.averageTicket,
         estoqueTotal: estoqueData.totalStock,
         entradasHoje: movimentacaoData.incomingToday,
         saidasHoje: movimentacaoData.outgoingToday,
