@@ -82,6 +82,15 @@ export class ProductController {
     return { message: 'Relatório de estoque gerado com sucesso.', data };
   }
 
+  @Get('indicators/stock')
+  async getIndicadoresEstoque() {
+    const data = await this.productService.getStockIndicators();
+    return {
+      message: 'Indicadores de estoque',
+      data
+    };
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id', ParseIntPipe) id: number) {

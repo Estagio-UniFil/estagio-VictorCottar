@@ -42,6 +42,15 @@ export class InventoryController {
     return { message: 'Disponibilidade obtida com sucesso.', data };
   }
 
+  @Get('indicators/movimentation-today')
+  async getMovimentacoesHoje() {
+    const data = await this.inventoryService.getMovementsToday();
+    return {
+      message: 'Movimentações de hoje',
+      data
+    };
+  }
+
   @Get('available/:id')
   async available(@Param('id', ParseIntPipe) id: number) {
 
@@ -66,7 +75,7 @@ export class InventoryController {
       movementType as any,
       productId ? Number(productId) : undefined,
     );
-    
+
     return {
       message: 'Logs obtidos com sucesso.',
       ...data,

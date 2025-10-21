@@ -46,6 +46,15 @@ export class SaleController {
     return { message: 'Relatório de vendas por período gerado com sucesso.', data };
   }
 
+  @Get('indicators/today')
+  async getTodayIndicators() {
+    const data = await this.service.getTodayIndicators();
+    return {
+      message: 'Indicadores de vendas de hoje',
+      data
+    };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const sale = await this.service.findOne(+id);

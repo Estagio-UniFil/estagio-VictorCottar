@@ -180,27 +180,27 @@ export class SaleService {
 
   async reportByPeriod(start: string, end: string) {
     const rows = await this.saleRepo.createQueryBuilder('s')
-    .leftJoin('s.costumer', 'c')
-    .leftJoin('s.items', 'si')
-    .leftJoin('si.product', 'p')
-    // se quiser exibir no fuso de SP:
-    .select(
-      "TO_CHAR((s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo'), 'YYYY-MM-DD')",
-      'date'
-    )
-    .addSelect("s.id", 'saleId')
-    .addSelect("COALESCE(c.name, 'Cliente não informado')", 'customer')
-    .addSelect("p.name", 'productName')
-    .addSelect("p.code", 'productCode')
-    .addSelect("si.quantity", 'quantity')
-    .addSelect("CAST(si.price as decimal)", 'unitPrice')
-    .addSelect("(si.quantity * CAST(si.price as decimal))", 'itemTotal')
-    // intervalo meio-aberto incluindo TODO o dia final:
-    .where(
-      "(s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo')::date >= :start::date " +
-      "AND (s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo')::date <= :end::date",
-      { start, end }
-    )
+      .leftJoin('s.costumer', 'c')
+      .leftJoin('s.items', 'si')
+      .leftJoin('si.product', 'p')
+      // se quiser exibir no fuso de SP:
+      .select(
+        "TO_CHAR((s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo'), 'YYYY-MM-DD')",
+        'date'
+      )
+      .addSelect("s.id", 'saleId')
+      .addSelect("COALESCE(c.name, 'Cliente não informado')", 'customer')
+      .addSelect("p.name", 'productName')
+      .addSelect("p.code", 'productCode')
+      .addSelect("si.quantity", 'quantity')
+      .addSelect("CAST(si.price as decimal)", 'unitPrice')
+      .addSelect("(si.quantity * CAST(si.price as decimal))", 'itemTotal')
+      // intervalo meio-aberto incluindo TODO o dia final:
+      .where(
+        "(s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo')::date >= :start::date " +
+        "AND (s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo')::date <= :end::date",
+        { start, end }
+      )
       .andWhere('s.deletedAt IS NULL')
       .orderBy('s.date', 'ASC')
       .addOrderBy('s.id', 'ASC')
@@ -227,4 +227,41 @@ export class SaleService {
       itemTotal: Number(r.itemTotal)
     }));
   }
+
+  async getTodayIndicators() {
+
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999)).toISOString();
+
+
+    const todaysSales = await this.saleRepo.find({
+      where: {
+        date: Between(startOfDay, endOfDay),
+      },
+      relations: {
+        items: true,
+      },
+    });
+
+    const totalSalesValue = todaysSales.reduce((total, sale) => {
+      const saleTotal = (sale.items ?? []).reduce((sum, item) => {
+        return sum + (item.quantity * Number(item.price));
+      }, 0);
+      return total + saleTotal;
+    }, 0);
+
+    const customersServed = todaysSales.length;
+
+    const averageTicket = customersServed > 0
+      ? totalSalesValue / customersServed
+      : 0;
+
+    return {
+      totalSalesValue: Number(totalSalesValue.toFixed(2)),
+      customersServed,
+      averageTicket: Number(averageTicket.toFixed(2)),
+    };
+  }
+
 }

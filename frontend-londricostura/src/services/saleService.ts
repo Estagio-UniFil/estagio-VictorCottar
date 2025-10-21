@@ -76,3 +76,26 @@ export async function deleteSale(id: number): Promise<void> {
     throw new Error(msg);
   }
 }
+
+export async function fetchSalesIndicatorsToday(): Promise<{
+  totalSalesValue: number;
+  customersServed: number;
+  averageTicket: number;
+}> {
+  const response = await fetch(`${API_URL}/sale/indicators/today`, {
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    console.error("Error ao buscar indicadores:", response.statusText);
+    return {
+      totalSalesValue: 0,
+      customersServed: 0,
+      averageTicket: 0,
+    };
+  }
+
+  const result = await response.json();
+  return result.data;
+}
+

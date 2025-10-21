@@ -185,7 +185,6 @@ export default function LogsEstoque() {
               </table>
             </div>
 
-            {/* Paginação */}
             {totalPages > 1 && (
               <div className="px-6 py-4 border-t bg-gray-50 flex items-center justify-between">
                 <div className="text-sm text-gray-700">

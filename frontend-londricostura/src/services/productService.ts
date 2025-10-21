@@ -52,7 +52,6 @@ export async function fetchProductsPaginated(
   return response.json();
 }
 
-
 export async function removeProduct(id: number): Promise<void> {
   const response = await fetch(`${API_URL}/products/${id}`, {
     method: "DELETE",
@@ -95,4 +94,22 @@ export async function updateProduct(product: Product): Promise<void> {
     const message = (errJson as any).message || `Erro ${response.status}`;
     throw new Error(message);
   }
+}
+
+export async function fetchStockIndicators(): Promise<{
+  totalStock: number;
+}> {
+  const response = await fetch(`${API_URL}/products/indicators/stock`, {
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    console.error("Erro ao buscar indicadores do estoque:", response.statusText);
+    return {
+      totalStock: 0,
+    };
+  }
+
+  const result = await response.json();
+  return result.data;
 }

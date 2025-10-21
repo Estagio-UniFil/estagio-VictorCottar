@@ -113,39 +113,64 @@ export class ProductService {
   }
 
   async reportStock() {
-  try {
+    try {
+      const products = await this.productRepository.find({
+        select: ['id', 'name', 'code', 'price'],
+        order: { id: 'ASC' },
+      });
+
+      if (products.length === 0) {
+        return [];
+      }
+
+      const ids = products.map(p => p.id);
+
+      const bulk = await this.inventoryService.getAvailableBulk(ids);
+
+      const map = new Map(
+        bulk.map(b => [Number(b.product_id), Number(b.available)])
+      );
+
+      return products.map(p => {
+        const quantity = Number(map.get(p.id) ?? 0);
+        const price = Number(p.price);
+        return {
+          id: p.id,
+          name: p.name,
+          code: p.code,
+          quantity,
+          price,
+          total: Number((price * quantity).toFixed(2)),
+        };
+      });
+    } catch (error) {
+      console.error('Erro ao gerar relatório de estoque:', error);
+      throw error;
+    }
+  }
+
+  async getStockIndicators() {
+    // Total de itens em estoque
     const products = await this.productRepository.find({
-      select: ['id', 'name', 'code', 'price'],
-      order: { id: 'ASC' },
+      select: ['id'],
     });
 
     if (products.length === 0) {
-      return [];
+      return {
+        totalStock: 0,
+      };
     }
 
     const ids = products.map(p => p.id);
-
     const bulk = await this.inventoryService.getAvailableBulk(ids);
 
-    const map = new Map(
-      bulk.map(b => [Number(b.product_id), Number(b.available)])
-    );
+    const totalStock = bulk.reduce((sum, item) => {
+      return sum + Number(item.available);
+    }, 0);
 
-    return products.map(p => {
-      const quantity = Number(map.get(p.id) ?? 0);
-      const price = Number(p.price);
-      return {
-        id: p.id,
-        name: p.name,
-        code: p.code,
-        quantity,
-        price,
-        total: Number((price * quantity).toFixed(2)),
-      };
-    });
-  } catch (error) {
-    console.error('Erro ao gerar relatório de estoque:', error);
-    throw error;
+    return {
+      totalStock: Number(totalStock),
+    };
   }
-}
+
 }

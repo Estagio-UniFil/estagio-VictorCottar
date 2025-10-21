@@ -73,6 +73,7 @@ export async function getAvailableBulk(ids: number[]): Promise<{ product_id: num
   return json.data ?? [];
 
 }
+
 export async function fetchInventoryLogs(
   page: number = 1,
   limit: number = 10,
@@ -102,4 +103,24 @@ export async function fetchInventoryLogs(
   }
 
   return json;
+}
+
+export async function fetchMovimentationToday(): Promise<{
+  incomingToday: number;
+  outgoingToday: number;
+}> {
+  const response = await fetch(`${API_URL}/inventory/indicators/movimentation-today`, {
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    console.error("Erro ao buscar movimentações:", response.statusText);
+    return {
+      incomingToday: 0,
+      outgoingToday: 0,
+    };
+  }
+
+  const result = await response.json();
+  return result.data;
 }

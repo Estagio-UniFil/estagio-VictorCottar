@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Inventory } from './entities/inventory.entity';
 import { CreateMovementDto } from './dto/create-movement.dto';
 import { Product } from 'src/products/entities/product.entity';
@@ -85,6 +85,7 @@ export class InventoryService {
 
     return Array.from(map.entries()).map(([product_id, available]) => ({ product_id, available }));
   }
+
   async getLogs(
     page: number = 1,
     limit: number = 10,
@@ -117,4 +118,30 @@ export class InventoryService {
       totalPages: Math.ceil(total / limit),
     };
   }
+
+  async getMovementsToday() {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    const logs = await this.inventoryRepository.find({
+      where: {
+        createdAt: Between(startOfDay, endOfDay),
+      },
+    });
+
+    const incoming = logs
+      .filter(log => log.movement_type === 'IN')
+      .reduce((sum, log) => sum + log.quantity, 0);
+
+    const outgoing = logs
+      .filter(log => log.movement_type === 'OUT')
+      .reduce((sum, log) => sum + log.quantity, 0);
+
+    return {
+      incomingToday: incoming,
+      outgoingToday: outgoing,
+    };
+  }
+
 }
