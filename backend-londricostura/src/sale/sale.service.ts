@@ -228,12 +228,22 @@ export class SaleService {
     }));
   }
 
-  async getTodayIndicators() {
+  async getTodayIndicatorsbkp() {
 
     const today = new Date();
     const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
     const endOfDay = new Date(today.setHours(23, 59, 59, 999)).toISOString();
 
+
+    console.log('Buscando vendas entre:', startOfDay, 'e', endOfDay);
+
+    const allSales = await this.saleRepo.find({
+      relations: { items: true },
+    });
+
+    console.log('Total de vendas no banco:', allSales.length);
+    console.log('Exemplo de data no banco:', allSales[0]?.date);
+    console.log('Tipo da data:', typeof allSales[0]?.date);
 
     const todaysSales = await this.saleRepo.find({
       where: {
@@ -251,6 +261,8 @@ export class SaleService {
       return total + saleTotal;
     }, 0);
 
+    console.log('Vendas de hoje encontradas:', todaysSales.length);
+
     const customersServed = todaysSales.length;
 
     const averageTicket = customersServed > 0
@@ -263,5 +275,45 @@ export class SaleService {
       averageTicket: Number(averageTicket.toFixed(2)),
     };
   }
+
+  async getTodayIndicators() {
+
+  const nowInBrazil = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  const startOfDayBrazil = new Date(nowInBrazil);
+  startOfDayBrazil.setHours(0, 0, 0, 0);
+  
+  const endOfDayBrazil = new Date(nowInBrazil);
+  endOfDayBrazil.setHours(23, 59, 59, 999);
+  
+  const startOfDayUTC = new Date(startOfDayBrazil.getTime() + (3 * 60 * 60 * 1000));
+  const endOfDayUTC = new Date(endOfDayBrazil.getTime() + (3 * 60 * 60 * 1000));
+
+  const todaysSales = await this.saleRepo.find({
+    where: {
+      date: Between(startOfDayUTC.toISOString(), endOfDayUTC.toISOString()),
+    },
+    relations: {
+      items: true,
+    },
+  });
+  
+  const totalSalesValue = todaysSales.reduce((total, sale) => {
+    const saleTotal = (sale.items ?? []).reduce((sum, item) => {
+      return sum + (item.quantity * Number(item.price));
+    }, 0);
+    return total + saleTotal;
+  }, 0);
+
+  const customersServed = todaysSales.length;
+  const averageTicket = customersServed > 0
+    ? totalSalesValue / customersServed
+    : 0;
+
+  return {
+    totalSalesValue: Number(totalSalesValue.toFixed(2)),
+    customersServed,
+    averageTicket: Number(averageTicket.toFixed(2)),
+  };
+}
 
 }

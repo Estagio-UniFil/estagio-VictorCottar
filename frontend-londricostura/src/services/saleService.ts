@@ -84,6 +84,7 @@ export async function fetchSalesIndicatorsToday(): Promise<{
 }> {
   const response = await fetch(`${API_URL}/sale/indicators/today`, {
     headers: getHeaders(),
+    cache: 'no-store',
   });
 
   if (!response.ok) {
@@ -96,6 +97,7 @@ export async function fetchSalesIndicatorsToday(): Promise<{
   }
 
   const result = await response.json();
+  console.log(result); // Verifique os dados retornados da API
   return result.data;
 }
 

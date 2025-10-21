@@ -6,6 +6,7 @@ import { fetchMovimentationToday } from "@/services/inventoryService"; // Adicio
 import { Package, TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { formatCurrency } from "@/utils/formatCurrency";
 
 // Dados mockados para os gráficos
 const vendasDiariasData = [
@@ -94,7 +95,7 @@ export default function Indicativos() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Vendas Hoje</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  R$ {indicadores.vendasHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {formatCurrency(indicadores.vendasHoje)}
                 </p>
               </div>
               <div className="p-3 bg-blue-100 rounded-xl">
@@ -121,7 +122,7 @@ export default function Indicativos() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Ticket Médio</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  R$ {indicadores.ticketMedio.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {formatCurrency(indicadores.ticketMedio)}
                 </p>
               </div>
               <div className="p-3 bg-teal-100 rounded-xl">
