@@ -129,6 +129,7 @@ export function PeriodSalesPDF({ data, start, end }: { data: any[]; start: strin
 }
 
 export function StockPDF({ data }: { data: any[] }) {
+  const totalStock = data.reduce((acc, r) => acc + (r.total || 0), 0);
   return (
     <Document>
       <Page size="A4" style={s.page}>
@@ -137,7 +138,8 @@ export function StockPDF({ data }: { data: any[] }) {
           <Text style={[s.cell, s.head]}>Produto</Text>
           <Text style={[s.cell, s.head]}>Código</Text>
           <Text style={[s.cell, s.head]}>Qtd</Text>
-          <Text style={[s.cell, s.head]}>Valor</Text>
+          <Text style={[s.cell, s.head]}>Valor Un.</Text>
+          <Text style={[s.cell, s.head]}>Valor Total</Text>
         </View>
         {data.map((r, i) => (
           <View key={i} style={s.row}>
@@ -145,8 +147,13 @@ export function StockPDF({ data }: { data: any[] }) {
             <Text style={s.cell}>{r.code}</Text>
             <Text style={s.cell}>{r.quantity}</Text>
             <Text style={s.cell}>{formatCurrency(r.price)}</Text>
+            <Text style={s.cell}>{formatCurrency(r.total)}</Text>
           </View>
         ))}
+        <View style={[s.row, { borderTop: 2, marginTop: 10 }]}>
+          <Text style={[s.cell, s.head, { flex: 4 }]}>Valor total em Estoque</Text>
+          <Text style={[s.cell, s.head]}>{formatCurrency(totalStock)}</Text>
+        </View>
       </Page>
     </Document>
   );
