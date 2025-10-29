@@ -38,13 +38,18 @@ export function StockCard() {
           {loading ? 'Carregando...' : 'Gerar Relatório'}
         </Button>
         {data.length > 0 && (
-          <PDFDownloadLink document={<StockPDF data={data} />} fileName="relatorio-estoque.pdf">
-            <Button
-              variant="secondary"
-              className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
-            >
-              Baixar PDF
-            </Button>
+          <PDFDownloadLink
+            document={<StockPDF data={data} />}
+            fileName="relatorio-estoque.pdf"
+          >
+            {({ loading }) => (
+              <Button
+                variant="secondary"
+                className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+              >
+                {loading ? 'Gerando PDF...' : 'Baixar PDF'}
+              </Button>
+            )}
           </PDFDownloadLink>
         )}
       </CardFooter>

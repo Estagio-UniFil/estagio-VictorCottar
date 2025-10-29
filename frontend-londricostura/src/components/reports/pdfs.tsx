@@ -1,14 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { formatCurrency } from "@/utils/formatCurrency";
 
-const s = StyleSheet.create({
-  page: { padding: 24 },
-  h1: { fontSize: 18, marginBottom: 12, textAlign: 'center' },
-  row: { flexDirection: 'row', borderBottom: 1, paddingVertical: 4 },
-  cell: { flex: 1, fontSize: 10 },
-  head: { fontSize: 11, fontWeight: 'bold' },
-});
-
 const detailedStyles = StyleSheet.create({
   page: {
     padding: 30,
@@ -72,24 +64,24 @@ export function MonthlySalesPDF({ data, year }: { data: any[]; year: string }) {
 
   return (
     <Document>
-      <Page size="A4" style={s.page}>
-        <Text style={s.h1}>Vendas Mensais Londricostura — {year}</Text>
-        <View style={[s.row, { borderTop: 1 }]}>
-          <Text style={[s.cell, s.head]}>Mês</Text>
-          <Text style={[s.cell, s.head]}>Qtde de Vendas</Text>
-          <Text style={[s.cell, s.head]}>Valor Total</Text>
+      <Page size="A4" style={detailedStyles.page}>
+        <Text style={detailedStyles.h1}>Vendas Mensais Londricostura — {year}</Text>
+        <View style={[detailedStyles.row, { borderTop: 1 }]}>
+          <Text style={[detailedStyles.head, { width: '40%', padding: 4, fontSize: 9 }]}>Mês</Text>
+          <Text style={[detailedStyles.head, { width: '30%', padding: 4, fontSize: 9, textAlign: 'center' }]}>Qtde de Vendas</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head, { width: '30%' }]}>Valor Total</Text>
         </View>
         {data.map((r, i) => (
-          <View key={i} style={s.row}>
-            <Text style={s.cell}>{r.month}</Text>
-            <Text style={s.cell}>{r.count}</Text>
-            <Text style={s.cell}>{formatCurrency(r.total)}</Text>
+          <View key={i} style={detailedStyles.row}>
+            <Text style={{ width: '40%', padding: 4, fontSize: 9 }}>{r.month}</Text>
+            <Text style={{ width: '30%', padding: 4, fontSize: 9, textAlign: 'center' }}>{r.count}</Text>
+            <Text style={[detailedStyles.cellPrice, { width: '30%' }]}>{formatCurrency(r.total)}</Text>
           </View>
         ))}
-        <View style={[s.row, { borderTop: 1, borderTopWidth: 2 }]}>
-          <Text style={[s.cell, s.head]}>Totais</Text>
-          <Text style={[s.cell, s.head]}>{totalSales}</Text>
-          <Text style={[s.cell, s.head]}>{formatCurrency(totalValue)}</Text>
+        <View style={[detailedStyles.row, { borderTop: 2, marginTop: 10, borderColor: '#000' }]}>
+          <Text style={[detailedStyles.head, { width: '40%', padding: 4, fontSize: 9 }]}>Totais</Text>
+          <Text style={[detailedStyles.head, { width: '30%', padding: 4, fontSize: 9, textAlign: 'center' }]}>{totalSales}</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head, { width: '30%' }]}>{formatCurrency(totalValue)}</Text>
         </View>
       </Page>
     </Document>
@@ -97,6 +89,7 @@ export function MonthlySalesPDF({ data, year }: { data: any[]; year: string }) {
 }
 
 export function PeriodSalesPDF({ data, start, end }: { data: any[]; start: string; end: string }) {
+  const totalStock = data.reduce((acc, r) => acc + (r.itemTotal || 0), 0);
   return (
     <Document>
       <Page size="A4" style={detailedStyles.page} orientation="landscape">
@@ -123,6 +116,10 @@ export function PeriodSalesPDF({ data, start, end }: { data: any[]; start: strin
             <Text style={detailedStyles.cellPrice}>{formatCurrency(item.itemTotal)}</Text>
           </View>
         ))}
+        <View style={[detailedStyles.row, { borderTop: 2, marginTop: 10 }]}>
+          <Text style={[detailedStyles.cellMedium, detailedStyles.head]}>Valor total em compras</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head]}>{formatCurrency(totalStock)}</Text>
+        </View>
       </Page>
     </Document>
   );
@@ -132,27 +129,27 @@ export function StockPDF({ data }: { data: any[] }) {
   const totalStock = data.reduce((acc, r) => acc + (r.total || 0), 0);
   return (
     <Document>
-      <Page size="A4" style={s.page}>
-        <Text style={s.h1}>Relatório de Estoque - Londricostura</Text>
-        <View style={[s.row, { borderTop: 1 }]}>
-          <Text style={[s.cell, s.head]}>Produto</Text>
-          <Text style={[s.cell, s.head]}>Código</Text>
-          <Text style={[s.cell, s.head]}>Qtd</Text>
-          <Text style={[s.cell, s.head]}>Valor Un.</Text>
-          <Text style={[s.cell, s.head]}>Valor Total</Text>
+      <Page size="A4" style={detailedStyles.page}>
+        <Text style={detailedStyles.h1}>Relatório de Estoque - Londricostura</Text>
+        <View style={[detailedStyles.row, { borderTop: 1 }]}>
+          <Text style={[detailedStyles.cellLarge, detailedStyles.head, { width: '40%' }]}>Produto</Text>
+          <Text style={[detailedStyles.cellSmall, detailedStyles.head, { width: '15%' }]}>Código</Text>
+          <Text style={[detailedStyles.cellSmall, detailedStyles.head, { width: '10%' }]}>Qtd</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head, { width: '17.5%' }]}>Valor Un.</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head, { width: '17.5%' }]}>Valor Total</Text>
         </View>
         {data.map((r, i) => (
-          <View key={i} style={s.row}>
-            <Text style={s.cell}>{r.name}</Text>
-            <Text style={s.cell}>{r.code}</Text>
-            <Text style={s.cell}>{r.quantity}</Text>
-            <Text style={s.cell}>{formatCurrency(r.price)}</Text>
-            <Text style={s.cell}>{formatCurrency(r.total)}</Text>
+          <View key={i} style={detailedStyles.row}>
+            <Text style={[detailedStyles.cellLarge, { width: '40%' }]}>{r.name}</Text>
+            <Text style={[detailedStyles.cellSmall, { width: '15%' }]}>{r.code}</Text>
+            <Text style={[detailedStyles.cellSmall, { width: '10%', textAlign: 'center' }]}>{r.quantity}</Text>
+            <Text style={[detailedStyles.cellPrice, { width: '17.5%' }]}>{formatCurrency(r.price)}</Text>
+            <Text style={[detailedStyles.cellPrice, { width: '17.5%' }]}>{formatCurrency(r.total)}</Text>
           </View>
         ))}
-        <View style={[s.row, { borderTop: 2, marginTop: 10 }]}>
-          <Text style={[s.cell, s.head, { flex: 4 }]}>Valor total em Estoque</Text>
-          <Text style={[s.cell, s.head]}>{formatCurrency(totalStock)}</Text>
+        <View style={[detailedStyles.row, { borderTop: 2, marginTop: 10, borderColor: '#000' }]}>
+          <Text style={[detailedStyles.head, { width: '65%', padding: 4, fontSize: 9 }]}>Valor total em Estoque</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head, { width: '35%' }]}>{formatCurrency(totalStock)}</Text>
         </View>
       </Page>
     </Document>
@@ -160,24 +157,30 @@ export function StockPDF({ data }: { data: any[] }) {
 }
 
 export function CustomersPDF({ data }: { data: any[] }) {
+  const totalSpent = data.reduce((acc, r) => acc + (r.spent || 0), 0);
+
   return (
     <Document>
-      <Page size="A4" style={s.page}>
-        <Text style={s.h1}>Relatório de Clientes - Londricostura</Text>
-        <View style={[s.row, { borderTop: 1 }]}>
-          <Text style={[s.cell, s.head]}>Nome</Text>
-          <Text style={[s.cell, s.head]}>Telefone</Text>
-          <Text style={[s.cell, s.head]}>Cidade</Text>
-          <Text style={[s.cell, s.head]}>Gasto Total</Text>
+      <Page size="A4" style={detailedStyles.page}>
+        <Text style={detailedStyles.h1}>Relatório de Clientes - Londricostura</Text>
+        <View style={[detailedStyles.row, { borderTop: 1 }]}>
+          <Text style={[detailedStyles.head, { width: '35%', padding: 4, fontSize: 9 }]}>Nome</Text>
+          <Text style={[detailedStyles.head, { width: '20%', padding: 4, fontSize: 9 }]}>Telefone</Text>
+          <Text style={[detailedStyles.head, { width: '25%', padding: 4, fontSize: 9 }]}>Cidade</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head, { width: '20%' }]}>Gasto Total</Text>
         </View>
         {data.map((r, i) => (
-          <View key={i} style={s.row}>
-            <Text style={s.cell}>{r.name}</Text>
-            <Text style={s.cell}>{r.phone}</Text>
-            <Text style={s.cell}>{r.city}</Text>
-            <Text style={s.cell}>{formatCurrency(r.spent)}</Text>
+          <View key={i} style={detailedStyles.row}>
+            <Text style={{ width: '35%', padding: 4, fontSize: 9 }}>{r.name}</Text>
+            <Text style={{ width: '20%', padding: 4, fontSize: 9 }}>{r.phone}</Text>
+            <Text style={{ width: '25%', padding: 4, fontSize: 9 }}>{r.city}</Text>
+            <Text style={[detailedStyles.cellPrice, { width: '20%' }]}>{formatCurrency(r.spent)}</Text>
           </View>
         ))}
+        <View style={[detailedStyles.row, { borderTop: 2, marginTop: 10, borderColor: '#000' }]}>
+          <Text style={[detailedStyles.head, { width: '80%', padding: 4, fontSize: 9 }]}>Total Gasto por Clientes</Text>
+          <Text style={[detailedStyles.cellPrice, detailedStyles.head, { width: '20%' }]}>{formatCurrency(totalSpent)}</Text>
+        </View>
       </Page>
     </Document>
   );
