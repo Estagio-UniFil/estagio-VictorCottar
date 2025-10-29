@@ -7,6 +7,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Boxes } from 'lucide-react';
 import { StockPDF } from '@/components/reports/pdfs';
 import { fetchStockReport, type StockRow } from '@/services/reportsService';
+import { toast } from 'sonner';
 
 export function StockCard() {
   const [data, setData] = useState<StockRow[]>([]);
@@ -15,6 +16,11 @@ export function StockCard() {
   const load = async () => {
     setLoading(true);
     const rows = await fetchStockReport();
+
+    if (rows.length === 0) {
+      toast.error('Nenhum item em estoque.');
+    }
+
     setData(rows);
     setLoading(false);
   };

@@ -61,7 +61,6 @@ export function formatDateBR(date: string): string {
 export function MonthlySalesPDF({ data, year }: { data: any[]; year: string }) {
   const totalSales = data.reduce((sum, r) => sum + r.count, 0);
   const totalValue = data.reduce((sum, r) => sum + r.total, 0);
-
   return (
     <Document>
       <Page size="A4" style={detailedStyles.page}>
@@ -158,7 +157,6 @@ export function StockPDF({ data }: { data: any[] }) {
 
 export function CustomersPDF({ data }: { data: any[] }) {
   const totalSpent = data.reduce((acc, r) => acc + (r.spent || 0), 0);
-
   return (
     <Document>
       <Page size="A4" style={detailedStyles.page}>

@@ -8,6 +8,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { BarChart3 } from 'lucide-react';
 import { MonthlySalesPDF } from '@/components/reports/pdfs';
 import { fetchMonthlySales, type MonthlySalesRow } from '@/services/reportsService';
+import { toast } from 'sonner';
 
 export function MonthlySalesCard() {
   const [year, setYear] = useState<string>(new Date().getFullYear().toString());
@@ -17,6 +18,11 @@ export function MonthlySalesCard() {
   const load = async () => {
     setLoading(true);
     const rows = await fetchMonthlySales(year);
+
+    if (rows.length === 0) {
+      toast.error('Nenhuma venda encontrada no ano selecionado.');
+    }
+
     setData(rows);
     setLoading(false);
   };

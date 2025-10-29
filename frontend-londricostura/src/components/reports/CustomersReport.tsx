@@ -8,6 +8,7 @@ import { Users } from 'lucide-react';
 import { CustomersPDF } from '@/components/reports/pdfs';
 import { fetchCustomersReport, type CustomerRow } from '@/services/reportsService';
 import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 
 export function CustomersCard() {
   const [data, setData] = useState<CustomerRow[]>([]);
@@ -27,6 +28,10 @@ export function CustomersCard() {
       customerId: idNum,
       search: search.trim() || undefined,
     });
+
+    if (rows.length === 0) {
+      toast.error('Nenhum cliente localizado no sistema.');
+    }
 
     setData(rows);
     setLoading(false);

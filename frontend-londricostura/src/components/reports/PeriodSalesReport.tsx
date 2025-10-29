@@ -8,6 +8,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { CalendarRange } from 'lucide-react';
 import { PeriodSalesPDF } from '@/components/reports/pdfs';
 import { fetchSalesByPeriod, type PeriodSalesRow } from '@/services/reportsService';
+import { toast } from 'sonner';
 
 export function PeriodSalesCard() {
   const [start, setStart] = useState<string>('');
@@ -19,6 +20,11 @@ export function PeriodSalesCard() {
     if (!start || !end) return;
     setLoading(true);
     const rows = await fetchSalesByPeriod(start, end);
+
+    if (rows.length === 0) {
+      toast.error('Nenhuma venda encontrada no período selecionado.');
+    }
+
     setData(rows);
     setLoading(false);
   };
