@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, EntityManager, Repository } from 'typeorm';
 import { Inventory } from './entities/inventory.entity';
 import { CreateMovementDto } from './dto/create-movement.dto';
 import { Product } from 'src/products/entities/product.entity';
@@ -142,6 +142,16 @@ export class InventoryService {
       incomingToday: incoming,
       outgoingToday: outgoing,
     };
+  }
+
+  async createMovementInTx(manager: EntityManager, input: { product_id: number; quantity: number }) {
+    const repo = manager.getRepository(Inventory);
+    const log = repo.create({
+      product_id: input.product_id,
+      movement_type: "IN",
+      quantity: input.quantity,
+    });
+    await repo.save(log);
   }
 
 }

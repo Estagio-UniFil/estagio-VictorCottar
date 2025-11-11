@@ -113,3 +113,16 @@ export async function fetchStockIndicators(): Promise<{
   const result = await response.json();
   return result.data;
 }
+
+type Item = { code: string; name: string; price: number; quantity: number };
+
+export async function confirmImport(items: Item[]) {
+  const res = await fetch(`${API_URL}/products/import/confirm`, {
+    method: "POST",
+    headers: { ...getHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify({ items }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json?.message || `Erro ${res.status}`);
+  return json as { inserted: number; updated: number; stockMovements: number };
+}

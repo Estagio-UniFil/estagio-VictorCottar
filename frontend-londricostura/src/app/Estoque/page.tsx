@@ -1,6 +1,7 @@
 'use client'
 import ProductsDataTable from "@/components/datatable-products/_components/products-datatable";
 import DialogAddProduct from "@/components/dialogs-products/dialog-add-product";
+import DialogImportProducts from "@/components/dialogs-products/dialog-import-products";
 import HeaderPage from "@/components/header-pages";
 import { Product } from "@/interfaces/product";
 import { fetchProductsPaginated } from "@/services/productService";
@@ -40,6 +41,7 @@ export default function Estoque() {
             <FileText size={18} />
             <p className="text-[15px]">Movimentações</p>
           </Link>
+          <DialogImportProducts onImported={refreshProducts} />
           <DialogAddProduct onProductAdded={refreshProducts} />
         </div>
       </div>

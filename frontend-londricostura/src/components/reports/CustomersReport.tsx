@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Users } from 'lucide-react';
 import { CustomersPDF } from '@/components/reports/pdfs';
 import { fetchCustomersReport, type CustomerRow } from '@/services/reportsService';
-import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
 export function CustomersCard() {

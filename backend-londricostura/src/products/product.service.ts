@@ -1,11 +1,13 @@
 import { InventoryService } from 'src/inventory/inventory.service';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { User } from 'src/user/entities/user.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+
+type ImportItem = { code: string; name: string; price: number; quantity: number };
 
 @Injectable()
 export class ProductService {
@@ -13,6 +15,7 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly inventoryService: InventoryService,
+    private readonly ds: DataSource,
   ) { }
 
   async create(createProductDto: CreateProductDto, userId: number): Promise<Product> {
@@ -171,6 +174,53 @@ export class ProductService {
     return {
       totalStock: Number(totalStock),
     };
+  }
+
+  async importConfirm(items: ImportItem[], userId: number) {
+    let inserted = 0;
+    let updated = 0;
+    let stockMovements = 0;
+
+    await this.ds.transaction(async (manager) => {
+      const repo = manager.getRepository(Product);
+
+      for (const it of items) {
+        let product = await repo.findOne({ where: { code: it.code } });
+
+        if (!product) {
+          product = repo.create({
+            code: it.code.trim(),
+            name: it.name.trim(),
+            price: Number(it.price),
+            user_id: userId || 1, // ajuste se obrigatório
+          });
+          await repo.save(product);
+          inserted++;
+        } else {
+          // atualiza nome/preço se mudou
+          const newPrice = Number(it.price);
+          const needName = product.name !== it.name.trim();
+          const needPrice = Number(product.price) !== newPrice;
+          if (needName || needPrice) {
+            product.name = it.name.trim();
+            product.price = newPrice as any; // decimal
+            await repo.save(product);
+            updated++;
+          }
+        }
+
+        const qty = Number(it.quantity) || 0;
+        if (qty > 0) {
+          await this.inventoryService.createMovementInTx(manager, {
+            product_id: product.id,
+            quantity: qty,
+          });
+          stockMovements++;
+        }
+      }
+    });
+
+    return { inserted, updated, stockMovements };
   }
 
 }

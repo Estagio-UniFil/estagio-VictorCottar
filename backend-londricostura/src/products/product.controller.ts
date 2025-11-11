@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, DefaultValuePipe, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -7,6 +7,7 @@ import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { plainToInstance } from 'class-transformer';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { Product } from './entities/product.entity';
+import { ImportConfirmDto } from './dto/import-confirm.dto';
 
 @Controller('products')
 export class ProductController {
@@ -89,6 +90,13 @@ export class ProductController {
       message: 'Indicadores de estoque',
       data
     };
+  }
+
+  @Post("import/confirm")
+  async importConfirm(@Body() dto: ImportConfirmDto, @Req() req: any) {
+    const userId = Number(req?.user?.id) || 0;
+    const result = await this.productService.importConfirm(dto.items, userId);
+    return { inserted: result.inserted, updated: result.updated, stockMovements: result.stockMovements };
   }
 
   @Get(':id')
