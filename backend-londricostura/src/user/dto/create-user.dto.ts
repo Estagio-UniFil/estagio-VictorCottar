@@ -22,7 +22,7 @@ export class CreateUserDto {
 
   @IsBoolean()
   @IsOptional()
-  active?: boolean; 
+  active?: boolean;
 
   @IsBoolean()
   @IsOptional()

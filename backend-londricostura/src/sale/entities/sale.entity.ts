@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, DeleteDateColumn } from 'typeorm';
 import { Costumer } from 'src/costumer/entities/costumer.entity';
 import { SaleItem } from 'src/sale-item/entities/sale-item.entity';
-import { User } from 'src/user/entities/user.entity'; 
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Sale {

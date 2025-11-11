@@ -31,7 +31,7 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       return (
         <div className="text-center">
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium">
-            {itemCount} 
+            {itemCount}
           </span>
         </div>
       );
@@ -44,11 +44,11 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const sale = row.original;
       const itemCount = sale.items?.length || 0;
       const productName = sale.items?.[0]?.product_name || 'N/A';
-      
+
       if (itemCount === 1) {
         return <div className="text-center">{productName}</div>;
       }
-      
+
       return (
         <div className="text-center">
           <div className="font-medium">{productName}</div>
@@ -66,11 +66,11 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const sale = row.original;
       const itemCount = sale.items?.length || 0;
       const productCode = sale.items?.[0]?.product_code || 'N/A';
-      
+
       if (itemCount === 1) {
         return <div className="text-center">{productCode}</div>;
       }
-      
+
       return (
         <div className="text-center">
           <div className="font-medium">{productCode}</div>
@@ -88,11 +88,11 @@ const columns = (onSaleChanged: () => void): ColumnDef<Sale>[] => [
       const sale = row.original;
       const totalQuantity = sale.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
       const itemCount = sale.items?.length || 0;
-      
+
       if (itemCount === 1) {
         return <div className="text-center">{totalQuantity}</div>;
       }
-      
+
       return (
         <div className="text-center">
           <div className="font-medium">{totalQuantity}</div>

@@ -84,7 +84,7 @@ export class CityService {
     await this.cityRepository.delete(id);
   }
 
-  async resolveByCep(cepRaw: string): Promise<{ id: number; name: string; state: string; neighborhood: string; street: string;  }> {
+  async resolveByCep(cepRaw: string): Promise<{ id: number; name: string; state: string; neighborhood: string; street: string; }> {
     if (!cepRaw || cepRaw.trim() === '') {
       throw new BadRequestException('CEP não pode ser vazio');
     }

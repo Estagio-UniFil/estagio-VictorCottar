@@ -60,7 +60,6 @@ export default function DialogEditUser({ user, onUserChanged }: DialogEditUserPr
         }
 
         const updatedData = { ...formData };
-        // Criar um novo objeto sem o campo 'password' caso ele esteja vazio
         const filteredData = updatedData.password
           ? updatedData
           : Object.fromEntries(

@@ -33,13 +33,10 @@ export default function Indicativos() {
     try {
       setLoading(true);
 
-      // Buscar indicadores de vendas
       const vendasData = await fetchSalesIndicatorsToday();
 
-      // Buscar indicadores de estoque
       const estoqueData = await fetchStockIndicators();
 
-      // Buscar movimentações de produtos
       const movimentacaoData = await fetchMovimentationToday();
 
       setIndicadores(prev => ({
@@ -93,10 +90,9 @@ export default function Indicativos() {
 
   async function fetchVendasSemana() {
     try {
-      const { from, to } = getWeekRangeISO(new Date()); // usa a mesma util já existente
-      const raw = await fetchSalesByRange(from, to);     // [{date:'YYYY-MM-DD', totalSales:number}]
+      const { from, to } = getWeekRangeISO(new Date());
+      const raw = await fetchSalesByRange(from, to);
 
-      // base da semana seg..dom
       const base = new Date(from);
       const map: Record<string, number> = {};
       for (let i = 0; i < 7; i++) {

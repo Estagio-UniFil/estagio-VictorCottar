@@ -98,9 +98,8 @@ export function AppSidebar() {
                       asChild
                       onMouseEnter={() => iconRef.current?.startAnimation()}
                       onMouseLeave={() => iconRef.current?.stopAnimation()}
-                      className={`flex items-center px-5 py-5 rounded-lg transition-colors duration-200 ${
-                        isLogout ? "hover:bg-red-100 hover:text-red-600" : "hover:bg-blue-100 hover:text-blue-700"
-                      }`}
+                      className={`flex items-center px-5 py-5 rounded-lg transition-colors duration-200 ${isLogout ? "hover:bg-red-100 hover:text-red-600" : "hover:bg-blue-100 hover:text-blue-700"
+                        }`}
                     >
                       <Link href={item.url} className="flex items-center gap-3">
                         <IconComponent ref={iconRef} size={ICON_SIZE} />

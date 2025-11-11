@@ -153,7 +153,6 @@ export class ProductService {
   }
 
   async getStockIndicators() {
-    // Total de itens em estoque
     const products = await this.productRepository.find({
       select: ['id'],
     });
@@ -192,7 +191,7 @@ export class ProductService {
             code: it.code.trim(),
             name: it.name.trim(),
             price: Number(it.price),
-            user_id: userId || 1, // ajuste se obrigatório
+            user_id: userId || 1,
           });
           await repo.save(product);
           inserted++;

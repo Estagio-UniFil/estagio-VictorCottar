@@ -7,7 +7,7 @@ import { SaleItemResponseDto } from './dto/sale-item-response.dto';
 
 @Controller('sale-item')
 export class SaleItemController {
-  constructor(private readonly service: SaleItemService) {}
+  constructor(private readonly service: SaleItemService) { }
 
   @Post()
   async create(@Body() dto: CreateSaleItemDto) {

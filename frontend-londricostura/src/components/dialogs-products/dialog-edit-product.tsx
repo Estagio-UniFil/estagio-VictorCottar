@@ -55,7 +55,7 @@ export default function DialogEditProduct({ product, onProductsChanged }: Dialog
           onClick={() => setOpen(true)}
           className="cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
           variant="ghost"
-        > 
+        >
           <SquarePenIcon size={16} />
         </Button>
       </DialogTrigger>

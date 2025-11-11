@@ -11,4 +11,4 @@ import { Product } from 'src/products/entities/product.entity';
   providers: [InventoryService],
   exports: [InventoryService],
 })
-export class InventoryModule {}
+export class InventoryModule { }

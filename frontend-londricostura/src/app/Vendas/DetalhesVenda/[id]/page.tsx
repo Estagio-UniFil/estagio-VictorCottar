@@ -151,7 +151,7 @@ export default function DetalhesVenda() {
           </Link>
           <HeaderPage pageName="Detalhes da venda" />
         </div>
-        
+
         <div className="mt-5 mr-6">
           <AlertDialog>
             <AlertDialogTrigger asChild>

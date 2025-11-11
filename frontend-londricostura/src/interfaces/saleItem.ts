@@ -1,5 +1,4 @@
-
-export interface SaleItem  {
+export interface SaleItem {
   id: number;
   saleId: number;
   product_id: number;

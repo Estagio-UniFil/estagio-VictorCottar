@@ -58,7 +58,7 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
     searchTimeoutRef.current = setTimeout(async () => {
       try {
         let result;
-        
+
         if (currentFilters.search.trim()) {
           result = await fetchProducts(1, 20, "name", currentFilters.search.trim());
         } else if (currentFilters.name.trim()) {
@@ -73,8 +73,8 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
         let productsWithStock: Product[] = Array.isArray(result)
           ? result
           : Array.isArray((result as any)?.data)
-          ? (result as any).data
-          : [];
+            ? (result as any).data
+            : [];
 
         const productIds = productsWithStock
           .map((p) => p?.id)
@@ -86,8 +86,8 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
             Array.isArray(stockUnsafe)
               ? stockUnsafe
               : Array.isArray((stockUnsafe as any)?.data)
-              ? (stockUnsafe as any).data
-              : [];
+                ? (stockUnsafe as any).data
+                : [];
 
           const stockMap = new Map<number, number>(
             stockData.map((s) => [Number(s.product_id), Number(s.available ?? 0)])
@@ -194,9 +194,9 @@ export default function ProductSelector({ onProductAdd }: ProductSelectorProps) 
       <CardContent>
         <Dialog open={showProductDialog} onOpenChange={setShowProductDialog}>
           <DialogTrigger asChild>
-            <Button 
-              className="w-full cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200" 
-              size="lg" 
+            <Button
+              className="w-full cursor-pointer hover:bg-blue-100 hover:text-blue-700 rounded-lg transition-colors duration-200"
+              size="lg"
               variant="outline">
               <Plus className="w-4 h-4 mr-2" />
               Buscar Produto

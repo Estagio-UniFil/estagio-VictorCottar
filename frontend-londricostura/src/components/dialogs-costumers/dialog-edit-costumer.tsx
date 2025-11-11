@@ -131,8 +131,8 @@ export default function DialogEditCostumer({ costumer, onCostumerChanged }: Dial
         name,
         phone,
         city_id: cityId,
-        cep: cep || undefined,        
-        neighborhood,                 
+        cep: cep || undefined,
+        neighborhood,
         street,
         number: numberHouse || undefined,
       });
@@ -200,7 +200,7 @@ export default function DialogEditCostumer({ costumer, onCostumerChanged }: Dial
             <Select
               value={selectedCityId}
               onValueChange={(v: string) => setSelectedCityId(v)}
-              disabled={Boolean(cep && cep.replace(/\D/g, '').length === 8)} // travado quando veio por CEP
+              disabled={Boolean(cep && cep.replace(/\D/g, '').length === 8)}
             >
               <SelectTrigger className="w-[343px]">
                 <SelectValue placeholder={cities.length ? "" : "Nenhuma cidade localizada"} />

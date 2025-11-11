@@ -1,4 +1,3 @@
-// inventory/dto/movement-response.dto.ts
 import { Expose } from 'class-transformer';
 
 export class MovementResponseDto {

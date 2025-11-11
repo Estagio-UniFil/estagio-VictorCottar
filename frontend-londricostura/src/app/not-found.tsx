@@ -12,7 +12,7 @@ export default function NotFound() {
             height={300}
             priority
           />
-          
+
         </span>
         <h1 className="text-3xl">A página que você procura não existe!</h1>
       </div>

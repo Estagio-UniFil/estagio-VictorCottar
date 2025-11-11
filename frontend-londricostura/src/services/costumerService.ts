@@ -22,8 +22,8 @@ interface CostumerFilters {
 }
 
 export async function fetchCostumer(
-  page: number, 
-  limit: number, 
+  page: number,
+  limit: number,
   filters?: CostumerFilters
 ): Promise<{ data: Costumer[]; total: number }> {
   try {

@@ -16,11 +16,5 @@ export default function AuthCheck({ children }: AuthCheckProps) {
     }
   }, [router]);
 
-  // pra evitar o flick 
-  /*if (!localStorage.getItem('access_token')) {
-    console.log('Token não encontrado, redirecionando para a página de login');
-    return <Login />;
-  }*/
-
   return <>{children}</>;
 }

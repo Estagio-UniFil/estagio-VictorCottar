@@ -16,4 +16,4 @@ import { InventoryModule } from 'src/inventory/inventory.module';
   controllers: [SaleController],
   providers: [SaleService],
 })
-export class SaleModule {}
+export class SaleModule { }

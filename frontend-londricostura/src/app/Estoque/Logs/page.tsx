@@ -50,7 +50,7 @@ export default function LogsEstoque() {
 
   const totalEntradas = logs.filter(log => log.movement_type === 'IN')
     .reduce((sum, log) => sum + log.quantity, 0);
-  
+
   const totalSaidas = logs.filter(log => log.movement_type === 'OUT')
     .reduce((sum, log) => sum + log.quantity, 0);
 
@@ -172,9 +172,8 @@ export default function LogsEstoque() {
                           )}
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className={`text-lg font-bold ${
-                            log.movement_type === 'IN' ? 'text-green-600' : 'text-red-600'
-                          }`}>
+                          <span className={`text-lg font-bold ${log.movement_type === 'IN' ? 'text-green-600' : 'text-red-600'
+                            }`}>
                             {log.movement_type === 'IN' ? '+' : '-'}{log.quantity}
                           </span>
                         </td>

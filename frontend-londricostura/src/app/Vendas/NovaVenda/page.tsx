@@ -62,7 +62,6 @@ export default function NovaVenda() {
     toast.success("Produto adicionado ao carrinho");
   };
 
-  // Atualizar quantidade no carrinho
   const handleUpdateQuantity = (productId: number, newQuantity: number) => {
     if (newQuantity <= 0) {
       handleRemoveItem(productId);
@@ -82,7 +81,6 @@ export default function NovaVenda() {
     setSaleItems(updatedItems);
   };
 
-  // Atualizar preço no carrinho
   const handleUpdatePrice = (productId: number, newPrice: number) => {
     const updatedItems = saleItems.map(item => {
       if (item.product_id === productId) {

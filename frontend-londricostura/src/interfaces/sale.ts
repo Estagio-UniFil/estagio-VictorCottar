@@ -1,6 +1,6 @@
 import { SaleItem } from "./saleItem";
 
-export interface Sale  {
+export interface Sale {
   id: number;
   costumer_name?: string | null;
   costumerId?: number;

@@ -1,4 +1,3 @@
-// inventory/dto/create-movement.dto.ts
 import { IsIn, IsInt, IsNotEmpty, Min } from 'class-validator';
 import { MovementType } from '../entities/inventory.entity';
 

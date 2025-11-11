@@ -142,14 +142,14 @@ export async function fetchMovimentationRange(from: string, to: string): Promise
 export function getWeekRangeISO(d: Date = new Date()) {
   // semana começando na segunda em America/Sao_Paulo
   const local = new Date(d);
-  const day = local.getDay(); // 0..6 dom..sab
-  const diffToMon = (day + 6) % 7; // 0 para seg
+  const day = local.getDay();
+  const diffToMon = (day + 6) % 7;
   const monday = new Date(local);
   monday.setDate(local.getDate() - diffToMon);
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
 
-  const toISO = (x: Date) => x.toISOString().slice(0, 10); // YYYY-MM-DD
+  const toISO = (x: Date) => x.toISOString().slice(0, 10);
   return { from: toISO(monday), to: toISO(sunday) };
 }
 

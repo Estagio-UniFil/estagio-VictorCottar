@@ -34,13 +34,13 @@ export default function SaleCart({
     if (newQuantity < 1) {
       return;
     }
-    
+
     const item = items.find(i => i.product_id === productId);
     if (item && newQuantity > (item.product.available || 0)) {
       toast.error("Quantidade maior que o estoque disponível");
       return;
     }
-    
+
     onUpdateQuantity(productId, newQuantity);
   };
 
@@ -49,7 +49,7 @@ export default function SaleCart({
       toast.error("Preço deve ser maior que zero");
       return;
     }
-    
+
     onUpdatePrice(productId, newPrice);
   };
 
@@ -146,7 +146,7 @@ export default function SaleCart({
                 </TableBody>
               </Table>
             </div>
-            
+
             <div className="border-t pt-4">
               <div className="flex justify-between items-center">
                 <div className="text-lg font-medium">Total da Venda:</div>

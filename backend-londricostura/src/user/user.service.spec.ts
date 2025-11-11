@@ -127,7 +127,7 @@ describe('UserService', () => {
   });
 
   it('deve remover um usuário', async () => {
-    const id =  1;
+    const id = 1;
     repository.findOne.mockResolvedValue(id);
     repository.remove.mockResolvedValue(null);
     await service.remove(1);

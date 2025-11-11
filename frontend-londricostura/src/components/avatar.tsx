@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { CircleUserRound } from 'lucide-react';
 import { useEffect, useState } from "react";
 

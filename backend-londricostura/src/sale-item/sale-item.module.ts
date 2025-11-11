@@ -14,4 +14,4 @@ import { InventoryModule } from 'src/inventory/inventory.module';
   providers: [SaleItemService],
   exports: [TypeOrmModule, SaleItemService],
 })
-export class SaleItemModule {}
+export class SaleItemModule { }

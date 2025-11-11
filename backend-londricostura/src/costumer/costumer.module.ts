@@ -20,4 +20,4 @@ import { CityModule } from 'src/city/city.module';
   providers: [CostumerService],
 })
 
-export class CostumerModule {}
+export class CostumerModule { }

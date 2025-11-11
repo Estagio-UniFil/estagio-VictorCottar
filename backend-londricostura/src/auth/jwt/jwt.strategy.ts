@@ -11,7 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private userService: UserService,
     private configService: ConfigService,
-    
+
   ) {
     const secret = configService.getOrThrow<string>('JWT_SECRET');
     super({

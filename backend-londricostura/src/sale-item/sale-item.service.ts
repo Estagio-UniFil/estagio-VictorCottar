@@ -30,7 +30,7 @@ export class SaleItemService {
 
     const full = await this.repo.findOne({
       where: { id: saved.id },
-      relations: ['product'], // mesmo com eager, isso é explícito e confiável
+      relations: ['product'],
     });
 
     await this.inventory.register({

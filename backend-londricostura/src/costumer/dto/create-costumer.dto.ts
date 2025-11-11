@@ -27,7 +27,7 @@ export class CreateCostumerDto {
   @IsNotEmpty({ message: 'Rua é obrigatória.' })
   @IsString()
   street: string;
-  
+
   @IsNotEmpty({ message: 'Número é obrigatório.' })
   number: number;
 }

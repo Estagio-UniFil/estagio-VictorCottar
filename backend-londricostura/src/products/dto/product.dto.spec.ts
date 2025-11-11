@@ -237,29 +237,29 @@ describe('DTO Validation', () => {
     });
 
     it('deve converter deletedAt em Date quando for string ISO', () => {
-  const plain = {
-    id: 20,
-    name: 'Teste Data',
-    code: 'TD-20',
-    price: 10,
-    user: { id: 5, name: 'Alice' },
-    user_id: 5,
-    deletedAt: '2025-05-20T10:00:00Z',
-  };
+      const plain = {
+        id: 20,
+        name: 'Teste Data',
+        code: 'TD-20',
+        price: 10,
+        user: { id: 5, name: 'Alice' },
+        user_id: 5,
+        deletedAt: '2025-05-20T10:00:00Z',
+      };
 
-  const instance = plainToInstance(ProductResponseDto, plain, {
-    excludeExtraneousValues: true,
-    enableImplicitConversion: true,
-  });
-  
-  // Aplica transformação pós-conversão
-  if (instance.deletedAt && typeof instance.deletedAt === 'string') {
-    instance.deletedAt = new Date(instance.deletedAt);
-  }
-  
-  expect(instance.deletedAt).toEqual(new Date('2025-05-20T10:00:00Z'));
-  expect(instance.deletedAt).toBeInstanceOf(Date);
-});
+      const instance = plainToInstance(ProductResponseDto, plain, {
+        excludeExtraneousValues: true,
+        enableImplicitConversion: true,
+      });
+
+      // Aplica transformação pós-conversão
+      if (instance.deletedAt && typeof instance.deletedAt === 'string') {
+        instance.deletedAt = new Date(instance.deletedAt);
+      }
+
+      expect(instance.deletedAt).toEqual(new Date('2025-05-20T10:00:00Z'));
+      expect(instance.deletedAt).toBeInstanceOf(Date);
+    });
 
     it('deve manter deletedAt como null quando for null', () => {
       const plain = {

@@ -1,4 +1,3 @@
-// inventory/dto/available-response.dto.ts
 import { Expose } from 'class-transformer';
 
 export class AvailableResponseDto {
@@ -6,5 +5,5 @@ export class AvailableResponseDto {
   product?: { name: string; code: string; price: number };
 
   @Expose()
-  available: number; 
+  available: number;
 }

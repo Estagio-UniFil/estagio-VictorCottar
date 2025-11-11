@@ -13,7 +13,7 @@ import { CityModule } from './city/city.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, 
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -29,7 +29,7 @@ import { CityModule } from './city/city.module';
         synchronize: true, // remover quando for subir para prod
         connectTimeoutMS: 10000,
         retryDelay: 3000,
-        retryAttempts: 5,   
+        retryAttempts: 5,
       }),
     }),
     UserModule,
@@ -44,4 +44,4 @@ import { CityModule } from './city/city.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
