@@ -100,3 +100,14 @@ export async function fetchSalesIndicatorsToday(): Promise<{
   return result.data;
 }
 
+export async function fetchSalesByRange(from: string, to: string): Promise<Array<{ date: string; totalSales: number }>> {
+  const url = new URL(`${API_URL}/sale/indicators/range`);
+  url.searchParams.set('from', from);
+  url.searchParams.set('to', to);
+
+  const res = await fetch(url.toString(), { headers: getHeaders(), cache: 'no-store' });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json?.message || `Erro ${res.status}`);
+  return json.data ?? [];
+}
+

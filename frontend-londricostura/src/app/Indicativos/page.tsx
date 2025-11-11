@@ -1,23 +1,13 @@
 'use client'
 import HeaderPage from "@/components/header-pages";
 import { fetchSalesIndicatorsToday } from "@/services/saleService";
-import { fetchStockIndicators } from "@/services/productService"; // Adicionado
-import { fetchMovimentationThisWeek, fetchMovimentationToday, getWeekRangeISO } from "@/services/inventoryService"; // Adicionado
+import { fetchStockIndicators } from "@/services/productService";
+import { fetchSalesByRange } from "@/services/saleService";
+import { fetchMovimentationThisWeek, fetchMovimentationToday, getWeekRangeISO } from "@/services/inventoryService";
 import { Package, TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { formatCurrency } from "@/utils/formatCurrency";
-
-// Dados mockados para os gráficos
-const vendasDiariasData = [
-  { dia: 'Seg', vendas: 4500 },
-  { dia: 'Ter', vendas: 5200 },
-  { dia: 'Qua', vendas: 4800 },
-  { dia: 'Qui', vendas: 6100 },
-  { dia: 'Sex', vendas: 7300 },
-  { dia: 'Sáb', vendas: 8900 },
-  { dia: 'Dom', vendas: 6700 },
-];
 
 export default function Indicativos() {
   const [indicadores, setIndicadores] = useState({
@@ -30,11 +20,13 @@ export default function Indicativos() {
   });
   const [loading, setLoading] = useState(true);
   const [movSemana, setMovSemana] = useState<{ dia: string; entradas: number; saidas: number }[]>([]);
+  const [vendasSemana, setVendasSemana] = useState<{ dia: string; vendas: number }[]>([]);
   const dias = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
   useEffect(() => {
     fetchIndicadores();
     fetchMovSemana();
+    fetchVendasSemana();
   }, []);
 
   const fetchIndicadores = async () => {
@@ -68,8 +60,8 @@ export default function Indicativos() {
 
   async function fetchMovSemana() {
     try {
-      const raw = await fetchMovimentationThisWeek(); // [{date:'2025-11-10', incoming:.., outgoing:..}]
-      // monta array da semana corrente, segunda->domingo
+      const raw = await fetchMovimentationThisWeek();
+
       const { from } = getWeekRangeISO(new Date());
       const base = new Date(from);
       const map: Record<string, { entradas: number; saidas: number }> = {};
@@ -96,6 +88,37 @@ export default function Indicativos() {
     } catch (e) {
       console.error('Erro ao carregar movimentação semanal', e);
       setMovSemana(dias.map(d => ({ dia: d, entradas: 0, saidas: 0 })));
+    }
+  }
+
+  async function fetchVendasSemana() {
+    try {
+      const { from, to } = getWeekRangeISO(new Date()); // usa a mesma util já existente
+      const raw = await fetchSalesByRange(from, to);     // [{date:'YYYY-MM-DD', totalSales:number}]
+
+      // base da semana seg..dom
+      const base = new Date(from);
+      const map: Record<string, number> = {};
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(base);
+        d.setDate(base.getDate() + i);
+        map[d.toISOString().slice(0, 10)] = 0;
+      }
+      for (const p of raw) {
+        if (map[p.date] !== undefined) map[p.date] = p.totalSales ?? 0;
+      }
+
+      const arr = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(base);
+        d.setDate(base.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        return { dia: dias[i], vendas: map[key] };
+      });
+
+      setVendasSemana(arr);
+    } catch (e) {
+      console.error('Erro ao carregar vendas semanais', e);
+      setVendasSemana(dias.map(d => ({ dia: d, vendas: 0 })));
     }
   }
 
@@ -201,7 +224,7 @@ export default function Indicativos() {
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Vendas da Semana</h3>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={vendasDiariasData}>
+              <LineChart data={vendasSemana}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="dia" stroke="#6b7280" />
                 <YAxis stroke="#6b7280" />

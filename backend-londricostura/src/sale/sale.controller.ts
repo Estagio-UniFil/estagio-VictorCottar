@@ -55,6 +55,15 @@ export class SaleController {
     };
   }
 
+  @Get('indicators/range')
+  async getSalesRange(
+    @Query('from') from: string,
+    @Query('to') to: string,
+  ) {
+    const data = await this.service.getSalesRange(from, to);
+    return { message: 'Vendas agregadas por dia', data };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const sale = await this.service.findOne(+id);

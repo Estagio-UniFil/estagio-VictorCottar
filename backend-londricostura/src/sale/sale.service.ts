@@ -316,4 +316,32 @@ export class SaleService {
     };
   }
 
+  async getSalesRange(fromISO: string, toISO: string) {
+  // limites do intervalo no fuso de SP
+  const from = `${fromISO} 00:00:00`;
+  const to   = `${toISO} 23:59:59.999`;
+
+  // Se "s.date" é string ISO, caste para timestamptz e aplique fuso.
+  const rows = await this.saleRepo.createQueryBuilder('s')
+    .leftJoin('s.items', 'si')
+    .select(
+      "TO_CHAR((s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo'), 'YYYY-MM-DD')",
+      'date',
+    )
+    .addSelect("COALESCE(SUM(si.quantity * CAST(si.price AS decimal)), 0)", 'totalSales')
+    .where(
+      "(s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo') BETWEEN :from::timestamp AND :to::timestamp",
+      { from, to },
+    )
+    .andWhere('s.deletedAt IS NULL')
+    .groupBy("TO_CHAR((s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo'), 'YYYY-MM-DD')")
+    .orderBy("TO_CHAR((s.date::timestamptz AT TIME ZONE 'America/Sao_Paulo'), 'YYYY-MM-DD')", 'ASC')
+    .getRawMany<{ date: string; totalSales: string }>();
+
+  return rows.map(r => ({
+    date: r.date,
+    totalSales: Number(r.totalSales ?? 0),
+  }));
+}
+
 }
