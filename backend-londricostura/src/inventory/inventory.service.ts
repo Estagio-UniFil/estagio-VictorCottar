@@ -154,4 +154,32 @@ export class InventoryService {
     await repo.save(log);
   }
 
+  async getMovementsRange(fromISO: string, toISO: string) {
+    // normaliza limites do dia
+    const from = new Date(`${fromISO}T00:00:00`);
+    const to = new Date(`${toISO}T23:59:59.999`);
+
+    const qb = this.inventoryRepository
+      .createQueryBuilder('i')
+      .select(`
+      TO_CHAR(i.createdAt AT TIME ZONE 'America/Sao_Paulo', 'YYYY-MM-DD')
+    `, 'date')
+      .addSelect(`
+      COALESCE(SUM(CASE WHEN i.movement_type = 'IN'  THEN i.quantity ELSE 0 END), 0)
+    `, 'incoming')
+      .addSelect(`
+      COALESCE(SUM(CASE WHEN i.movement_type = 'OUT' THEN i.quantity ELSE 0 END), 0)
+    `, 'outgoing')
+      .where('i.createdAt BETWEEN :from AND :to', { from, to })
+      .groupBy('date')
+      .orderBy('date', 'ASC');
+
+    const rows = await qb.getRawMany<{ date: string; incoming: string; outgoing: string }>();
+    return rows.map(r => ({
+      date: r.date,
+      incoming: Number(r.incoming ?? 0),
+      outgoing: Number(r.outgoing ?? 0),
+    }));
+  }
+
 }

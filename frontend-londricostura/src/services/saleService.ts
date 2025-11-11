@@ -97,7 +97,6 @@ export async function fetchSalesIndicatorsToday(): Promise<{
   }
 
   const result = await response.json();
-  console.log(result); // Verifique os dados retornados da API
   return result.data;
 }
 

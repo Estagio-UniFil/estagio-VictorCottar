@@ -51,6 +51,15 @@ export class InventoryController {
     };
   }
 
+  @Get('indicators/movimentation-range')
+  async getMovimentationRange(
+    @Query('from') from: string,
+    @Query('to') to: string,
+  ) {
+    const data = await this.inventoryService.getMovementsRange(from, to);
+    return { message: 'Movimentações por dia', data };
+  }
+
   @Get('available/:id')
   async available(@Param('id', ParseIntPipe) id: number) {
 

@@ -1,6 +1,8 @@
 import { API_URL, getHeaders } from "./loginService";
 import { Inventory } from "@/interfaces/inventory";
 
+export type MovementPoint = { date: string; incoming: number; outgoing: number };
+
 export interface InventoryLog {
   id: number;
   product_id: number;
@@ -69,7 +71,7 @@ export async function getAvailableBulk(ids: number[]): Promise<{ product_id: num
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json?.message || `Erro ${res.status}`);
-  
+
   return json.data ?? [];
 
 }
@@ -83,11 +85,11 @@ export async function fetchInventoryLogs(
   const url = new URL(`${API_URL}/inventory/logs`);
   url.searchParams.append('page', String(page));
   url.searchParams.append('limit', String(limit));
-  
+
   if (movementType) {
     url.searchParams.append('movement_type', movementType);
   }
-  
+
   if (productId) {
     url.searchParams.append('product_id', String(productId));
   }
@@ -123,4 +125,35 @@ export async function fetchMovimentationToday(): Promise<{
 
   const result = await response.json();
   return result.data;
+}
+
+export async function fetchMovimentationRange(from: string, to: string): Promise<MovementPoint[]> {
+  const url = new URL(`${API_URL}/inventory/indicators/movimentation-range`);
+  url.searchParams.set('from', from);
+  url.searchParams.set('to', to);
+
+  const res = await fetch(url.toString(), { headers: getHeaders(), cache: 'no-store' });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json?.message || `Erro ${res.status}`);
+
+  return json.data ?? [];
+}
+
+export function getWeekRangeISO(d: Date = new Date()) {
+  // semana começando na segunda em America/Sao_Paulo
+  const local = new Date(d);
+  const day = local.getDay(); // 0..6 dom..sab
+  const diffToMon = (day + 6) % 7; // 0 para seg
+  const monday = new Date(local);
+  monday.setDate(local.getDate() - diffToMon);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  const toISO = (x: Date) => x.toISOString().slice(0, 10); // YYYY-MM-DD
+  return { from: toISO(monday), to: toISO(sunday) };
+}
+
+export async function fetchMovimentationThisWeek() {
+  const { from, to } = getWeekRangeISO(new Date());
+  return fetchMovimentationRange(from, to);
 }

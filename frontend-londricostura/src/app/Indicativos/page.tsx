@@ -2,7 +2,7 @@
 import HeaderPage from "@/components/header-pages";
 import { fetchSalesIndicatorsToday } from "@/services/saleService";
 import { fetchStockIndicators } from "@/services/productService"; // Adicionado
-import { fetchMovimentationToday } from "@/services/inventoryService"; // Adicionado
+import { fetchMovimentationThisWeek, fetchMovimentationToday, getWeekRangeISO } from "@/services/inventoryService"; // Adicionado
 import { Package, TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -19,16 +19,6 @@ const vendasDiariasData = [
   { dia: 'Dom', vendas: 6700 },
 ];
 
-const movimentacaoProdutosData = [
-  { dia: 'Seg', entradas: 120, saidas: 85 },
-  { dia: 'Ter', entradas: 95, saidas: 110 },
-  { dia: 'Qua', entradas: 140, saidas: 95 },
-  { dia: 'Qui', entradas: 110, saidas: 130 },
-  { dia: 'Sex', entradas: 160, saidas: 145 },
-  { dia: 'Sáb', entradas: 90, saidas: 170 },
-  { dia: 'Dom', entradas: 75, saidas: 120 },
-];
-
 export default function Indicativos() {
   const [indicadores, setIndicadores] = useState({
     vendasHoje: 0,
@@ -39,9 +29,12 @@ export default function Indicativos() {
     ticketMedio: 0
   });
   const [loading, setLoading] = useState(true);
+  const [movSemana, setMovSemana] = useState<{ dia: string; entradas: number; saidas: number }[]>([]);
+  const dias = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
   useEffect(() => {
     fetchIndicadores();
+    fetchMovSemana();
   }, []);
 
   const fetchIndicadores = async () => {
@@ -72,6 +65,39 @@ export default function Indicativos() {
       setLoading(false);
     }
   };
+
+  async function fetchMovSemana() {
+    try {
+      const raw = await fetchMovimentationThisWeek(); // [{date:'2025-11-10', incoming:.., outgoing:..}]
+      // monta array da semana corrente, segunda->domingo
+      const { from } = getWeekRangeISO(new Date());
+      const base = new Date(from);
+      const map: Record<string, { entradas: number; saidas: number }> = {};
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(base);
+        d.setDate(base.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        map[key] = { entradas: 0, saidas: 0 };
+      }
+      for (const p of raw) {
+        if (map[p.date]) {
+          map[p.date].entradas = p.incoming ?? 0;
+          map[p.date].saidas = p.outgoing ?? 0;
+        }
+      }
+      const arr: { dia: string; entradas: number; saidas: number }[] = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(base);
+        d.setDate(base.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        arr.push({ dia: dias[i], entradas: map[key].entradas, saidas: map[key].saidas });
+      }
+      setMovSemana(arr);
+    } catch (e) {
+      console.error('Erro ao carregar movimentação semanal', e);
+      setMovSemana(dias.map(d => ({ dia: d, entradas: 0, saidas: 0 })));
+    }
+  }
 
   if (loading) {
     return (
@@ -200,7 +226,7 @@ export default function Indicativos() {
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Movimentação de Produtos</h3>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={movimentacaoProdutosData}>
+              <BarChart data={movSemana}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="dia" stroke="#6b7280" />
                 <YAxis stroke="#6b7280" />
